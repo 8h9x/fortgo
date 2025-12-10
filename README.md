@@ -2,7 +2,7 @@
 
 A library for making requests to Epic Games APIs--primarily targeting fortnite related endpoints.
 
-Installation: `go get gitlab.com/8h9x/vinderman`
+Installation: `go get github.com/8h9x/vinderman`
 
 Simple client creation example: 
 #### `/examples/authorization_code/main.go`
@@ -11,9 +11,9 @@ package main
 
 import (
 	"fmt"
-	"gitlab.com/8h9x/vinderman"
-	"gitlab.com/8h9x/vinderman/auth"
-	"gitlab.com/8h9x/vinderman/consts"
+	"github.com/8h9x/vinderman"
+	"github.com/8h9x/vinderman/auth"
+	"github.com/8h9x/vinderman/consts"
 	"log"
 	"net/http"
 )

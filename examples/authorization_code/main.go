@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"gitlab.com/8h9x/vinderman"
-	"gitlab.com/8h9x/vinderman/auth"
-	"gitlab.com/8h9x/vinderman/consts"
+	"github.com/8h9x/vinderman"
+	"github.com/8h9x/vinderman/auth"
+	"github.com/8h9x/vinderman/consts"
 	"log"
 	"net/http"
 )

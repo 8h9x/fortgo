@@ -2,7 +2,7 @@ package vinderman
 
 import (
 	"fmt"
-	"gitlab.com/8h9x/vinderman/auth"
+	"github.com/8h9x/vinderman/auth"
 	"net/http"
 )
 

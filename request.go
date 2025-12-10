@@ -3,7 +3,7 @@ package vinderman
 import (
 	"encoding/json"
 	"fmt"
-	"gitlab.com/8h9x/vinderman/request"
+	"github.com/8h9x/vinderman/request"
 	"net/http"
 	"strings"
 )

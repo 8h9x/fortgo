@@ -3,8 +3,8 @@ package auth
 import (
 	"encoding/base64"
 	"fmt"
-	"gitlab.com/8h9x/vinderman/consts"
-	"gitlab.com/8h9x/vinderman/request"
+	"github.com/8h9x/vinderman/consts"
+	"github.com/8h9x/vinderman/request"
 	"net/http"
 	"net/url"
 	"strings"
