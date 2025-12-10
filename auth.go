@@ -1,7 +1,7 @@
 package vinderman
 
 import (
-	"gitlab.com/8h9x/vinderman/auth"
+	"github.com/8h9x/vinderman/auth"
 )
 
 func (c *Client) GetExchangeCode(credentials auth.TokenResponse) (auth.ExchangeResponse, error) {

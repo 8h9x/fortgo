@@ -1,8 +1,8 @@
 package vinderman
 
 import (
-	"gitlab.com/8h9x/vinderman/consts"
-	"gitlab.com/8h9x/vinderman/request"
+	"github.com/8h9x/vinderman/consts"
+	"github.com/8h9x/vinderman/request"
 	"net/http"
 	"time"
 )
