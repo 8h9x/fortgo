@@ -7,51 +7,51 @@ import (
 	"time"
 )
 
+type MnemonicURLs struct {
+	ExtraSmall string `json:"url_xs"`
+	Small      string `json:"url_s"`
+	Medium     string `json:"url_m"`
+	Large      string `json:"url_l"`
+	Base       string `json:"url"`
+}
+
 type GetMnemonicResponse struct {
 	Namespace   string `json:"namespace"`
-	AccountId   string `json:"accountId"`
+	AccountID   string `json:"accountId"`
 	CreatorName string `json:"creatorName"`
 	Mnemonic    string `json:"mnemonic"`
 	LinkType    string `json:"linkType"`
 	Metadata    struct {
 		OwnershipToken           string `json:"ownership_token"`
 		LobbyBackgroundImageUrls struct {
-			Url string `json:"url"`
+			URL string `json:"url"`
 		} `json:"lobby_background_image_urls"`
 		BlogCategory    string            `json:"blog_category"`
-		ImageUrl        string            `json:"image_url"`
+		ImageURL        string            `json:"image_url"`
 		AltIntroduction map[string]string `json:"alt_introduction"`
-		ImageUrls       struct {
-			UrlS string `json:"url_s"`
-			UrlM string `json:"url_m"`
-			Url  string `json:"url"`
-		} `json:"image_urls"`
-		Locale      string `json:"locale"`
-		Title       string `json:"title"`
-		Matchmaking struct {
+		ImageURLs       MnemonicURLs      `json:"image_urls"`
+		Locale          string            `json:"locale"`
+		Title           string            `json:"title"`
+		Matchmaking     struct {
 			JoinInProgressType     string `json:"joinInProgressType"`
 			PlayersPerTeam         int    `json:"playersPerTeam"`
 			MaximumNumberOfPlayers int    `json:"maximumNumberOfPlayers"`
 			OverridePlaylist       string `json:"override_Playlist"`
 			PlayerCount            int    `json:"playerCount"`
-			MmsType                string `json:"mmsType"`
-			MmsPrivacy             string `json:"mmsPrivacy"`
+			MMSType                string `json:"mmsType"`
+			MMSPrivacy             string `json:"mmsPrivacy"`
 			NumberOfTeams          int    `json:"numberOfTeams"`
 			BAllowJoinInProgress   bool   `json:"bAllowJoinInProgress"`
 			MinimumNumberOfPlayers int    `json:"minimumNumberOfPlayers"`
 			JoinInProgressTeam     int    `json:"joinInProgressTeam"`
 		} `json:"matchmaking"`
-		VideoVUID           string   `json:"video_vuid"`
-		DisallowedPlatforms []string `json:"disallowedPlatforms"`
-		AltImageUrls        map[string]struct {
-			UrlS string `json:"url_s"`
-			UrlM string `json:"url_m"`
-			Url  string `json:"url"`
-		} `json:"alt_image_urls"`
-		AltTitle   map[string]string `json:"alt_title"`
-		AltTagline map[string]string `json:"alt_tagline"`
-		ProductTag string            `json:"product_tag"`
-		Ratings    struct {
+		VideoVUID           string                  `json:"video_vuid"`
+		DisallowedPlatforms []string                `json:"disallowedPlatforms"`
+		AltImageURLs        map[string]MnemonicURLs `json:"alt_image_urls"`
+		AltTitle            map[string]string       `json:"alt_title"`
+		AltTagline          map[string]string       `json:"alt_tagline"`
+		ProductTag          string                  `json:"product_tag"`
+		Ratings             struct {
 			RatingReceivedTime time.Time `json:"rating_received_time"`
 			Boards             map[string]struct {
 				Descriptors         []string `json:"descriptors"`
@@ -66,10 +66,8 @@ type GetMnemonicResponse struct {
 			UniqueGameVersion string `json:"uniqueGameVersion"`
 			CalibrationPhase  string `json:"calibrationPhase"`
 		} `json:"dynamicXp"`
-		SquareImageUrls struct {
-			Url string `json:"url"`
-		} `json:"square_image_urls"`
-		Introduction string `json:"introduction"`
+		SquareImageURLs MnemonicURLs `json:"square_image_urls"`
+		Introduction    string       `json:"introduction"`
 	} `json:"metadata"`
 	Version          int       `json:"version"`
 	Active           bool      `json:"active"`
@@ -106,14 +104,10 @@ type GetRelatedMnemonicsResponse struct {
 		Mnemonic    string `json:"mnemonic"`
 		LinkType    string `json:"linkType"`
 		Metadata    struct {
-			BlogCategory string   `json:"blog_category"`
-			ImageUrl     string   `json:"image_url"`
-			GenreLabels  []string `json:"genre_labels"`
-			ImageUrls    struct {
-				UrlS string `json:"url_s"`
-				UrlM string `json:"url_m"`
-				Url  string `json:"url"`
-			} `json:"image_urls"`
+			BlogCategory string            `json:"blog_category"`
+			ImageURL     string            `json:"image_url"`
+			GenreLabels  []string          `json:"genre_labels"`
+			ImageURLs    MnemonicURLs      `json:"image_urls"`
 			Title        string            `json:"title"`
 			Locale       string            `json:"locale"`
 			VideoVUID    string            `json:"video_vuid"`
@@ -134,13 +128,9 @@ type GetRelatedMnemonicsResponse struct {
 			FallbackLinks struct {
 				Graceful string `json:"graceful"`
 			} `json:"fallback_links"`
-			Tagline        string `json:"tagline"`
-			ExtraImageUrls []struct {
-				UrlS string `json:"url_s"`
-				UrlM string `json:"url_m"`
-				Url  string `json:"url"`
-			} `json:"extra_image_urls,omitempty"`
-			CategoryLabels    []string `json:"category_labels"`
+			Tagline           string         `json:"tagline"`
+			ExtraImageURLs    []MnemonicURLs `json:"extra_image_urls,omitempty"`
+			CategoryLabels    []string       `json:"category_labels"`
 			CorrespondingSets struct {
 				Ranked   string `json:"ranked,omitempty"`
 				Unranked string `json:"unranked,omitempty"`
@@ -149,7 +139,7 @@ type GetRelatedMnemonicsResponse struct {
 			UnlockConditions   struct {
 				AllOf struct {
 					Conditions []struct {
-						Id   string `json:"id"`
+						ID   string `json:"id"`
 						Type string `json:"type"`
 					} `json:"conditions"`
 				} `json:"allOf"`
@@ -159,11 +149,7 @@ type GetRelatedMnemonicsResponse struct {
 				RatingType string `json:"ratingType"`
 				IsRanked   bool   `json:"isRanked"`
 			} `json:"matchmakingV2,omitempty"`
-			AltImageUrls map[string]struct {
-				UrlS string `json:"url_s"`
-				UrlM string `json:"url_m"`
-				Url  string `json:"url"`
-			} `json:"alt_image_urls"`
+			AltImageURLs map[string]MnemonicURLs `json:"alt_image_urls"`
 		} `json:"metadata"`
 		Version           int           `json:"version"`
 		Active            bool          `json:"active"`
@@ -177,7 +163,7 @@ type GetRelatedMnemonicsResponse struct {
 	} `json:"parentLinks"`
 	Links map[string]struct {
 		Namespace   string `json:"namespace"`
-		AccountId   string `json:"accountId"`
+		AccountID   string `json:"accountId"`
 		CreatorName string `json:"creatorName"`
 		Mnemonic    string `json:"mnemonic"`
 		LinkType    string `json:"linkType"`
@@ -188,20 +174,15 @@ type GetRelatedMnemonicsResponse struct {
 			AltTitle            map[string]string `json:"alt_title"`
 			ImageUrl            string            `json:"image_url"`
 			ProductTag          string            `json:"product_tag"`
-			ImageUrls           struct {
-				UrlS  string `json:"url_s"`
-				UrlXS string `json:"url_xs"`
-				UrlM  string `json:"url_m"`
-				Url   string `json:"url"`
-			} `json:"image_urls"`
-			DynamicXP struct {
+			ImageURLs           MnemonicURLs      `json:"image_urls"`
+			DynamicXP           struct {
 				UniqueGameVersion int    `json:"uniqueGameVersion"`
 				CalibrationPhase  string `json:"calibrationPhase"`
 			} `json:"dynamicXp"`
 			Matchmaking struct {
 				OverridePlaylist string `json:"override_playlist"`
 			} `json:"matchmaking"`
-			VideoVuid string `json:"video_vuid"`
+			VideoVUID string `json:"video_vuid"`
 			Title     string `json:"title"`
 		} `json:"metadata"`
 		Version          int           `json:"version"`

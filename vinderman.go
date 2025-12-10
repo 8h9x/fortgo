@@ -17,11 +17,11 @@ func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Cl
 	client := &Client{
 		HttpClient:     httpClient,
 		Header:         make(http.Header),
-		ClientID:       initCredentials.ClientId,
+		ClientID:       initCredentials.ClientID,
 		CredentialsMap: make(map[string]auth.TokenResponse),
 	}
 
-	client.CredentialsMap[initCredentials.ClientId] = initCredentials
+	client.CredentialsMap[initCredentials.ClientID] = initCredentials
 
 	_, err := auth.VerifyToken(httpClient, initCredentials.AccessToken, false)
 	if err != nil {

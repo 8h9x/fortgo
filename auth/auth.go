@@ -148,17 +148,17 @@ type TokenResponse struct {
 	RefreshToken     string    `json:"refresh_token"`
 	RefreshExpires   int       `json:"refresh_expires"`
 	RefreshExpiresAt time.Time `json:"refresh_expires_at"`
-	AccountId        string    `json:"account_id"`
-	ClientId         string    `json:"client_id"`
+	AccountID        string    `json:"account_id"`
+	ClientID         string    `json:"client_id"`
 	InternalClient   bool      `json:"internal_client"`
 	ClientService    string    `json:"client_service"`
 	DisplayName      string    `json:"displayName"`
 	App              string    `json:"app"`
-	InAppId          string    `json:"in_app_id"`
-	DeviceId         string    `json:"device_id"`
-	ProductId        string    `json:"product_id"`
-	ApplicationId    string    `json:"application_id"`
-	Acr              string    `json:"acr"`
+	InAppID          string    `json:"in_app_id"`
+	DeviceID         string    `json:"device_id"`
+	ProductID        string    `json:"product_id"`
+	ApplicationID    string    `json:"application_id"`
+	ACR              string    `json:"acr"`
 	AuthTime         time.Time `json:"auth_time"`
 }
 
@@ -189,36 +189,38 @@ func VerifyToken(httpClient *http.Client, accessToken string, includePerms bool)
 	return res.Body, err
 }
 
+type VerifyTokenResponsePermission struct {
+	Resource string `json:"resource"`
+	Action   string `json:"action"`
+}
+
 type VerifyTokenResponse struct {
-	Token          string    `json:"token"`
-	SessionId      string    `json:"session_id"`
-	TokenType      string    `json:"token_type"`
-	ClientId       string    `json:"client_id"`
-	InternalClient bool      `json:"internal_client"`
-	ClientService  string    `json:"client_service"`
-	AccountId      string    `json:"account_id"`
-	ExpiresIn      int       `json:"expires_in"`
-	ExpiresAt      time.Time `json:"expires_at"`
-	AuthMethod     string    `json:"auth_method"`
-	DisplayName    string    `json:"display_name"`
-	App            string    `json:"app"`
-	InAppId        string    `json:"in_app_id"`
-	DeviceId       string    `json:"device_id"`
-	Scope          []string  `json:"scope"`
-	ProductId      string    `json:"product_id"`
-	SandboxId      string    `json:"sandbox_id"`
-	DeploymentId   string    `json:"deployment_id"`
-	ApplicationId  string    `json:"application_id"`
-	Acr            string    `json:"acr"`
-	AuthTime       time.Time `json:"auth_time"`
-	Perms          []struct {
-		Resource string `json:"resource"`
-		Action   string `json:"action"`
-	} `json:"perms"`
+	Token          string                          `json:"token"`
+	SessionID      string                          `json:"session_id"`
+	TokenType      string                          `json:"token_type"`
+	ClientID       string                          `json:"client_id"`
+	InternalClient bool                            `json:"internal_client"`
+	ClientService  string                          `json:"client_service"`
+	AccountID      string                          `json:"account_id"`
+	ExpiresIn      int                             `json:"expires_in"`
+	ExpiresAt      time.Time                       `json:"expires_at"`
+	AuthMethod     string                          `json:"auth_method"`
+	DisplayName    string                          `json:"display_name"`
+	App            string                          `json:"app"`
+	InAppID        string                          `json:"in_app_id"`
+	DeviceID       string                          `json:"device_id"`
+	Scope          []string                        `json:"scope"`
+	ProductID      string                          `json:"product_id"`
+	SandboxID      string                          `json:"sandbox_id"`
+	DeploymentId   string                          `json:"deployment_id"`
+	ApplicationId  string                          `json:"application_id"`
+	ACR            string                          `json:"acr"`
+	AuthTime       time.Time                       `json:"auth_time"`
+	Perms          []VerifyTokenResponsePermission `json:"perms"`
 }
 
 func CreateDeviceAuth(httpClient *http.Client, credentials TokenResponse) (DeviceAuthResponse, error) {
-	req, err := http.NewRequest("POST", consts.AccountService+"/account/api/public/account/"+credentials.AccountId+"/deviceAuth", nil)
+	req, err := http.NewRequest("POST", consts.AccountService+"/account/api/public/account/"+credentials.AccountID+"/deviceAuth", nil)
 	if err != nil {
 		return DeviceAuthResponse{}, err
 	}
@@ -248,7 +250,7 @@ type DeviceAuthResponse struct {
 		IpAddress string    `json:"ipAddress"`
 		Location  string    `json:"location"`
 	} `json:"created"`
-	DeviceId  string `json:"deviceId"`
+	DeviceID  string `json:"deviceId"`
 	Secret    string `json:"secret"`
 	UserAgent string `json:"userAgent"`
 }
@@ -279,6 +281,6 @@ func GetExchangeCode(httpClient *http.Client, credentials TokenResponse) (Exchan
 
 type ExchangeResponse struct {
 	Code             string `json:"code"`
-	CreatingClientId string `json:"creatingClientId"`
+	CreatingClientID string `json:"creatingClientId"`
 	ExpiresInSeconds int    `json:"expiresInSeconds"`
 }
