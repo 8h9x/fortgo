@@ -99,7 +99,7 @@ func (c *Client) GetMnemonic(mnemonic string) (GetMnemonicResponse, error) {
 type GetRelatedMnemonicsResponse struct {
 	ParentLinks []struct {
 		Namespace   string `json:"namespace"`
-		AccountId   string `json:"accountId"`
+		AccountID   string `json:"accountId"`
 		CreatorName string `json:"creatorName"`
 		Mnemonic    string `json:"mnemonic"`
 		LinkType    string `json:"linkType"`

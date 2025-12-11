@@ -284,3 +284,38 @@ type ExchangeResponse struct {
 	CreatingClientID string `json:"creatingClientId"`
 	ExpiresInSeconds int    `json:"expiresInSeconds"`
 }
+
+func GetDeviceCode(httpClient *http.Client, credentials TokenResponse) (GetDeviceCodeResponse, error) {
+	req, err := http.NewRequest("POST", consts.AccountService+"/account/api/oauth/deviceAuthorization", nil)
+	if err != nil {
+		return GetDeviceCodeResponse{}, err
+	}
+
+	req.Header.Set("Authorization", fmt.Sprint("Bearer ", credentials.AccessToken))
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return GetDeviceCodeResponse{}, err
+	}
+
+	res, err := request.ResponseParser[GetDeviceCodeResponse](resp)
+	if err != nil {
+		return GetDeviceCodeResponse{}, err
+	}
+
+	headers := http.Header{}
+	headers.Set("Authorization", fmt.Sprint("Bearer ", credentials.AccessToken))
+
+	return res.Body, err
+}
+
+type GetDeviceCodeResponse struct {
+	UserCode                string `json:"user_code"`
+	DeviceCode              string `json:"device_code"`
+	VerificationURI         string `json:"verification_uri"`
+	VerificationURIComplete string `json:"verification_uri_complete"`
+	Prompt                  string `json:"prompt"`
+	ExpiresIn               int    `json:"expires_in"`
+	Interval                int    `json:"interval"`
+	ClientID                string `json:"client_id"`
+}

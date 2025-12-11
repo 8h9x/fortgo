@@ -1,6 +1,6 @@
 package consts
 
-// find more at: https://egs.jaren.wtf/
+// obtained from: https://egs.jaren.wtf/ (full tracked list by jaren)
 
 const (
 	FortniteClientID     = "xyza7891343Fr4ZSPkQZ3kaL3I2sX8B5"

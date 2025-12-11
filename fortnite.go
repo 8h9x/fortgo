@@ -11,7 +11,7 @@ type FortniteMCPVersion struct {
 	App                       string    `json:"app"`
 	ServerDate                time.Time `json:"serverDate"`
 	OverridePropertiesVersion string    `json:"overridePropertiesVersion"`
-	Cln                       string    `json:"cln"`
+	CLN                       string    `json:"cln"`
 	Build                     string    `json:"build"`
 	ModuleName                string    `json:"moduleName"`
 	BuildDate                 time.Time `json:"buildDate"`
@@ -19,14 +19,14 @@ type FortniteMCPVersion struct {
 	Branch                    string    `json:"branch"`
 	Modules                   struct {
 		EpicLightSwitchAccessControlCore struct {
-			Cln       string    `json:"cln"`
+			CLN       string    `json:"cln"`
 			Build     string    `json:"build"`
 			BuildDate time.Time `json:"buildDate"`
 			Version   string    `json:"version"`
 			Branch    string    `json:"branch"`
 		} `json:"Epic-LightSwitch-AccessControlCore"`
 		EpicCommonCore struct {
-			Cln       string    `json:"cln"`
+			CLN       string    `json:"cln"`
 			Build     string    `json:"build"`
 			BuildDate time.Time `json:"buildDate"`
 			Version   string    `json:"version"`

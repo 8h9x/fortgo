@@ -33,7 +33,7 @@ func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Cl
 		return client, err
 	}
 
-	client.Header.Set("User-Agent", fmt.Sprintf("Fortnite/++Fortnite+%s-CL-%s Windows/10.0.26100.1.256.64bit", mcpVersionData.Branch, mcpVersionData.Cln))
+	client.Header.Set("User-Agent", fmt.Sprintf("Fortnite/++Fortnite+%s-CL-%s Windows/10.0.26100.1.256.64bit", mcpVersionData.Branch, mcpVersionData.CLN))
 
 	return client, nil
 }
