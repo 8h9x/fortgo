@@ -105,7 +105,7 @@ func (c *Client) FetchUserByDisplayName(displayName string) (FetchUserResponse, 
 	return res.Body, err
 }
 
-func (c Client) FetchMe() (FetchUserResponse, error) {
+func (c *Client) FetchMe() (FetchUserResponse, error) {
 	credentials := c.CredentialsMap[c.ClientID]
 	return c.FetchUserByID(credentials.AccountID)
 }
