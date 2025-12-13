@@ -11,7 +11,7 @@ import (
 
 type ProfileStatsType interface {
 	AthenaProfileStats | CampaignProfileStats | CollectionBookPeopleProfileStats | CollectionBookSchematicsProfileStats | CollectionsProfileStats | CommonPublicProfileStats |
-		CommonCoreProfileStats | CreativeProfileStats | MetadataProfileStats | OutpostProfileStats | RecycleBinProfileStats | Theater0ProfileStats | Theater1ProfileStats | Theater2ProfileStats
+	CommonCoreProfileStats | CreativeProfileStats | MetadataProfileStats | OutpostProfileStats | RecycleBinProfileStats | Theater0ProfileStats | Theater1ProfileStats | Theater2ProfileStats
 }
 
 type Profile[ST ProfileStatsType, NT CampaignNotifications | []interface{}] struct {
@@ -535,7 +535,7 @@ func (c *Client) ComposeProfileOperation(operation string, profileID string, pay
 	headers.Set("Content-Type", "application/json")
 	headers.Set("Authorization", "Bearer "+credentials.AccessToken)
 
-	resp, err = c.Request("POST", fmt.Sprintf("%s/profile/%s/client/%s?profileId=%s&rvn=-1", consts.FortniteMCPService, credentials.AccountID, operation, profileID), headers, payload)
+	resp, err = c.Request("POST", fmt.Sprintf("%s/fortnite/api/game/v2/profile/%s/client/%s?profileId=%s&rvn=-1", consts.FortniteMCPService, credentials.AccountID, operation, profileID), headers, payload)
 	return
 }
 
