@@ -8,6 +8,7 @@ import (
 	"github.com/8h9x/fortgo/auth"
 	"github.com/8h9x/fortgo/fortnite"
 	"github.com/8h9x/fortgo/links"
+	"github.com/8h9x/fortgo/locker"
 	"github.com/8h9x/fortgo/party"
 	"github.com/8h9x/fortgo/usersearch"
 )
@@ -21,6 +22,7 @@ type Client struct {
 	Accounts *account.Client
 	Fortnite *fortnite.Client
 	Links *links.Client
+	Locker *locker.Client
 	Party *party.Client
 	UserSearch *usersearch.Client
 }
@@ -34,6 +36,7 @@ func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Cl
 		Accounts: account.NewClient(httpClient, &initCredentials),
 		Fortnite: fortnite.NewClient(httpClient, &initCredentials),
 		Links: links.NewClient(httpClient, &initCredentials),
+		Locker: locker.NewClient(httpClient, &initCredentials),
 		Party: party.NewClient(httpClient, &initCredentials),
 		UserSearch: usersearch.NewClient(httpClient, &initCredentials),
 	}
