@@ -2,10 +2,12 @@ package fortgo
 
 import (
 	"fmt"
+	"net/http"
+
+	"github.com/8h9x/fortgo/account"
 	"github.com/8h9x/fortgo/auth"
 	"github.com/8h9x/fortgo/fortnite"
 	"github.com/8h9x/fortgo/links"
-	"net/http"
 )
 
 type Client struct {
@@ -14,6 +16,8 @@ type Client struct {
 	ClientID       string
 	CredentialsMap map[string]auth.TokenResponse
 
+	Accounts *account.Client
+	Fortnite *fortnite.Client
 	Links *links.Client
 }
 
@@ -23,6 +27,7 @@ func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Cl
 		Header:         make(http.Header),
 		ClientID:       initCredentials.ClientID,
 		CredentialsMap: make(map[string]auth.TokenResponse),
+		Fortnite: fortnite.NewClient(httpClient, &initCredentials),
 		Links: links.NewClient(httpClient, &initCredentials),
 	}
 
@@ -33,7 +38,7 @@ func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Cl
 		return client, err
 	}
 
-	mcpVersionData, err := fortnite.GetMCPVersion(httpClient)
+	mcpVersionData, err := client.Fortnite.GetMCPVersion()
 	if err != nil {
 		return client, err
 	}
@@ -58,9 +63,9 @@ func (c *Client) GetMnemonic(mnemonic string, mnemonicType links.MnemonicType, v
 }
 
 func (c *Client) ComposeProfileOperation(operation string, profileID string, payload string) (*http.Response, error) {
-	return fortnite.ComposeProfileOperation(c.HTTPClient, c.CurrentCredentials(), operation, profileID, payload)
+	return c.Fortnite.ComposeProfileOperation(c.CurrentCredentials().AccountID, operation, profileID, payload)
 }
 
 func (c *Client) ProfileOperation(operation string, profileID string, payload any) (*http.Response, error) {
-	return fortnite.ProfileOperation(c.HTTPClient, c.CurrentCredentials(), operation, profileID, payload)
+	return c.Fortnite.ProfileOperation(c.CurrentCredentials().AccountID, operation, profileID, payload)
 }
