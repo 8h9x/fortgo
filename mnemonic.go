@@ -8,5 +8,5 @@ type Mnemonic struct {
 }
 
 func (m *Mnemonic) FetchRelated() (links.FetchRelatedMnemonicsResponse, error) {
-	return links.FetchRelatedMnemonics(m.client.HttpClient, m.client.CurrentCredentials(), "fn", m.Mnemonic, m.Version)
+	return m.client.Links.FetchRelatedMnemonics("fn", m.Mnemonic, m.Version)
 }

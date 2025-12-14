@@ -10,5 +10,5 @@ func (c *Client) Request(method string, url string, header http.Header, body str
 		header.Set(key, value[0])
 	}
 
-	return request.Request(c.HttpClient, method, url, header, body)
+	return request.Request(c.HTTPClient, method, url, header, body)
 }
