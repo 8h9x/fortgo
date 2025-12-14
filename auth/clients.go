@@ -20,3 +20,4 @@ func (ac *AuthClient) Base64() string {
 }
 
 var FortnitePS4USClient = &AuthClient{consts.FortnitePS4USClientID, consts.FortnitePS4USClientSecret}
+var FortniteNewIOSClient = &AuthClient{consts.FortniteNewIOSClientID, consts.FortniteNewIOSClientSecret}

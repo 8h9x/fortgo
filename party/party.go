@@ -60,7 +60,6 @@ func (c *Client) Remove(partyID, memberID string) error {
 
 func (c *Client) Promote(partyID, memberID string) error {
 	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
 	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
 
 	reqUrl := fmt.Sprintf("%s/party/api/v1/Fortnite/parties/%s/members/%s/promote", consts.PartyService, partyID, memberID)

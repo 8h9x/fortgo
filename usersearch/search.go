@@ -11,7 +11,6 @@ import (
 
 func (c *Client) Search(accountID string, platform Platform, term string) (SearchUsersResponse, error) {
 	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
 	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
 
 	query := url.Values{}

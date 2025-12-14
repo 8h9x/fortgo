@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/8h9x/fortgo"
 	"github.com/8h9x/fortgo/auth"
-	"github.com/8h9x/fortgo/consts"
 	"log"
 	"net/http"
 	"os"
@@ -13,10 +12,9 @@ import (
 
 func main() {
 	httpClient := &http.Client{}
-	authClientNewIOS := &auth.AuthClient{consts.FortniteNewIOSClientID, consts.FortniteNewIOSClientSecret}
 	deviceAuthPath := "./deviceAuth.json"
 
-	deviceAuth, err := fetchDeviceAuth(httpClient, authClientNewIOS, deviceAuthPath)
+	deviceAuth, err := fetchDeviceAuth(httpClient, auth.FortniteNewIOSClient, deviceAuthPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,7 +25,7 @@ func main() {
 		Secret: deviceAuth.Secret,
 	}
 
-	credentials, err := auth.Authenticate(httpClient, authClientNewIOS, deviceAuthPayload, true)
+	credentials, err := auth.Authenticate(httpClient, auth.FortniteNewIOSClient, deviceAuthPayload, true)
 	if err != nil {
 		log.Fatal(err)
 	}

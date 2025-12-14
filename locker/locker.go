@@ -32,7 +32,6 @@ func (c *Client) ChangeCompanionName(accountID string, cosmeticItemID string, co
 
 func (c *Client) QueryItems(accountID string) (LockerItems, error) {
 	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
 	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
 
 	reqUrl := fmt.Sprintf("/%s/api/locker/v4/%s/account/%s/items", consts.FortniteLockerService, DeploymentIDLiveFN, accountID)
