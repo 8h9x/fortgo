@@ -23,7 +23,7 @@ func main() {
 
 	var code string
 
-	fmt.Printf("Enter an auth code from https://www.epicgames.com/id/api/redirect?clientId=%s&responseType=code:\n", consts.FortniteNewIOSClientID)
+	fmt.Printf("Enter an auth code from https://www.epicgames.com/id/api/redirect?clientId=%s&responseType=code:\n", consts.FortnitePS4USClientID)
 	_, err := fmt.Scan(&code)
 	if err != nil {
 		log.Fatal(err)
