@@ -14,7 +14,7 @@ type Client struct {
 	ClientID       string
 	CredentialsMap map[string]auth.TokenResponse
 
-	Links links.Client
+	Links *links.Client
 }
 
 func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Client, error) {
@@ -23,6 +23,7 @@ func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Cl
 		Header:         make(http.Header),
 		ClientID:       initCredentials.ClientID,
 		CredentialsMap: make(map[string]auth.TokenResponse),
+		Links: links.NewClient(httpClient, &initCredentials),
 	}
 
 	client.CredentialsMap[initCredentials.ClientID] = initCredentials

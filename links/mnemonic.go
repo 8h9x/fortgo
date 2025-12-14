@@ -11,7 +11,7 @@ import (
 	"github.com/8h9x/fortgo/request"
 )
 
-func fetchMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](httpClient *http.Client, credentials auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (T, error) {
+func fetchMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](httpClient *http.Client, credentials *auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (T, error) {
 	includeActivationHistory := false
 
 	var data T
