@@ -46,7 +46,7 @@ func main() {
 
 	_, err = fortgo.NewClient(httpClient, credentials)
 	if err != nil {
-		log.Println("Failed to construct client", err)
+		log.Fatal("Failed to construct client", err)
 	}
 
 	log.Println("Fortgo client successfully created")

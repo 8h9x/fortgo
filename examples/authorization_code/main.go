@@ -11,10 +11,11 @@ import (
 
 func main() {
 	httpClient := &http.Client{}
+	authClientNewIOS := &auth.AuthClient{consts.FortniteNewIOSClientID,consts.FortniteNewIOSClientSecret}
 
 	var code string
 
-	fmt.Printf("Enter an auth code from https://www.epicgames.com/id/api/redirect?clientId=%s&responseType=code:\n", consts.FortnitePS4USClientID)
+	fmt.Printf("Enter an auth code from https://www.epicgames.com/id/api/redirect?clientId=%s&responseType=code:\n", authClientNewIOS.ID)
 	_, err := fmt.Scan(&code)
 	if err != nil {
 		log.Fatal(err)
@@ -24,14 +25,14 @@ func main() {
 		Code: code,
 	}
 
-	credentials, err := auth.Authenticate(httpClient, auth.FortnitePS4USClient, authCodePayload, true)
+	credentials, err := auth.Authenticate(httpClient, authClientNewIOS, authCodePayload, true)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 
 	_, err = fortgo.NewClient(httpClient, credentials)
 	if err != nil {
-		log.Println("Failed to construct client", err)
+		log.Fatal("Failed to construct client", err)
 	}
 
 	log.Println("Fortgo client successfully created")

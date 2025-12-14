@@ -9,6 +9,23 @@ type GetPublicKeyResponse struct {
 	N   string `json:"n"`
 }
 
+type ExternalAuthType string
+
+const (
+	ExternalAuthTypeApple   ExternalAuthType = "apple"
+	ExternalAuthTypeFacebook   ExternalAuthType = "facebook"
+	ExternalAuthTypeGithub   ExternalAuthType = "github"
+	ExternalAuthTypeGoogle   ExternalAuthType = "google"
+	ExternalAuthTypeInternal   ExternalAuthType = "internal"
+	ExternalAuthTypeNintendo ExternalAuthType = "nintendo"
+	ExternalAuthTypePSN      ExternalAuthType = "psn"
+	ExternalAuthTypeSteam    ExternalAuthType = "steam"
+	ExternalAuthTypeTwitch   ExternalAuthType = "twitch"
+	ExternalAuthTypeUbisoft      ExternalAuthType = "ubisoft"
+	ExternalAuthTypeVK      ExternalAuthType = "vk"
+	ExternalAuthTypeXBL      ExternalAuthType = "xbl"
+)
+
 type ExternalAuthID struct {
 	ID   string `json:"id"`
 	Type string `json:"type"`
@@ -28,7 +45,7 @@ type ExternalAuth struct {
 type FetchUserResponse struct {
 	ID            string `json:"id"`
 	DisplayName   string `json:"displayName"`
-	ExternalAuths map[string]ExternalAuth `json:"externalAuths"`
+	ExternalAuths map[ExternalAuthType]ExternalAuth `json:"externalAuths"`
 }
 
 type FetchUserResponseExtended struct {
@@ -58,3 +75,14 @@ type FetchUserResponseExtended struct {
 	HasHashedEmail               bool      `json:"hasHashedEmail"`
 	LastReviewedSecuritySettings time.Time `json:"lastReviewedSecuritySettings"`
 }
+
+type fetchUsersByExternalDisplayNameBulkPayload struct {
+	AuthType     ExternalAuthType   `json:"authType"`
+	DisplayNames []string `json:"displayNames"`
+}
+
+type fetchUsersByExternalIDBulkPayload struct {
+	AuthType     ExternalAuthType   `json:"authType"`
+	IDs []string `json:"ids"`
+}
+
