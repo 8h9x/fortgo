@@ -1,4 +1,39 @@
-package vinderman
+package fortnite
+
+import (
+	"encoding/json"
+	"time"
+)
+
+type ProfileStatsType interface {
+	AthenaProfileStats | CampaignProfileStats | CollectionBookPeopleProfileStats | CollectionBookSchematicsProfileStats | CollectionsProfileStats | CommonPublicProfileStats |
+		CommonCoreProfileStats | CreativeProfileStats | MetadataProfileStats | OutpostProfileStats | RecycleBinProfileStats | Theater0ProfileStats | Theater1ProfileStats | Theater2ProfileStats
+}
+
+type Profile[ST ProfileStatsType, NT CampaignNotifications | []interface{}] struct {
+	ProfileRevision            int    `json:"profileRevision"`
+	ProfileID                  string `json:"profileId"`
+	ProfileChangesBaseRevision int    `json:"profileChangesBaseRevision"`
+	ProfileChanges             []struct {
+		ChangeType string `json:"changeType"`
+		Profile    struct {
+			Created         string                     `json:"created"`
+			Updated         string                     `json:"updated"`
+			RVN             int                        `json:"rvn"`
+			WipeNumber      int                        `json:"wipeNumber"`
+			AccountID       string                     `json:"accountId"`
+			ProfileID       string                     `json:"profileId"`
+			Version         string                     `json:"version"`
+			Items           map[string]json.RawMessage `json:"items"`
+			Stats           ST                         `json:"stats"`
+			CommandRevision int                        `json:"commandRevision"`
+		} `json:"profile"`
+	} `json:"profileChanges"`
+	ProfileCommandRevision int       `json:"profileCommandRevision"`
+	ServerTime             time.Time `json:"serverTime"`
+	ResponseVersion        int       `json:"responseVersion"`
+	Notifications          NT        `json:"notifications"`
+}
 
 type AthenaProfileStats struct {
 	Attributes struct {

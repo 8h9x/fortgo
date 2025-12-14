@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/8h9x/vinderman"
-	"github.com/8h9x/vinderman/auth"
-	"github.com/8h9x/vinderman/consts"
+	"github.com/8h9x/fortgo"
+	"github.com/8h9x/fortgo/auth"
+	"github.com/8h9x/fortgo/consts"
 	"log"
 	"net/http"
 )
@@ -24,15 +24,15 @@ func main() {
 		Code: code,
 	}
 
-	credentials, err := auth.Authenticate(httpClient, consts.FortniteNewIOSClientID, consts.FortniteNewIOSClientSecret, authCodePayload, true)
+	credentials, err := auth.Authenticate(httpClient, auth.FortnitePS4USClient, authCodePayload, true)
 	if err != nil {
 		log.Println(err)
 	}
 
-	_, err = vinderman.NewClient(httpClient, credentials)
+	_, err = fortgo.NewClient(httpClient, credentials)
 	if err != nil {
 		log.Println("Failed to construct client", err)
 	}
 
-	log.Println("Vinderman client successfully created")
+	log.Println("Fortgo client successfully created")
 }

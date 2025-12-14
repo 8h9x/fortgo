@@ -1,10 +1,10 @@
-package vinderman
+package fortgo
 
 import (
 	"fmt"
-	"github.com/8h9x/vinderman/auth"
-	"github.com/8h9x/vinderman/consts"
-	"github.com/8h9x/vinderman/request"
+	"github.com/8h9x/fortgo/auth"
+	"github.com/8h9x/fortgo/consts"
+	"github.com/8h9x/fortgo/request"
 	"net/http"
 	"time"
 )

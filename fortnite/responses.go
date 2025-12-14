@@ -1,13 +1,8 @@
-package vinderman
+package fortnite
 
-import (
-	"github.com/8h9x/vinderman/consts"
-	"github.com/8h9x/vinderman/request"
-	"net/http"
-	"time"
-)
+import "time"
 
-type FortniteMCPVersion struct {
+type MCPVersionResponse struct {
 	App                       string    `json:"app"`
 	ServerDate                time.Time `json:"serverDate"`
 	OverridePropertiesVersion string    `json:"overridePropertiesVersion"`
@@ -35,21 +30,3 @@ type FortniteMCPVersion struct {
 	} `json:"modules"`
 }
 
-func (c *Client) GetMCPVersion() (FortniteMCPVersion, error) {
-	req, err := http.NewRequest("GET", consts.FortniteMCPService+"/fortnite/api/version", nil)
-	if err != nil {
-		return FortniteMCPVersion{}, err
-	}
-
-	resp, err := c.HttpClient.Do(req)
-	if err != nil {
-		return FortniteMCPVersion{}, err
-	}
-
-	res, err := request.ResponseParser[FortniteMCPVersion](resp)
-	if err != nil {
-		return FortniteMCPVersion{}, err
-	}
-
-	return res.Body, err
-}

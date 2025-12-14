@@ -1,4 +1,4 @@
-package vinderman
+package fortnite
 
 type EFortCollectedState string
 

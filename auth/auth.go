@@ -1,10 +1,9 @@
 package auth
 
 import (
-	"encoding/base64"
 	"fmt"
-	"github.com/8h9x/vinderman/consts"
-	"github.com/8h9x/vinderman/request"
+	"github.com/8h9x/fortgo/consts"
+	"github.com/8h9x/fortgo/request"
 	"net/http"
 	"net/url"
 	"strings"
@@ -62,7 +61,7 @@ type Payload interface {
 		PayloadOTP | PayloadPassword | PayloadRefreshToken | PayloadTokenToToken
 }
 
-func Authenticate[T Payload](httpClient *http.Client, clientId, clientSecret string, payload T, eg1 bool) (TokenResponse, error) {
+func Authenticate[T Payload](httpClient *http.Client, client *AuthClient, payload T, eg1 bool) (TokenResponse, error) {
 	v := url.Values{}
 	if eg1 == true {
 		v.Set("token_type", "eg1")
@@ -122,7 +121,7 @@ func Authenticate[T Payload](httpClient *http.Client, clientId, clientSecret str
 		return TokenResponse{}, err
 	}
 
-	basicToken := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", clientId, clientSecret)))
+	basicToken := client.Base64()
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Authorization", fmt.Sprint("Basic ", basicToken))
@@ -212,8 +211,8 @@ type VerifyTokenResponse struct {
 	Scope          []string                        `json:"scope"`
 	ProductID      string                          `json:"product_id"`
 	SandboxID      string                          `json:"sandbox_id"`
-	DeploymentId   string                          `json:"deployment_id"`
-	ApplicationId  string                          `json:"application_id"`
+	DeploymentID   string                          `json:"deployment_id"`
+	ApplicationID  string                          `json:"application_id"`
 	ACR            string                          `json:"acr"`
 	AuthTime       time.Time                       `json:"auth_time"`
 	Perms          []VerifyTokenResponsePermission `json:"perms"`

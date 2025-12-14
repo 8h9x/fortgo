@@ -1,7 +1,7 @@
 package eos
 
 import (
-	"github.com/8h9x/vinderman/auth"
+	"github.com/8h9x/fortgo/auth"
 	"net/http"
 	"time"
 )
