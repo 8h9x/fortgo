@@ -9,15 +9,17 @@ import (
 )
 
 type Client struct {
-	HttpClient     *http.Client
+	HTTPClient     *http.Client
 	Header         http.Header
 	ClientID       string
 	CredentialsMap map[string]auth.TokenResponse
+
+	Links links.Client
 }
 
 func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Client, error) {
 	client := &Client{
-		HttpClient:     httpClient,
+		HTTPClient:     httpClient,
 		Header:         make(http.Header),
 		ClientID:       initCredentials.ClientID,
 		CredentialsMap: make(map[string]auth.TokenResponse),
@@ -46,7 +48,7 @@ func (c *Client) CurrentCredentials() auth.TokenResponse {
 }
 
 func (c *Client) GetMnemonic(mnemonic string, mnemonicType links.MnemonicType, version int) (Mnemonic, error) {
-	res, err := links.FetchMnemonicInfo(c.HttpClient, c.CurrentCredentials(), "fn", mnemonic, mnemonicType, version)
+	res, err := c.Links.FetchMnemonicInfo("fn", mnemonic, mnemonicType, version)
 	if err != nil {
 		return Mnemonic{}, err
 	}
@@ -55,9 +57,9 @@ func (c *Client) GetMnemonic(mnemonic string, mnemonicType links.MnemonicType, v
 }
 
 func (c *Client) ComposeProfileOperation(operation string, profileID string, payload string) (*http.Response, error) {
-	return fortnite.ComposeProfileOperation(c.HttpClient, c.CurrentCredentials(), operation, profileID, payload)
+	return fortnite.ComposeProfileOperation(c.HTTPClient, c.CurrentCredentials(), operation, profileID, payload)
 }
 
 func (c *Client) ProfileOperation(operation string, profileID string, payload any) (*http.Response, error) {
-	return fortnite.ProfileOperation(c.HttpClient, c.CurrentCredentials(), operation, profileID, payload)
+	return fortnite.ProfileOperation(c.HTTPClient, c.CurrentCredentials(), operation, profileID, payload)
 }
