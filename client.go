@@ -27,6 +27,7 @@ func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Cl
 		Header:         make(http.Header),
 		ClientID:       initCredentials.ClientID,
 		CredentialsMap: make(map[string]auth.TokenResponse),
+		Accounts: account.NewClient(httpClient, &initCredentials),
 		Fortnite: fortnite.NewClient(httpClient, &initCredentials),
 		Links: links.NewClient(httpClient, &initCredentials),
 	}
