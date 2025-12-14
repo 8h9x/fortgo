@@ -1,29 +1,19 @@
-package vinderman
+package fortgo
 
 import (
-	"fmt"
-	"net/http"
-
-	"gitlab.com/8h9x/Vinderman/consts"
-	"gitlab.com/8h9x/Vinderman/request"
+	"github.com/8h9x/fortgo/account"
+	"github.com/8h9x/fortgo/auth"
 )
 
-type BRInventory struct {
-	Stash struct {
-		Globalcash int `json:"globalcash"`
-	} `json:"stash"`
+func (c *Client) GetExchangeCode() (auth.ExchangeResponse, error) {
+	return auth.GetExchangeCode(c.HTTPClient, c.CredentialsMap[c.ClientID])
 }
 
-func (c Client) FetchBRInventory(credentials UserCredentials) (inventory BRInventory, err error) {
-	headers := http.Header{}
-	headers.Set("Authorization", fmt.Sprint("Bearer ", credentials.AccessToken))
+func (c *Client) CreateDeviceAuth() (auth.DeviceAuthResponse, error) {
+	return auth.CreateDeviceAuth(c.HTTPClient, c.CredentialsMap[c.ClientID])
+}
 
-	resp, err := c.Request("GET", fmt.Sprintf("%s/br-inventory/account/%s", consts.FORTNITE_GAME, credentials.AccountID), headers, "")
-	if err != nil {
-		return
-	}
-
-	res, err := request.ResponseParser[BRInventory](resp)
-
-	return res.Body, err
+func (c *Client) FetchMe() (account.FetchUserResponseExtended, error) {
+	credentials := c.CredentialsMap[c.ClientID]
+	return c.Accounts.FetchUserByID(credentials.AccountID)
 }

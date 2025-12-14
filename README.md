@@ -1,11 +1,48 @@
-# Vinderman
+# Fortgo
 
-A package that can be used to interact with the epic games api, with a specific focus around fortnite services. Named after the mysterious Dr. Vinderman from the campaign mode of the game.
-Currently the client does not store auth or any state, as the primary purpose of the library is to be used in my fortnite utility bot that doesnt cache sessions; however, at a later point this will be implemented.
+A library for making requests to Epic Games APIs--primarily targeting fortnite related endpoints.
 
-- Installation: `go get gitlab.com/8h9x/Vinderman`
+Installation: `go get github.com/8h9x/fortgo`
 
-Monumental Thanks & Credit to:
-- https://github.com/MixV2/EpicResearch
-- https://egs.jaren.wtf/
-- https://github.com/LeleDerGrasshalmi/FortniteEndpointsDocumentation
+Simple client creation example: 
+#### `/examples/authorization_code/main.go`
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/8h9x/fortgo"
+	"github.com/8h9x/fortgo/auth"
+	"github.com/8h9x/fortgo/consts"
+	"log"
+	"net/http"
+)
+
+func main() {
+	httpClient := &http.Client{}
+
+	var code string
+
+	fmt.Printf("Enter an auth code from https://www.epicgames.com/id/api/redirect?clientId=%s&responseType=code:\n", consts.FortnitePS4USClientID)
+	_, err := fmt.Scan(&code)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	authCodePayload := auth.PayloadAuthorizationCode{
+		Code: code,
+	}
+
+	credentials, err := auth.Authenticate(httpClient, auth.FortnitePS4USClient, authCodePayload, true)
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = fortgo.NewClient(httpClient, credentials)
+	if err != nil {
+		log.Println("Failed to construct client", err)
+	}
+
+	log.Println("Fortgo client successfully created")
+}
+```

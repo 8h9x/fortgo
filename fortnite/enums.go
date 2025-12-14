@@ -1,4 +1,4 @@
-package vinderman
+package fortnite
 
 type EFortCollectedState string
 
@@ -57,15 +57,4 @@ const (
 	RealMoneyPurchaseVerifierModeOverrideOccurrencePrimary            RealMoneyPurchaseVerifierModeOverride = "OccurrencePrimary"
 	RealMoneyPurchaseVerifierModeOverrideReceiptOnly                  RealMoneyPurchaseVerifierModeOverride = "ReceiptOnly"
 	RealMoneyPurchaseVerifierModeOverrideReceiptPrimary               RealMoneyPurchaseVerifierModeOverride = "ReceiptPrimary"
-)
-
-type ExternalAuthType string
-
-const (
-	ExternalAuthTypeSteam    ExternalAuthType = "steam"
-	ExternalAuthTypeGithub   ExternalAuthType = "github"
-	ExternalAuthTypeTwitch   ExternalAuthType = "twitch"
-	ExternalAuthTypeXBL      ExternalAuthType = "xbl"
-	ExternalAuthTypePSN      ExternalAuthType = "psn"
-	ExternalAuthTypeNintendo ExternalAuthType = "nintendo"
 )
