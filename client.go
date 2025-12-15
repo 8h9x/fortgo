@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/account"
+	"github.com/8h9x/fortgo/avatars"
 	"github.com/8h9x/fortgo/auth"
 	"github.com/8h9x/fortgo/fortnite"
 	"github.com/8h9x/fortgo/links"
@@ -20,6 +21,7 @@ type Client struct {
 	CredentialsMap map[string]auth.TokenResponse
 
 	Accounts *account.Client
+	Avatars *avatars.Client
 	Fortnite *fortnite.Client
 	Links *links.Client
 	Locker *locker.Client
@@ -34,6 +36,7 @@ func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Cl
 		ClientID:       initCredentials.ClientID,
 		CredentialsMap: make(map[string]auth.TokenResponse),
 		Accounts: account.NewClient(httpClient, &initCredentials),
+		Avatars: avatars.NewClient(httpClient, &initCredentials),
 		Fortnite: fortnite.NewClient(httpClient, &initCredentials),
 		Links: links.NewClient(httpClient, &initCredentials),
 		Locker: locker.NewClient(httpClient, &initCredentials),
