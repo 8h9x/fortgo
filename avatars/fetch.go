@@ -1,6 +1,7 @@
 package avatars
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -34,4 +35,17 @@ func (c *Client) Fetch(accountIDs ...string) (FetchAvatarsResponse, error) {
 	}
 
 	return res.Body, err
+}
+
+func (c *Client) FetchOne(accountID string) (AccountAvatarData, error) {
+	res, err := c.Fetch(accountID)
+	if err != nil {
+		return AccountAvatarData{}, err
+	}
+
+	if len(res) == 0 {
+		return AccountAvatarData{}, errors.New("returned avatar data list has no entries")
+	}
+
+	return res[0], nil
 }
