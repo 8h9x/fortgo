@@ -26,9 +26,25 @@ type BlockedPlayer struct {
 	Created   time.Time `json:"created"`
 }
 
-type FriendsSettings struct {
-	AcceptInvites string `json:"acceptInvites"`
-	MutualPrivacy string `json:"mutualPrivacy"`
+type PrivacySettingAcceptInvites string
+
+const (
+	PrivacySettingAcceptInvitesPublic  PrivacySettingAcceptInvites = "PUBLIC"
+	PrivacySettingAcceptInvitesMutual  PrivacySettingAcceptInvites = "FRIENDS_OF_FRIENDS"
+	PrivacySettingAcceptInvitesPrivate PrivacySettingAcceptInvites = "PRIVATE"
+)
+
+type PrivacySettingMutualPrivacy string
+
+const (
+	PrivacySettingMutualPrivacyAll      PrivacySettingAcceptInvites = "ALL"
+	PrivacySettingMutualPrivacyFriends  PrivacySettingAcceptInvites = "FRIENDS"
+	PrivacySettingMutualPrivacyNone     PrivacySettingAcceptInvites = "NONE"
+)
+
+type FriendsPrivacySettings struct {
+	AcceptInvites PrivacySettingAcceptInvites `json:"acceptInvites"`
+	MutualPrivacy PrivacySettingMutualPrivacy `json:"mutualPrivacy"`
 }
 
 type FriendsLimits struct {
@@ -37,14 +53,27 @@ type FriendsLimits struct {
 	Accepted bool `json:"accepted"`
 }
 
-type FriendSuggestionResponse []SuggestedFriend
-
 type FriendSummaryResponse struct {
 	Friends []Friend `json:"friends"`
 	Incoming []FriendRequest `json:"incoming"`
 	Outgoing []FriendRequest `json:"outgoing"`
 	Suggested []any `json:"suggested"` // possibly FriendRequest
 	Blocklist []BlockedPlayer `json:"blocklist"`
-	Settings FriendsSettings `json:"settings"`
+	Settings FriendsPrivacySettings `json:"settings"`
 	LimitsReached FriendsLimits `json:"limitsReached"`
+}
+
+type ParentalControlsPinPayload struct {
+	Pin string `json:"pin"`
+}
+
+type ExternalSource string
+
+const (
+	ExternalSourceDefault ExternalSource = "default"
+	ExternalSourceSteam   ExternalSource = "steam"
+)
+
+type ExternalSourcesSettings struct {
+	DoNotShowLinkingProposal bool `json:"doNotShowLinkingProposal"`
 }
