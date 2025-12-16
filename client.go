@@ -5,9 +5,11 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/account"
-	"github.com/8h9x/fortgo/avatars"
 	"github.com/8h9x/fortgo/auth"
+	"github.com/8h9x/fortgo/avatars"
+	"github.com/8h9x/fortgo/caldera"
 	"github.com/8h9x/fortgo/fortnite"
+	"github.com/8h9x/fortgo/friends"
 	"github.com/8h9x/fortgo/links"
 	"github.com/8h9x/fortgo/locker"
 	"github.com/8h9x/fortgo/party"
@@ -20,45 +22,58 @@ type Client struct {
 	ClientID       string
 	CredentialsMap map[string]auth.TokenResponse
 
-	Accounts *account.Client
-	Avatars *avatars.Client
-	Fortnite *fortnite.Client
-	Links *links.Client
-	Locker *locker.Client
-	Party *party.Client
-	UserSearch *usersearch.Client
+	AccountService *account.Client
+	AvatarService *avatars.Client
+	CalderaService *caldera.Client
+	FortniteService *fortnite.Client
+	FriendService *friends.Client
+	LinkService *links.Client
+	LockerService *locker.Client
+	PartyService *party.Client
+	UserSearchService *usersearch.Client
 }
 
-func NewClient(httpClient *http.Client, initCredentials auth.TokenResponse) (*Client, error) {
+func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client {
 	client := &Client{
 		HTTPClient:     httpClient,
 		Header:         make(http.Header),
-		ClientID:       initCredentials.ClientID,
+		ClientID:       credentials.ClientID,
 		CredentialsMap: make(map[string]auth.TokenResponse),
-		Accounts: account.NewClient(httpClient, &initCredentials),
-		Avatars: avatars.NewClient(httpClient, &initCredentials),
-		Fortnite: fortnite.NewClient(httpClient, &initCredentials),
-		Links: links.NewClient(httpClient, &initCredentials),
-		Locker: locker.NewClient(httpClient, &initCredentials),
-		Party: party.NewClient(httpClient, &initCredentials),
-		UserSearch: usersearch.NewClient(httpClient, &initCredentials),
 	}
 
-	client.CredentialsMap[initCredentials.ClientID] = initCredentials
+	client.CredentialsMap[credentials.ClientID] = credentials
 
-	_, err := auth.VerifyToken(httpClient, initCredentials.AccessToken, false)
+	client.AccountService = account.NewClient(httpClient, &credentials)
+	client.AvatarService = avatars.NewClient(httpClient, &credentials)
+	client.CalderaService = caldera.NewClient(httpClient, &credentials)
+	client.FortniteService = fortnite.NewClient(httpClient, &credentials)
+	client.FriendService = friends.NewClient(httpClient, &credentials)
+	client.LinkService = links.NewClient(httpClient, &credentials)
+	client.LockerService = locker.NewClient(httpClient, &credentials)
+	client.PartyService = party.NewClient(httpClient, &credentials)
+	client.UserSearchService = usersearch.NewClient(httpClient, &credentials)
+
+	return client
+}
+
+func (c *Client) Connect() error {
+	credentials := c.CurrentCredentials()
+
+	if _, err := auth.VerifyToken(c.HTTPClient, credentials.AccessToken, false); err != nil {
+		return fmt.Errorf("verify token: %w", err)
+	}
+
+	mcpVersionData, err := c.FortniteService.GetMCPVersion()
 	if err != nil {
-		return client, err
+		return fmt.Errorf("fetch mcp version: %w", err)
 	}
 
-	mcpVersionData, err := client.Fortnite.GetMCPVersion()
-	if err != nil {
-		return client, err
-	}
+	c.Header.Set("User-Agent", fmt.Sprintf(
+		"Fortnite/++Fortnite+%s-CL-%s Windows/10.0.26100.1.256.64bit",
+		mcpVersionData.Branch, mcpVersionData.CLN,
+	))
 
-	client.Header.Set("User-Agent", fmt.Sprintf("Fortnite/++Fortnite+%s-CL-%s Windows/10.0.26100.1.256.64bit", mcpVersionData.Branch, mcpVersionData.CLN))
-
-	return client, nil
+	return nil
 }
 
 
@@ -67,7 +82,7 @@ func (c *Client) CurrentCredentials() auth.TokenResponse {
 }
 
 func (c *Client) GetMnemonic(mnemonic string, mnemonicType links.MnemonicType, version int) (Mnemonic, error) {
-	res, err := c.Links.FetchMnemonicInfo("fn", mnemonic, mnemonicType, version)
+	res, err := c.LinkService.FetchMnemonicInfo("fn", mnemonic, mnemonicType, version)
 	if err != nil {
 		return Mnemonic{}, err
 	}
@@ -76,9 +91,9 @@ func (c *Client) GetMnemonic(mnemonic string, mnemonicType links.MnemonicType, v
 }
 
 func (c *Client) ComposeProfileOperation(operation string, profileID string, payload string) (*http.Response, error) {
-	return c.Fortnite.ComposeProfileOperation(c.CurrentCredentials().AccountID, operation, profileID, payload)
+	return c.FortniteService.ComposeProfileOperation(c.CurrentCredentials().AccountID, operation, profileID, payload)
 }
 
 func (c *Client) ProfileOperation(operation string, profileID string, payload any) (*http.Response, error) {
-	return c.Fortnite.ProfileOperation(c.CurrentCredentials().AccountID, operation, profileID, payload)
+	return c.FortniteService.ProfileOperation(c.CurrentCredentials().AccountID, operation, profileID, payload)
 }

@@ -14,6 +14,5 @@ func (c *Client) CreateDeviceAuth() (auth.DeviceAuthResponse, error) {
 }
 
 func (c *Client) FetchMe() (account.FetchUserResponseExtended, error) {
-	credentials := c.CredentialsMap[c.ClientID]
-	return c.Accounts.FetchUserByID(credentials.AccountID)
+	return c.AccountService.FetchUserByID(c.CurrentCredentials().AccountID)
 }

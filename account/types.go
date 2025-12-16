@@ -40,6 +40,8 @@ type ExternalAuth struct {
 	ExternalDisplayName     string `json:"externalDisplayName"`
 	Avatar                  string `json:"avatar"`
 	AuthIDs                 []ExternalAuthID `json:"authIds"`
+//	DateAdded               time.Time `json:"dateAdded"`
+//	RegionInfo              string `json:"regionInfo"`
 }
 
 type FetchUserResponse struct {
