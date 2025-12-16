@@ -11,7 +11,7 @@ import (
 	"github.com/8h9x/fortgo/request"
 )
 
-func fetchMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](httpClient *http.Client, credentials *auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (T, error) {
+func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](httpClient *http.Client, credentials *auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (T, error) {
 	includeActivationHistory := false
 
 	var data T
@@ -48,19 +48,19 @@ func fetchMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](ht
 	return res.Body, err
 }
 
-// FetchMnemonicInfo fetches information about provided mnemonic on the namespace given a matching mnemonicType,
+// GetMnemonicInfo fetches information about provided mnemonic on the namespace given a matching mnemonicType,
 // set version to '-1' in order to fetch latest
-func (c *Client) FetchMnemonicInfo(namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicData, error) {
-	return fetchMnemonicInfoRaw[MnemonicData](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
+func (c *Client) GetMnemonicInfo(namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicData, error) {
+	return getMnemonicInfoRaw[MnemonicData](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
 }
 
-// FetchMnemonicInfoWithActivationHistory fetches information with activation history and extended metadata about provided mnemonic on the namespace given a matching mnemonicType,
+// GetMnemonicInfoWithActivationHistory fetches information with activation history and extended metadata about provided mnemonic on the namespace given a matching mnemonicType,
 // set version to '-1' in order to fetch latest
-func (c *Client) FetchMnemonicInfoWithActivationHistory(httpClient *http.Client, credentials auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicDataWithActivationHistory, error) {
-	return fetchMnemonicInfoRaw[MnemonicDataWithActivationHistory](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
+func (c *Client) GetMnemonicInfoWithActivationHistory(httpClient *http.Client, credentials auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicDataWithActivationHistory, error) {
+	return getMnemonicInfoRaw[MnemonicDataWithActivationHistory](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
 }
 
-func (c *Client) FetchRelatedMnemonics(namespace Namespace, mnemonic string, version int) (FetchRelatedMnemonicsResponse, error) {
+func (c *Client) GetRelatedMnemonics(namespace Namespace, mnemonic string, version int) (GetRelatedMnemonicsResponse, error) {
 	headers := http.Header{}
 	headers.Set("Content-Type", "application/json")
 	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
@@ -74,18 +74,18 @@ func (c *Client) FetchRelatedMnemonics(namespace Namespace, mnemonic string, ver
 
 	resp, err := request.Request(c.HTTPClient, "GET", reqUrl, headers, "")
 	if err != nil {
-		return FetchRelatedMnemonicsResponse{}, err
+		return GetRelatedMnemonicsResponse{}, err
 	}
 
-	res, err := request.ResponseParser[FetchRelatedMnemonicsResponse](resp)
+	res, err := request.ResponseParser[GetRelatedMnemonicsResponse](resp)
 	if err != nil {
-		return FetchRelatedMnemonicsResponse{}, err
+		return GetRelatedMnemonicsResponse{}, err
 	}
 
 	return res.Body, err
 }
 
-func (c *Client) FetchMnemonicInfoBulk(namespace Namespace, mnemonics []FetchMnemonicInfoBulkPayload, ignoreFailures bool) ([]MnemonicData, error) {
+func (c *Client) GetMnemonicInfoBulk(namespace Namespace, mnemonics []GetMnemonicInfoBulkPayload, ignoreFailures bool) ([]MnemonicData, error) {
 	headers := http.Header{}
 	headers.Set("Content-Type", "application/json")
 	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)

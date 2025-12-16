@@ -13,6 +13,6 @@ func (c *Client) CreateDeviceAuth() (auth.DeviceAuthResponse, error) {
 	return auth.CreateDeviceAuth(c.HTTPClient, c.CredentialsMap[c.ClientID])
 }
 
-func (c *Client) FetchMe() (account.FetchUserResponseExtended, error) {
-	return c.AccountService.FetchUserByID(c.CurrentCredentials().AccountID)
+func (c *Client) FetchMe() (account.GetUserResponseExtended, error) {
+	return c.AccountService.GetUserByID(c.CurrentCredentials().AccountID)
 }

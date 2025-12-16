@@ -8,6 +8,25 @@ import (
 	"github.com/8h9x/fortgo/request"
 )
 
+func (c *Client) GetSummary(accountID string) (FriendSummaryResponse, error) {
+	headers := http.Header{}
+	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
+
+	reqUrl := fmt.Sprintf("/friends/api/v1/%s/summary", consts.FriendsService, accountID)
+
+	resp, err := request.Request(c.HTTPClient, "GET", reqUrl, headers, "")
+	if err != nil {
+		return FriendSummaryResponse{}, err
+	}
+
+	res, err := request.ResponseParser[FriendSummaryResponse](resp)
+	if err != nil {
+		return FriendSummaryResponse{}, err
+	}
+
+	return res.Body, nil
+}
+
 func (c *Client) GetSuggested(accountID string) (FriendSuggestionResponse, error) {
 	headers := http.Header{}
 	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)

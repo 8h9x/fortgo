@@ -44,12 +44,12 @@ func main() {
 		log.Fatal("Unable to complete device code flow: ", err)
 	}
 
-	_, err = fortgo.NewClient(httpClient, credentials)
-	if err != nil {
-		log.Fatal("Failed to construct client", err)
-	}
+	client := fortgo.NewClient(httpClient, credentials)
 
-	log.Println("Fortgo client successfully created")
+	err = client.Connect()
+	if err != nil {
+		log.Fatal("Failed to connect to client", err)
+	}
 }
 
 func waitForDeviceCodeConfirm(httpClient *http.Client, deviceCode string, interval, timeout time.Duration) (auth.TokenResponse, error) {

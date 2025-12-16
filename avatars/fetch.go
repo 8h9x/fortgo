@@ -11,7 +11,7 @@ import (
 	"github.com/8h9x/fortgo/request"
 )
 
-func (c *Client) Fetch(accountIDs ...string) (FetchAvatarsResponse, error) {
+func (c *Client) Get(accountIDs ...string) (GetAvatarsResponse, error) {
 	if len(accountIDs) == 0 {
 		accountIDs = []string{c.Credentials.AccountID}
 	}
@@ -26,19 +26,19 @@ func (c *Client) Fetch(accountIDs ...string) (FetchAvatarsResponse, error) {
 
 	resp, err := request.Request(c.HTTPClient, "GET", reqUrl, headers, "")
 	if err != nil {
-		return FetchAvatarsResponse{}, err
+		return GetAvatarsResponse{}, err
 	}
 
-	res, err := request.ResponseParser[FetchAvatarsResponse](resp)
+	res, err := request.ResponseParser[GetAvatarsResponse](resp)
 	if err != nil {
-		return FetchAvatarsResponse{}, err
+		return GetAvatarsResponse{}, err
 	}
 
 	return res.Body, err
 }
 
-func (c *Client) FetchOne(accountID string) (AccountAvatarData, error) {
-	res, err := c.Fetch(accountID)
+func (c *Client) GetOne(accountID string) (AccountAvatarData, error) {
+	res, err := c.Get(accountID)
 	if err != nil {
 		return AccountAvatarData{}, err
 	}

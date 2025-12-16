@@ -6,4 +6,4 @@ type AccountAvatarData struct {
 	AvatarID string `json:"avatarId"`
 }
 
-type FetchAvatarsResponse []AccountAvatarData
+type GetAvatarsResponse []AccountAvatarData

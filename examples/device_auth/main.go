@@ -30,12 +30,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = fortgo.NewClient(httpClient, credentials)
-	if err != nil {
-		log.Fatal("Failed to construct client", err)
-	}
+	client := fortgo.NewClient(httpClient, credentials)
 
-	log.Println("Fortgo client successfully created")
+	err = client.Connect()
+	if err != nil {
+		log.Fatal("Failed to connect to client", err)
+	}
 }
 
 func fetchDeviceAuth(httpClient *http.Client, authClient *auth.AuthClient, filepath string) (auth.DeviceAuthResponse, error) {
