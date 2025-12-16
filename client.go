@@ -82,7 +82,7 @@ func (c *Client) CurrentCredentials() auth.TokenResponse {
 }
 
 func (c *Client) GetMnemonic(mnemonic string, mnemonicType links.MnemonicType, version int) (Mnemonic, error) {
-	res, err := c.LinkService.FetchMnemonicInfo("fn", mnemonic, mnemonicType, version)
+	res, err := c.LinkService.GetMnemonicInfo("fn", mnemonic, mnemonicType, version)
 	if err != nil {
 		return Mnemonic{}, err
 	}

@@ -7,6 +7,6 @@ type Mnemonic struct {
 	links.MnemonicData
 }
 
-func (m *Mnemonic) GetRelated() (links.FetchRelatedMnemonicsResponse, error) {
+func (m *Mnemonic) GetRelated() (links.GetRelatedMnemonicsResponse, error) {
 	return m.client.LinkService.GetRelatedMnemonics("fn", m.Mnemonic, m.Version)
 }
