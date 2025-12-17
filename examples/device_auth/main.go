@@ -36,6 +36,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to connect to client", err)
 	}
+
+	log.Println("Fortgo client connected!")
 }
 
 func fetchDeviceAuth(httpClient *http.Client, authClient *auth.AuthClient, filepath string) (auth.DeviceAuthResponse, error) {

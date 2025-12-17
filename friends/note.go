@@ -9,33 +9,42 @@ import (
 )
 
 func (c *Client) EditNode(accountID string, friendID string, note string) error {
-	headers := http.Header{}
-	headers.Set("Content-Type", "text/plain")
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
-	reqUrl := fmt.Sprintf("%s/friends/api/v1/%s/friends/%s/note", consts.FriendsService, accountID, friendID)
-
-	resp, err := request.Request(c.HTTPClient, "PUT", reqUrl, headers, note)
+	req, err := request.MakeRequest(
+		http.MethodPut,
+		consts.FriendsService,
+		fmt.Sprintf("friends/api/v1/%s/friends/%s/note", accountID, friendID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithTextBody(note),
+	)
 	if err != nil {
 		return err
 	}
 
-	_, err = request.ResponseParser[any](resp)
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	_, err = request.ParseResponse[any](res)
 	return err
 }
 
 func (c *Client) RemoveNode(accountID string, friendID string) error {
-	headers := http.Header{}
-	headers.Set("Content-Type", "text/plain")
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
-	reqUrl := fmt.Sprintf("%s/friends/api/v1/%s/friends/%s/note", consts.FriendsService, accountID, friendID)
-
-	resp, err := request.Request(c.HTTPClient, "DELETE", reqUrl, headers, "")
+	req, err := request.MakeRequest(
+		http.MethodDelete,
+		consts.FriendsService,
+		fmt.Sprintf("friends/api/v1/%s/friends/%s/note", accountID, friendID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+	)
 	if err != nil {
 		return err
 	}
 
-	_, err = request.ResponseParser[any](resp)
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	_, err = request.ParseResponse[any](res)
 	return err
 }

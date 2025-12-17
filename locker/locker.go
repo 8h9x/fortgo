@@ -1,7 +1,6 @@
 package locker
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -10,66 +9,73 @@ import (
 )
 
 func (c *Client) ChangeCompanionName(accountID string, cosmeticItemID string, companionName string) error {
-	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
+	payload := &ChangeCompanionNamePayload{cosmeticItemID, companionName}
 
-	bodyBytes, err := json.Marshal(&ChangeCompanionNamePayload{cosmeticItemID, companionName})
+	req, err := request.MakeRequest(
+		http.MethodPatch,
+		consts.FortniteLockerService,
+		fmt.Sprintf("api/locker/v4/%s/account/%s/companion-name", DeploymentIDLiveFN, accountID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithJSONBody(payload),
+	)
 	if err != nil {
 		return err
 	}
 
-	reqUrl := fmt.Sprintf("/%s/api/locker/v4/%s/account/%s/companion-name", consts.FortniteLockerService, DeploymentIDLiveFN, accountID)
-
-	resp, err := request.Request(c.HTTPClient, "PATCH", reqUrl, headers, string(bodyBytes))
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return err
 	}
 
-	_, err = request.ResponseParser[interface{}](resp)
+	_, err = request.ParseResponse[any](res)
 	return err
 }
 
 func (c *Client) QueryItems(accountID string) (LockerItems, error) {
-	headers := http.Header{}
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
-	reqUrl := fmt.Sprintf("/%s/api/locker/v4/%s/account/%s/items", consts.FortniteLockerService, DeploymentIDLiveFN, accountID)
-
-	resp, err := request.Request(c.HTTPClient, "GET", reqUrl, headers, "")
+	req, err := request.MakeRequest(
+		http.MethodGet,
+		consts.FortniteLockerService,
+		"api/locker/v4/%s/account/%s/items",
+		request.WithBearerToken(c.Credentials.AccessToken),
+	)
 	if err != nil {
 		return LockerItems{}, err
 	}
 
-	res, err := request.ResponseParser[LockerItems](resp)
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return LockerItems{}, err
 	}
 
-	return res.Body, nil
+	resp, err := request.ParseResponse[LockerItems](res)
+	if err != nil {
+		return LockerItems{}, err
+	}
+
+	return resp.Data, nil
 }
 
 func (c *Client) UpdateActiveLockerLoadout(accountID string, payload UpdateActiveLockerLoadoutPayload) (ActiveLoadoutGroup, error) {
-	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
-	reqUrl := fmt.Sprintf("/%s/api/locker/v4/%s/account/%s/active-loadout-group", consts.FortniteLockerService, DeploymentIDLiveFN, accountID)
-
-	bodyBytes, err := json.Marshal(payload)
+	req, err := request.MakeRequest(
+		http.MethodPut,
+		consts.FortniteLockerService,
+		fmt.Sprintf("api/locker/v4/%s/account/%s/active-loadout-group", DeploymentIDLiveFN, accountID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithJSONBody(payload),
+	)
 	if err != nil {
 		return ActiveLoadoutGroup{}, err
 	}
 
-	resp, err := request.Request(c.HTTPClient, "PUT", reqUrl, headers, string(bodyBytes))
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return ActiveLoadoutGroup{}, err
 	}
 
-	res, err := request.ResponseParser[ActiveLoadoutGroup](resp)
+	resp, err := request.ParseResponse[ActiveLoadoutGroup](res)
 	if err != nil {
 		return ActiveLoadoutGroup{}, err
 	}
 
-	return res.Body, nil
+	return resp.Data, nil
 }

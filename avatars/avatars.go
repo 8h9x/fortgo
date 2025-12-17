@@ -16,25 +16,30 @@ func (c *Client) Get(accountIDs ...string) (GetAvatarsResponse, error) {
 		accountIDs = []string{c.Credentials.AccountID}
 	}
 
-	headers := http.Header{}
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
 	query := url.Values{}
 	query.Set("accountIds", strings.Join(accountIDs, ","))
 
-	reqUrl := fmt.Sprintf("%s/v1/avatar/fortnite/ids?%s", consts.AvatarService, query.Encode())
-
-	resp, err := request.Request(c.HTTPClient, "GET", reqUrl, headers, "")
+	req, err := request.MakeRequest(
+		http.MethodGet,
+		consts.AvatarService,
+		fmt.Sprintf("v1/avatar/fortnite/ids?%s", query.Encode()),
+		request.WithBearerToken(c.Credentials.AccessToken),
+	)
 	if err != nil {
 		return GetAvatarsResponse{}, err
 	}
 
-	res, err := request.ResponseParser[GetAvatarsResponse](resp)
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return GetAvatarsResponse{}, err
 	}
 
-	return res.Body, err
+	resp, err := request.ParseResponse[GetAvatarsResponse](res)
+	if err != nil {
+		return GetAvatarsResponse{}, err
+	}
+
+	return resp.Data, err
 }
 
 func (c *Client) GetOne(accountID string) (AccountAvatarData, error) {

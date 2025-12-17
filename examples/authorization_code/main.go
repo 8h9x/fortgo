@@ -34,4 +34,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to connect to client", err)
 	}
+
+	log.Println("Fortgo client connected!")
 }

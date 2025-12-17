@@ -1,8 +1,6 @@
 package caldera
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
@@ -10,9 +8,6 @@ import (
 )
 
 func (c *Client) GetAnticheatProvider(accountID string, exchangeCode string, epicApp string, testMode bool, cloudGamingProvider CloudGamingProvider) (AnticheatProviderResponse, error) {
-	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
-
 	payload := &GetAnticheatProviderPayload{
 		AccountID: accountID,
 		ExchangeCode: exchangeCode,
@@ -31,22 +26,25 @@ func (c *Client) GetAnticheatProvider(accountID string, exchangeCode string, epi
 		payload.Salmon = true
 	}
 
-	bodyBytes, err := json.Marshal(payload)
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.CalderaService,
+		"caldera/api/v1/launcher/racp",
+		request.WithJSONBody(payload),
+	)
 	if err != nil {
 		return AnticheatProviderResponse{}, err
 	}
 
-	reqUrl := fmt.Sprintf("%s/caldera/api/v1/launcher/racp", consts.CalderaService)
-
-	resp, err := request.Request(c.HTTPClient, "POST", reqUrl, headers, string(bodyBytes))
+	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return AnticheatProviderResponse{}, err
 	}
 
-	res, err := request.ResponseParser[AnticheatProviderResponse](resp)
+	res, err := request.ParseResponse[AnticheatProviderResponse](resp)
 	if err != nil {
 		return AnticheatProviderResponse{}, err
 	}
 
-	return res.Body, nil
+	return res.Data, nil
 }

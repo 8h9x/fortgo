@@ -9,50 +9,60 @@ import (
 )
 
 func (c *Client) Block(accountID string, targetID string) error {
-	headers := http.Header{}
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
-	reqUrl := fmt.Sprintf("%s/friends/api/v1/%s/blocklist/%s", consts.FriendsService, accountID, targetID)
-
-	resp, err := request.Request(c.HTTPClient, "POST", reqUrl, headers, "")
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.FriendsService,
+		fmt.Sprintf("friends/api/v1/%s/blocklist/%s", accountID, targetID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+	)
 	if err != nil {
 		return err
 	}
 
-	_, err = request.ResponseParser[any](resp)
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	_, err = request.ParseResponse[any](res)
 	return err
 }
 
-func (c *Client) GetBlockedList(accountID string) ([]BlockedPlayer, error) {
-	headers := http.Header{}
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
-	reqUrl := fmt.Sprintf("%s/friends/api/v1/%s/blocklist", consts.FriendsService, accountID)
-
-	resp, err := request.Request(c.HTTPClient, "GET", reqUrl, headers, "")
-	if err != nil {
-		return []BlockedPlayer{}, err
-	}
-
-	res, err := request.ResponseParser[[]BlockedPlayer](resp)
-	if err != nil {
-		return []BlockedPlayer{}, err
-	}
-
-	return res.Body, nil
-}
+//func (c *Client) GetBlockedList(accountID string) ([]BlockedPlayer, error) {
+//	headers := http.Header{}
+//	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
+//
+//	reqUrl := fmt.Sprintf("%s/friends/api/v1/%s/blocklist", consts.FriendsService, accountID)
+//
+//	resp, err := request.Request(c.HTTPClient, "GET", reqUrl, headers, "")
+//	if err != nil {
+//		return []BlockedPlayer{}, err
+//	}
+//
+//	res, err := request.ResponseParser[[]BlockedPlayer](resp)
+//	if err != nil {
+//		return []BlockedPlayer{}, err
+//	}
+//
+//	return res.Body, nil
+//}
 
 func (c *Client) Unblock(accountID string, targetID string) error {
-	headers := http.Header{}
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
-	reqUrl := fmt.Sprintf("%s/friends/api/v1/%s/blocklist/%s", consts.FriendsService, accountID, targetID)
-
-	resp, err := request.Request(c.HTTPClient, "DELETE", reqUrl, headers, "")
+	req, err := request.MakeRequest(
+		http.MethodDelete,
+		consts.FriendsService,
+		fmt.Sprintf("friends/api/v1/%s/blocklist/%s", accountID, targetID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+	)
 	if err != nil {
 		return err
 	}
 
-	_, err = request.ResponseParser[any](resp)
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	_, err = request.ParseResponse[any](res)
 	return err
 }

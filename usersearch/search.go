@@ -10,24 +10,29 @@ import (
 )
 
 func (c *Client) Search(accountID string, platform Platform, term string) (SearchUsersResponse, error) {
-	headers := http.Header{}
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
 	query := url.Values{}
 	query.Set("platform", string(platform))
 	query.Set("prefix", term)
 
-	reqUrl := fmt.Sprintf("%s/api/v1/search/%s?%s", consts.UserSearchService, accountID, query.Encode())
-
-	resp, err := request.Request(c.HTTPClient, "GET", reqUrl, headers, "")
+	req, err := request.MakeRequest(
+	    http.MethodGet,
+		consts.UserSearchService,
+		fmt.Sprintf("api/v1/search/%s?%s", accountID, query.Encode()),
+		request.WithBearerToken(c.Credentials.AccessToken),
+	)
 	if err != nil {
 		return SearchUsersResponse{}, err
 	}
 
-	res, err := request.ResponseParser[SearchUsersResponse](resp)
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return SearchUsersResponse{}, err
 	}
 
-	return res.Body, err
+	resp, err := request.ParseResponse[SearchUsersResponse](res)
+	if err != nil {
+		return SearchUsersResponse{}, err
+	}
+
+	return resp.Data, err
 }

@@ -14,6 +14,7 @@ const (
 	FortniteContentWebsiteService = "https://fortnitecontent-website-prod07.ol.epicgames.com"
 	FortniteMCPService            = "https://fngw-mcp-gc-livefn.ol.epicgames.com"
 	FortniteLockerService         = "https://fngw-svc-gc-livefn.ol.epicgames.com"
+	FulfillmentService            = "https://fulfillment-public-service-prod.ol.epicgames.com"
 	LightswitchService            = "https://lightswitch-public-service-prod06.ol.epicgames.com"
 	LinksService                  = "https://links-public-service-live.ol.epicgames.com"
 	PartyService                  = "https://party-service-prod.ol.epicgames.com"

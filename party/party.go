@@ -1,7 +1,6 @@
 package party
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -10,65 +9,76 @@ import (
 	"github.com/8h9x/fortgo/request"
 )
 
-func (c *Client) Invite(buildID, partyID, friendID string, platform consts.Platform, senderDisplayName string, sendPing bool) error {
-	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
+func (c *Client) Invite(buildID string, partyID string, friendID string, platform consts.Platform, senderDisplayName string, sendPing bool) error {
 	query := url.Values{}
 	if sendPing {
 		query.Set("sendPing", "true")
 	}
 
-	bodyBytes, err := json.Marshal(&InvitePayload{
+	payload := &InvitePayload{
 		BuildID: buildID,
 		Platform: string(platform),
 		UrnEpicConnTypeS: "game",
 		UrnEpicInvitePlatformdataS: "",
 		DisplayName: senderDisplayName,
-	})
+	}
+
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.PartyService,
+		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/invites/%s?%s", partyID, friendID, query.Encode()),
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithJSONBody(payload),
+	)
 	if err != nil {
 		return err
 	}
 
-	reqUrl := fmt.Sprintf("%s/party/api/v1/Fortnite/parties/%s/invites/%s?%s", consts.PartyService, partyID, friendID, query.Encode())
-
-	resp, err := request.Request(c.HTTPClient, "POST", reqUrl, headers, string(bodyBytes))
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return err
 	}
 
-	_, err = request.ResponseParser[interface{}](resp)
+	_, err = request.ParseResponse[any](res)
 	return err
 }
 
-func (c *Client) Remove(partyID, memberID string) error {
-	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
-	reqUrl := fmt.Sprintf("%s/party/api/v1/Fortnite/parties/%s/members/%s", consts.PartyService, partyID, memberID)
-
-	resp, err := request.Request(c.HTTPClient, "DELETE", reqUrl, headers, "")
+func (c *Client) Remove(partyID string, memberID string) error {
+	req, err := request.MakeRequest(
+		http.MethodDelete,
+		consts.PartyService,
+		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/members/%s", partyID, memberID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+	)
 	if err != nil {
 		return err
 	}
 
-	_, err = request.ResponseParser[interface{}](resp)
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	_, err = request.ParseResponse[any](res)
 	return err
 }
 
-func (c *Client) Promote(partyID, memberID string) error {
-	headers := http.Header{}
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
-	reqUrl := fmt.Sprintf("%s/party/api/v1/Fortnite/parties/%s/members/%s/promote", consts.PartyService, partyID, memberID)
-
-	resp, err := request.Request(c.HTTPClient, "POST", reqUrl, headers, "")
+func (c *Client) Promote(partyID string, memberID string) error {
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.PartyService,
+		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/members/%s/promote", partyID, memberID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+	)
 	if err != nil {
 		return err
 	}
 
-	_, err = request.ResponseParser[interface{}](resp)
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	_, err = request.ParseResponse[any](res)
 	return err
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/8h9x/fortgo/caldera"
 	"github.com/8h9x/fortgo/fortnite"
 	"github.com/8h9x/fortgo/friends"
+	"github.com/8h9x/fortgo/fulfillment"
 	"github.com/8h9x/fortgo/links"
 	"github.com/8h9x/fortgo/locker"
 	"github.com/8h9x/fortgo/party"
@@ -27,6 +28,7 @@ type Client struct {
 	CalderaService *caldera.Client
 	FortniteService *fortnite.Client
 	FriendService *friends.Client
+	FulfillmentService *fulfillment.Client
 	LinkService *links.Client
 	LockerService *locker.Client
 	PartyService *party.Client
@@ -48,6 +50,7 @@ func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client 
 	client.CalderaService = caldera.NewClient(httpClient, &credentials)
 	client.FortniteService = fortnite.NewClient(httpClient, &credentials)
 	client.FriendService = friends.NewClient(httpClient, &credentials)
+	client.FulfillmentService = fulfillment.NewClient(httpClient, &credentials)
 	client.LinkService = links.NewClient(httpClient, &credentials)
 	client.LockerService = locker.NewClient(httpClient, &credentials)
 	client.PartyService = party.NewClient(httpClient, &credentials)
