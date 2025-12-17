@@ -255,7 +255,7 @@ type DeviceAuthResponse struct {
 }
 
 func GetExchangeCode(httpClient *http.Client, credentials TokenResponse) (ExchangeResponse, error) {
-	req, err := http.NewRequest("POST", consts.AccountService+"/account/api/oauth/exchange", nil)
+	req, err := http.NewRequest("GET", consts.AccountService+"/account/api/oauth/exchange", nil)
 	if err != nil {
 		return ExchangeResponse{}, err
 	}

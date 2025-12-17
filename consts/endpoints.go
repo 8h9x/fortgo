@@ -22,4 +22,5 @@ const (
 	UserSearchService             = "https://user-search-service-prod.ol.epicgames.com"
 	
 	EOSService = "https://api.epicgames.dev/epic"
+	EOSServiceAuth = EOSService + "/oauth/v2"
 )
