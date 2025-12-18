@@ -1,8 +1,8 @@
 package fortnite
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
