@@ -59,6 +59,10 @@ func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client 
 	return client
 }
 
+func Startup() {
+
+}
+
 func (c *Client) Connect() error {
 	credentials := c.CurrentCredentials()
 
@@ -81,6 +85,19 @@ func (c *Client) Connect() error {
 
 
 func (c *Client) CurrentCredentials() auth.TokenResponse {
+	credentials := c.CredentialsMap[c.ClientID]
+
+	_, err := auth.VerifyToken(c.HTTPClient, credentials.AccessToken, false)
+	if err != nil {
+		res, err := auth.Authenticate(c.HTTPClient, auth.FortnitePS4USClient, auth.PayloadRefreshToken{credentials.RefreshToken}, true)
+		if err != nil {
+			println(err)
+			// TODO: handle
+		}
+
+		c.CredentialsMap[c.ClientID] = res
+	}
+
 	return c.CredentialsMap[c.ClientID]
 }
 
