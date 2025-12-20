@@ -22,6 +22,7 @@ type Client struct {
 	Header         http.Header
 	ClientID       string
 	CredentialsMap map[string]auth.TokenResponse
+	OnTokenRefresh OnTokenRefresh
 
 	AccountService *account.Client
 	AvatarService *avatars.Client
