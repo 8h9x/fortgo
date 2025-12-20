@@ -117,7 +117,7 @@ func Authenticate[T Payload](httpClient *http.Client, client *AuthClient, payloa
 
 	req, err := request.MakeRequest(
 		http.MethodPost,
-		consts.AccountProxyService,
+		consts.AccountService,
 		"account/api/oauth/token",
 		request.WithBasicToken(client.Base64()),
 		request.WithFormBody(v),
