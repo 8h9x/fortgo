@@ -44,7 +44,7 @@ type EpicErrorResponse struct {
 	OriginatingService string `json:"originatingService"`
 	MessageVars        []string `json:"messageVars,omitempty"`
 	Intent             string `json:"intent"`
-	Continuation       string `json:"continuation"`
-	ContinuationURL    string `json:"continuationUrl"`
-	CorrectiveAction   string `json:"correctiveAction"`
+	Continuation       string `json:"continuation,omitempty"`
+	ContinuationURL    string `json:"continuationUrl,omitempty"`
+	CorrectiveAction   string `json:"correctiveAction,omitempty"`
 }

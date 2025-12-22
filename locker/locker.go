@@ -79,3 +79,26 @@ func (c *Client) UpdateActiveLockerLoadout(accountID string, payload UpdateActiv
 
 	return resp.Data, nil
 }
+
+func (c *Client) LockInImmutableItem(accountID string, templateID string, itemGUID string, variants map[string]ItemCustomization) error {
+	payload := &LockInImmutableItemPayload{variants}
+
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.FortniteLockerService,
+		fmt.Sprintf("api/locker/v4/%s/account/%s/lock-in-immutable-item/%s:%s", DeploymentIDLiveFN, accountID, templateID, itemGUID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithJSONBody(payload),
+	)
+	if err != nil {
+		return err
+	}
+
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	_, err = request.ParseResponse[any](res)
+	return err
+}
