@@ -27,7 +27,7 @@ type ImageMap struct {
 
 type LocalizationMap map[string]string
 
-type FetchMnemonicInfoBulkPayload struct {
+type GetMnemonicInfoBulkPayload struct {
 	Mnemonic string `json:"mnemonic"`
 	Type     MnemonicType `json:"type"`
 	Filter   bool   `json:"filter"`
@@ -135,7 +135,7 @@ type MnemonicDataWithActivationHistory struct {
 	LinkCategory      string                   `json:"linkCategory"`
 }
 
-type FetchRelatedMnemonicsResponse struct {
+type GetRelatedMnemonicsResponse struct {
 	ParentLinks []MnemonicData `json:"parentLinks"`
 	Links []MnemonicData `json:"links"`
 }

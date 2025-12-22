@@ -1,8 +1,8 @@
 package fortnite
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
@@ -10,32 +10,42 @@ import (
 )
 
 func (c *Client) GetMCPVersion() (MCPVersionResponse, error) {
-	req, err := http.NewRequest("GET", consts.FortniteMCPService+"/fortnite/api/version", nil)
+	req, err := request.MakeRequest(
+		http.MethodGet,
+		consts.FortniteMCPService,
+		"fortnite/api/version",
+	)
 	if err != nil {
 		return MCPVersionResponse{}, err
 	}
 
-	resp, err := c.HTTPClient.Do(req)
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return MCPVersionResponse{}, err
 	}
 
-	res, err := request.ResponseParser[MCPVersionResponse](resp)
+	resp, err := request.ParseResponse[MCPVersionResponse](res)
 	if err != nil {
 		return MCPVersionResponse{}, err
 	}
 
-	return res.Body, err
+	return resp.Data, err
 }
 
 func (c *Client) ComposeProfileOperation(accountID string, operation string, profileID string, payload string) (*http.Response, error) {
-	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.FortniteMCPService,
+		fmt.Sprintf("fortnite/api/game/v2/profile/%s/client/%s?profileId=%s&rvn=-1", accountID, operation, profileID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithTextBody(payload),
+		request.WithHeader("Content-Type", "application/json"), // TODO: fix, this is yucky
+	)
+	if err != nil {
+		return &http.Response{}, err
+	}
 
-	reqUrl := fmt.Sprintf("%s/fortnite/api/game/v2/profile/%s/client/%s?profileId=%s&rvn=-1", consts.FortniteMCPService, accountID, operation, profileID)
-
-	return request.Request(c.HTTPClient, "POST", reqUrl, headers, payload)
+	return c.HTTPClient.Do(req)
 }
 
 func (c *Client) ProfileOperation(accountID string, operation string, profileID string, payload any) (*http.Response, error) {

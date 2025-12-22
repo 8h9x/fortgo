@@ -40,16 +40,18 @@ type ExternalAuth struct {
 	ExternalDisplayName     string `json:"externalDisplayName"`
 	Avatar                  string `json:"avatar"`
 	AuthIDs                 []ExternalAuthID `json:"authIds"`
+//	DateAdded               time.Time `json:"dateAdded"`
+//	RegionInfo              string `json:"regionInfo"`
 }
 
-type FetchUserResponse struct {
+type GetUserResponse struct {
 	ID            string `json:"id"`
 	DisplayName   string `json:"displayName"`
 	ExternalAuths map[ExternalAuthType]ExternalAuth `json:"externalAuths"`
 }
 
-type FetchUserResponseExtended struct {
-	FetchUserResponse
+type GetUserResponseExtended struct {
+	GetUserResponse
 	Name                         string    `json:"name"`
 	Email                        string    `json:"email"`
 	FailedLoginAttempts          int       `json:"failedLoginAttempts"`
@@ -76,12 +78,12 @@ type FetchUserResponseExtended struct {
 	LastReviewedSecuritySettings time.Time `json:"lastReviewedSecuritySettings"`
 }
 
-type fetchUsersByExternalDisplayNameBulkPayload struct {
+type getUsersByExternalDisplayNameBulkPayload struct {
 	AuthType     ExternalAuthType   `json:"authType"`
 	DisplayNames []string `json:"displayNames"`
 }
 
-type fetchUsersByExternalIDBulkPayload struct {
+type getUsersByExternalIDBulkPayload struct {
 	AuthType     ExternalAuthType   `json:"authType"`
 	IDs []string `json:"ids"`
 }

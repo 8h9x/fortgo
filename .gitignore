@@ -1,5 +1,8 @@
 # Editor files
 .idea
+.vscode
+.fleet
+.zed
 
 # Testing
 test

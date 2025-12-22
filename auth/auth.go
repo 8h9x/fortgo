@@ -6,7 +6,6 @@ import (
 	"github.com/8h9x/fortgo/request"
 	"net/http"
 	"net/url"
-	"strings"
 	"time"
 )
 
@@ -116,27 +115,25 @@ func Authenticate[T Payload](httpClient *http.Client, client *AuthClient, payloa
 		break
 	}
 
-	req, err := http.NewRequest("POST", consts.AccountProxyService+"/account/api/oauth/token", strings.NewReader(v.Encode()))
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.AccountService,
+		"account/api/oauth/token",
+		request.WithBasicToken(client.Base64()),
+		request.WithFormBody(v),
+	)
+
+	res, err := httpClient.Do(req)
 	if err != nil {
 		return TokenResponse{}, err
 	}
 
-	basicToken := client.Base64()
-
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Authorization", fmt.Sprint("Basic ", basicToken))
-
-	resp, err := httpClient.Do(req)
+	resp, err := request.ParseResponse[TokenResponse](res)
 	if err != nil {
 		return TokenResponse{}, err
 	}
 
-	res, err := request.ResponseParser[TokenResponse](resp)
-	if err != nil {
-		return TokenResponse{}, err
-	}
-
-	return res.Body, err
+	return resp.Data, err
 }
 
 type TokenResponse struct {
@@ -168,24 +165,25 @@ func VerifyToken(httpClient *http.Client, accessToken string, includePerms bool)
 		v.Set("includePerms", "true")
 	}
 
-	req, err := http.NewRequest("GET", consts.AccountProxyService+"/account/api/oauth/verify", strings.NewReader(v.Encode()))
+	req, err := request.MakeRequest(
+		http.MethodGet,
+		consts.AccountService,
+		"account/api/oauth/verify",
+		request.WithBearerToken(accessToken),
+		request.WithFormBody(v),
+	)
+
+	res, err := httpClient.Do(req)
 	if err != nil {
 		return VerifyTokenResponse{}, err
 	}
 
-	req.Header.Set("Authorization", fmt.Sprint("Bearer ", accessToken))
-
-	resp, err := httpClient.Do(req)
+	resp, err := request.ParseResponse[VerifyTokenResponse](res)
 	if err != nil {
 		return VerifyTokenResponse{}, err
 	}
 
-	res, err := request.ResponseParser[VerifyTokenResponse](resp)
-	if err != nil {
-		return VerifyTokenResponse{}, err
-	}
-
-	return res.Body, err
+	return resp.Data, err
 }
 
 type VerifyTokenResponsePermission struct {
@@ -219,27 +217,24 @@ type VerifyTokenResponse struct {
 }
 
 func CreateDeviceAuth(httpClient *http.Client, credentials TokenResponse) (DeviceAuthResponse, error) {
-	req, err := http.NewRequest("POST", consts.AccountService+"/account/api/public/account/"+credentials.AccountID+"/deviceAuth", nil)
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.AccountService,
+		fmt.Sprintf("account/api/public/account/%s/deviceAuth", credentials.AccountID),
+		request.WithBearerToken(credentials.AccessToken),
+	)
+
+	res, err := httpClient.Do(req)
 	if err != nil {
 		return DeviceAuthResponse{}, err
 	}
 
-	req.Header.Set("Authorization", fmt.Sprint("Bearer ", credentials.AccessToken))
-
-	resp, err := httpClient.Do(req)
+	resp, err := request.ParseResponse[DeviceAuthResponse](res)
 	if err != nil {
 		return DeviceAuthResponse{}, err
 	}
 
-	res, err := request.ResponseParser[DeviceAuthResponse](resp)
-	if err != nil {
-		return DeviceAuthResponse{}, err
-	}
-
-	headers := http.Header{}
-	headers.Set("Authorization", fmt.Sprint("Bearer ", credentials.AccessToken))
-
-	return res.Body, err
+	return resp.Data, err
 }
 
 type DeviceAuthResponse struct {
@@ -255,27 +250,24 @@ type DeviceAuthResponse struct {
 }
 
 func GetExchangeCode(httpClient *http.Client, credentials TokenResponse) (ExchangeResponse, error) {
-	req, err := http.NewRequest("POST", consts.AccountService+"/account/api/oauth/exchange", nil)
+	req, err := request.MakeRequest(
+		http.MethodGet,
+		consts.AccountService,
+		"account/api/oauth/exchange",
+		request.WithBearerToken(credentials.AccessToken),
+	)
+
+	res, err := httpClient.Do(req)
 	if err != nil {
 		return ExchangeResponse{}, err
 	}
 
-	req.Header.Set("Authorization", fmt.Sprint("Bearer ", credentials.AccessToken))
-
-	resp, err := httpClient.Do(req)
+	resp, err := request.ParseResponse[ExchangeResponse](res)
 	if err != nil {
 		return ExchangeResponse{}, err
 	}
 
-	res, err := request.ResponseParser[ExchangeResponse](resp)
-	if err != nil {
-		return ExchangeResponse{}, err
-	}
-
-	headers := http.Header{}
-	headers.Set("Authorization", fmt.Sprint("Bearer ", credentials.AccessToken))
-
-	return res.Body, err
+	return resp.Data, err
 }
 
 type ExchangeResponse struct {
@@ -284,28 +276,25 @@ type ExchangeResponse struct {
 	ExpiresInSeconds int    `json:"expiresInSeconds"`
 }
 
-func GetDeviceCode(httpClient *http.Client, credentials TokenResponse) (GetDeviceCodeResponse, error) {
-	req, err := http.NewRequest("POST", consts.AccountService+"/account/api/oauth/deviceAuthorization", nil)
+func CreateDeviceCode(httpClient *http.Client, credentials TokenResponse) (GetDeviceCodeResponse, error) {
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.AccountService,
+		"account/api/oauth/deviceAuthorization",
+		request.WithBearerToken(credentials.AccessToken),
+	)
+
+	res, err := httpClient.Do(req)
 	if err != nil {
 		return GetDeviceCodeResponse{}, err
 	}
 
-	req.Header.Set("Authorization", fmt.Sprint("Bearer ", credentials.AccessToken))
-
-	resp, err := httpClient.Do(req)
+	resp, err := request.ParseResponse[GetDeviceCodeResponse](res)
 	if err != nil {
 		return GetDeviceCodeResponse{}, err
 	}
 
-	res, err := request.ResponseParser[GetDeviceCodeResponse](resp)
-	if err != nil {
-		return GetDeviceCodeResponse{}, err
-	}
-
-	headers := http.Header{}
-	headers.Set("Authorization", fmt.Sprint("Bearer ", credentials.AccessToken))
-
-	return res.Body, err
+	return resp.Data, err
 }
 
 type GetDeviceCodeResponse struct {

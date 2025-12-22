@@ -1,7 +1,6 @@
 package links
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -11,7 +10,7 @@ import (
 	"github.com/8h9x/fortgo/request"
 )
 
-func fetchMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](httpClient *http.Client, credentials *auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (T, error) {
+func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](httpClient *http.Client, credentials *auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (T, error) {
 	includeActivationHistory := false
 
 	var data T
@@ -19,10 +18,6 @@ func fetchMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](ht
 	case MnemonicDataWithActivationHistory:
 		includeActivationHistory = true
 	}
-
-	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
-	headers.Set("Authorization", "Bearer "+credentials.AccessToken)
 
 	query := url.Values{}
 	query.Set("type", string(mnemonicType))
@@ -33,84 +28,95 @@ func fetchMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](ht
 		query.Set("includeActivationHistory", "true")
 	}
 
-	reqUrl := fmt.Sprintf("%s/links/api/%s/mnemonic/%s?%s", consts.LinksService, namespace, mnemonic, query.Encode())
-
-	resp, err := request.Request(httpClient, "GET", reqUrl, headers, "")
+	req, err := request.MakeRequest(
+		http.MethodGet,
+		consts.LinksService,
+		fmt.Sprintf("links/api/%s/mnemonic/%s?%s", namespace, mnemonic, query.Encode()),
+		request.WithBearerToken(credentials.AccessToken),
+	)
 	if err != nil {
 		return data, err
 	}
 
-	res, err := request.ResponseParser[T](resp)
+	res, err := httpClient.Do(req)
 	if err != nil {
 		return data, err
 	}
 
-	return res.Body, err
+	resp, err := request.ParseResponse[T](res)
+	if err != nil {
+		return data, err
+	}
+
+	return resp.Data, nil
 }
 
-// FetchMnemonicInfo fetches information about provided mnemonic on the namespace given a matching mnemonicType,
+// GetMnemonicInfo fetches information about provided mnemonic on the namespace given a matching mnemonicType,
 // set version to '-1' in order to fetch latest
-func (c *Client) FetchMnemonicInfo(namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicData, error) {
-	return fetchMnemonicInfoRaw[MnemonicData](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
+func (c *Client) GetMnemonicInfo(namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicData, error) {
+	return getMnemonicInfoRaw[MnemonicData](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
 }
 
-// FetchMnemonicInfoWithActivationHistory fetches information with activation history and extended metadata about provided mnemonic on the namespace given a matching mnemonicType,
+// GetMnemonicInfoWithActivationHistory fetches information with activation history and extended metadata about provided mnemonic on the namespace given a matching mnemonicType,
 // set version to '-1' in order to fetch latest
-func (c *Client) FetchMnemonicInfoWithActivationHistory(httpClient *http.Client, credentials auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicDataWithActivationHistory, error) {
-	return fetchMnemonicInfoRaw[MnemonicDataWithActivationHistory](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
+func (c *Client) GetMnemonicInfoWithActivationHistory(httpClient *http.Client, credentials auth.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicDataWithActivationHistory, error) {
+	return getMnemonicInfoRaw[MnemonicDataWithActivationHistory](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
 }
 
-func (c *Client) FetchRelatedMnemonics(namespace Namespace, mnemonic string, version int) (FetchRelatedMnemonicsResponse, error) {
-	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
+func (c *Client) GetRelatedMnemonics(namespace Namespace, mnemonic string, version int) (GetRelatedMnemonicsResponse, error) {
 	query := url.Values{}
 	if version != -1 {
 		query.Set("v", string(rune(version)))
 	}
 
-	reqUrl := fmt.Sprintf("%s/links/api/%s/mnemonic/%s/related?%s", consts.LinksService, namespace, mnemonic, query.Encode())
-
-	resp, err := request.Request(c.HTTPClient, "GET", reqUrl, headers, "")
+	req, err := request.MakeRequest(
+		http.MethodGet,
+		consts.LinksService,
+		fmt.Sprintf("links/api/%s/mnemonic/%s/related?%s", namespace, mnemonic, query.Encode()),
+	)
 	if err != nil {
-		return FetchRelatedMnemonicsResponse{}, err
+		return GetRelatedMnemonicsResponse{}, err
 	}
 
-	res, err := request.ResponseParser[FetchRelatedMnemonicsResponse](resp)
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return FetchRelatedMnemonicsResponse{}, err
+		return GetRelatedMnemonicsResponse{}, err
 	}
 
-	return res.Body, err
+	resp, err := request.ParseResponse[GetRelatedMnemonicsResponse](res)
+	if err != nil {
+		return GetRelatedMnemonicsResponse{}, err
+	}
+
+	return resp.Data, nil
 }
 
-func (c *Client) FetchMnemonicInfoBulk(namespace Namespace, mnemonics []FetchMnemonicInfoBulkPayload, ignoreFailures bool) ([]MnemonicData, error) {
-	headers := http.Header{}
-	headers.Set("Content-Type", "application/json")
-	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-
+func (c *Client) GetMnemonicInfoBulk(namespace Namespace, mnemonics []GetMnemonicInfoBulkPayload, ignoreFailures bool) ([]MnemonicData, error) {
 	query := url.Values{}
 	if ignoreFailures {
 		query.Set("ignoreFailures", "true")
 	}
 
-	bodyBytes, err := json.Marshal(mnemonics)
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.LinksService,
+		fmt.Sprintf("links/api/%s/mnemonic?%s", namespace, query.Encode()),
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithJSONBody(&mnemonics),
+	)
 	if err != nil {
 		return []MnemonicData{}, err
 	}
 
-	reqUrl := fmt.Sprintf("%s/links/api/%s/mnemonic?%s", consts.LinksService, namespace, query.Encode())
-
-	resp, err := request.Request(c.HTTPClient, "POST", reqUrl, headers, string(bodyBytes))
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return []MnemonicData{}, err
 	}
 
-	res, err := request.ResponseParser[[]MnemonicData](resp)
+	resp, err := request.ParseResponse[[]MnemonicData](res)
 	if err != nil {
 		return []MnemonicData{}, err
 	}
 
-	return res.Body, err
+	return resp.Data, nil
 }

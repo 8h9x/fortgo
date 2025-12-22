@@ -439,6 +439,12 @@ type CampaignNotifications []struct {
 	} `json:"items"`
 }
 
+type GenericItem struct {
+	TemplateID string                     `json:"templateId"`
+	Attributes map[string]json.RawMessage `json:"attributes"`
+	Quantity int                          `json:"quantity"`
+}
+
 type AthenaCosmeticItem struct {
 	TemplateID string `json:"templateId"`
 	Attributes struct {

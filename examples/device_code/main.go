@@ -25,7 +25,7 @@ func main() {
 		log.Fatal("Unable to generate client credentials: ", err)
 	}
 
-	deviceAuthorization, err := auth.GetDeviceCode(httpClient, clientCredentials)
+	deviceAuthorization, err := auth.CreateDeviceCode(httpClient, clientCredentials)
 	if err != nil {
 		log.Fatal("Unable to start device code flow: ", err)
 	}
@@ -44,12 +44,14 @@ func main() {
 		log.Fatal("Unable to complete device code flow: ", err)
 	}
 
-	_, err = fortgo.NewClient(httpClient, credentials)
+	client := fortgo.NewClient(httpClient, credentials)
+
+	err = client.Connect()
 	if err != nil {
-		log.Fatal("Failed to construct client", err)
+		log.Fatal("Failed to connect to client", err)
 	}
 
-	log.Println("Fortgo client successfully created")
+	log.Println("Fortgo client connected!")
 }
 
 func waitForDeviceCodeConfirm(httpClient *http.Client, deviceCode string, interval, timeout time.Duration) (auth.TokenResponse, error) {

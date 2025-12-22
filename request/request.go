@@ -2,86 +2,85 @@ package request
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+	"io"
 	"net/http"
-	"strings"
 )
 
-func ResponseParser[T any](resp *http.Response) (Response[T], error) {
-	defer resp.Body.Close()
+func MakeRequest(method string, serviceURL string, endpoint string, opts ...Option) (*http.Request, error) {
+	cfg := &requestConfig{
+		headers: make(map[string]string),
+	}
 
-	if resp.StatusCode >= 400 && resp.StatusCode < 500 {
-		epicError := EpicErrorResponse{}
-
-		err := json.NewDecoder(resp.Body).Decode(&epicError)
-		if err != nil {
-			return Response[T]{}, Error[T]{
-				StatusCode: resp.StatusCode,
-				Message:    "failed to decode response error body",
-				Err:        err,
-			}
-		}
-
-		return Response[T]{}, Error[EpicErrorResponse]{
-			StatusCode: resp.StatusCode,
-			Message:    epicError.ErrorMessage,
-			Err:        errors.New(epicError.ErrorMessage),
+	for _, opt := range opts {
+		if err := opt(cfg); err != nil {
+			return nil, fmt.Errorf("failed to apply request option: %w", err)
 		}
 	}
 
-	var body T
-	err := json.NewDecoder(resp.Body).Decode(&body)
+	fullURL := fmt.Sprint(serviceURL, "/", endpoint)
+
+	req, err := http.NewRequest(method, fullURL, cfg.body)
 	if err != nil {
-		return Response[T]{}, Error[T]{
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	for k, v := range cfg.headers {
+		req.Header.Set(k, v)
+	}
+
+	return req, nil
+}
+
+func ParseResponse[T any](resp *http.Response) (Response[T], error) {
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return Response[T]{}, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	if resp.StatusCode >= 400 {
+		var epicError EpicErrorResponse
+		if err := json.Unmarshal(body, &epicError); err == nil && epicError.ErrorCode != "" {
+			return Response[T]{
+				StatusCode: resp.StatusCode,
+				Headers:    resp.Header,
+			}, Error{
+				Message:   epicError.ErrorMessage,
+				ErrorCode: epicError.ErrorCode,
+				Raw:       epicError,
+				Err:       fmt.Errorf("epic games error: %s", epicError.ErrorCode),
+			}
+		}
+
+		return Response[T]{
 			StatusCode: resp.StatusCode,
-			Message:    "failed to decode response body",
-			Err:        err,
+			Headers:    resp.Header,
+		}, Error{
+			Message: fmt.Sprintf("request failed with status %d: %s", resp.StatusCode, string(body)),
+			Raw:     string(body),
+			Err:     fmt.Errorf("http error %d", resp.StatusCode),
+		}
+	}
+
+	var data T
+	if len(body) > 0 {
+		if err := json.Unmarshal(body, &data); err != nil {
+			return Response[T]{
+				StatusCode: resp.StatusCode,
+				Headers:    resp.Header,
+			}, Error{
+				Message: "failed to decode response body",
+				Raw:     string(body),
+				Err:     err,
+			}
 		}
 	}
 
 	return Response[T]{
-		Response: resp,
-		Body:     body,
+		Data:       data,
+		StatusCode: resp.StatusCode,
+		Headers:    resp.Header,
 	}, nil
-}
-
-func Request(httpClient *http.Client, method string, url string, header http.Header, body string) (*http.Response, error) {
-	req, err := http.NewRequest(method, url, strings.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-
-	for key, value := range header {
-		req.Header.Set(key, value[0])
-	}
-
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode >= 400 {
-		if resp.Body != nil {
-			defer resp.Body.Close()
-
-			var res EpicErrorResponse
-			err = json.NewDecoder(resp.Body).Decode(&res)
-			if err != nil {
-				return nil, err
-			}
-
-			if res.ErrorMessage != "" {
-				return nil, &Error[EpicErrorResponse]{
-					StatusCode: resp.StatusCode,
-					Message:    fmt.Sprintf("%s request to %s failed with error message: %s", method, url, res.ErrorMessage),
-					Raw:        res,
-				}
-			}
-		}
-
-		return nil, fmt.Errorf("%s request to %s failed with status code %d", method, url, resp.StatusCode)
-	}
-
-	return resp, nil
 }

@@ -28,10 +28,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = fortgo.NewClient(httpClient, credentials)
+	client := fortgo.NewClient(httpClient, credentials)
+
+	err = client.Connect()
 	if err != nil {
-		log.Fatal("Failed to construct client", err)
+		log.Fatal("Failed to connect to client", err)
 	}
 
-	log.Println("Fortgo client successfully created")
+	log.Println("Fortgo client connected!")
 }

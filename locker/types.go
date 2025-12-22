@@ -65,3 +65,7 @@ type ChangeCompanionNamePayload struct {
 	CosmeticItemID string `json:"cosmeticItemId"`
 	CompanionName  string `json:"companionName"`
 }
+
+type LockInImmutableItemPayload struct {
+	Variants map[string]ItemCustomization `json:"variants"`
+}
