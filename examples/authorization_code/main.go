@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/8h9x/fortgo"
-	"github.com/8h9x/fortgo/auth"
 	"log"
 	"net/http"
+
+	"github.com/8h9x/fortgo"
+	"github.com/8h9x/fortgo/auth"
 )
 
 func main() {

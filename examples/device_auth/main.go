@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/8h9x/fortgo"
-	"github.com/8h9x/fortgo/auth"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/8h9x/fortgo"
+	"github.com/8h9x/fortgo/auth"
 )
 
 func main() {

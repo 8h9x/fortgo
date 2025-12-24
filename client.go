@@ -14,6 +14,7 @@ import (
 	"github.com/8h9x/fortgo/links"
 	"github.com/8h9x/fortgo/locker"
 	"github.com/8h9x/fortgo/party"
+	"github.com/8h9x/fortgo/publickey"
 	"github.com/8h9x/fortgo/usersearch"
 )
 
@@ -24,16 +25,17 @@ type Client struct {
 	CredentialsMap map[string]auth.TokenResponse
 	OnTokenRefresh OnTokenRefresh
 
-	AccountService *account.Client
-	AvatarService *avatars.Client
-	CalderaService *caldera.Client
-	FortniteService *fortnite.Client
-	FriendService *friends.Client
+	AccountService     *account.Client
+	AvatarService      *avatars.Client
+	CalderaService     *caldera.Client
+	FortniteService    *fortnite.Client
+	FriendService      *friends.Client
 	FulfillmentService *fulfillment.Client
-	LinkService *links.Client
-	LockerService *locker.Client
-	PartyService *party.Client
-	UserSearchService *usersearch.Client
+	LinkService        *links.Client
+	LockerService      *locker.Client
+	PartyService       *party.Client
+	PublicKeyService   *publickey.Client
+	UserSearchService  *usersearch.Client
 }
 
 func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client {
@@ -55,6 +57,7 @@ func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client 
 	client.LinkService = links.NewClient(httpClient, &credentials)
 	client.LockerService = locker.NewClient(httpClient, &credentials)
 	client.PartyService = party.NewClient(httpClient, &credentials)
+	client.PublicKeyService = publickey.NewClient(httpClient, &credentials)
 	client.UserSearchService = usersearch.NewClient(httpClient, &credentials)
 
 	return client

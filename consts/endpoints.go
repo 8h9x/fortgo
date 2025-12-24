@@ -19,6 +19,7 @@ const (
 	LinksService                  = "https://links-public-service-live.ol.epicgames.com"
 	PartyService                  = "https://party-service-prod.ol.epicgames.com"
 	PresenceService               = "https://presence-public-service-prod.ol.epicgames.com"
+	PublicKeyService              = "https://publickey-service-live.ecosec.on.epicgames.com"
 	StatsService                  = "https://statsproxy-public-service-live.ol.epicgames.com"
 	UserSearchService             = "https://user-search-service-prod.ol.epicgames.com"
 	
