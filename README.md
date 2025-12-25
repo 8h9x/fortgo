@@ -11,10 +11,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/8h9x/fortgo"
-	"github.com/8h9x/fortgo/auth"
 	"log"
 	"net/http"
+
+	"github.com/8h9x/fortgo"
+	"github.com/8h9x/fortgo/auth"
 )
 
 func main() {
@@ -43,5 +44,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to connect to client", err)
 	}
+
+	log.Println("Fortgo client connected!")
 }
 ```
+
+For a more comple example, see [Blast](https://github.com/8h9x/BlastBot)
