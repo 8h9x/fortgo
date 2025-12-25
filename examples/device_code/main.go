@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/8h9x/fortgo"
-	"github.com/8h9x/fortgo/auth"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/8h9x/fortgo"
+	"github.com/8h9x/fortgo/auth"
 )
 
 const (

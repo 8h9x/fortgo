@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 type Option func(*requestConfig) error
@@ -11,6 +12,7 @@ type Option func(*requestConfig) error
 type requestConfig struct {
 	body    io.Reader
 	headers map[string]string
+	query   url.Values
 }
 
 type Response[T any] struct {

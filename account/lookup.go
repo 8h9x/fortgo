@@ -42,8 +42,9 @@ func (c *Client) GetUsersByIDBulk(accountIDs []string) ([]GetUserResponse, error
 	req, err := request.MakeRequest(
 		http.MethodGet,
 		consts.AccountService,
-		fmt.Sprintf("account/api/public/account?%s", query.Encode()),
+		fmt.Sprintf("account/api/public/account",),
 		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return []GetUserResponse{}, err
@@ -110,46 +111,52 @@ func (c *Client) GetUserByExternalDisplayName(externalAuthType ExternalAuthType,
 	return resp.Data, nil
 }
 
-//func (c *Client) GetUsersByExternalDisplayNameBulk(externalAuthType ExternalAuthType, displayNames []string) (data map[ExternalAuthType]ExternalAuth, err error) {
-//	headers := http.Header{}
-//	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-//
-//	bodyBytes, err := json.Marshal(getUsersByExternalDisplayNameBulkPayload{externalAuthType, displayNames})
-//	if err != nil {
-//		return data, err
-//	}
-//
-//	resp, err := request.Request(c.HTTPClient, "POST", fmt.Sprintf("%s/account/api/public/account/lookup/externalDisplayName", consts.AccountService), headers, string(bodyBytes))
-//	if err != nil {
-//		return data, err
-//	}
-//
-//	res, err := request.ResponseParser[map[ExternalAuthType]ExternalAuth](resp)
-//	if err != nil {
-//		return data, err
-//	}
-//
-//	return res.Body, err
-//}
-//
-//func (c *Client) GetUsersByExternalIDBulk(externalAuthType ExternalAuthType, ids []string) (data map[ExternalAuthType]ExternalAuth, err error) {
-//	headers := http.Header{}
-//	headers.Set("Authorization", "Bearer "+c.Credentials.AccessToken)
-//
-//	bodyBytes, err := json.Marshal(getUsersByExternalIDBulkPayload{externalAuthType, ids})
-//	if err != nil {
-//		return data, err
-//	}
-//
-//	resp, err := request.Request(c.HTTPClient, "POST", fmt.Sprintf("%s/account/api/public/account/lookup/externalId", consts.AccountService), headers, string(bodyBytes))
-//	if err != nil {
-//		return data, err
-//	}
-//
-//	res, err := request.ResponseParser[map[ExternalAuthType]ExternalAuth](resp)
-//	if err != nil {
-//		return data, err
-//	}
-//
-//	return res.Body, err
-//}
+func (c *Client) GetUsersByExternalDisplayNameBulk(externalAuthType ExternalAuthType, displayNames []string) (data map[ExternalAuthType]ExternalAuth, err error) {
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.AccountService,
+		"account/api/public/account/lookup/externalDisplayName",
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithJSONBody(&getUsersByExternalDisplayNameBulkPayload{externalAuthType, displayNames}),
+	)
+	if err != nil {
+		return data, err
+	}
+
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return data, err
+	}
+
+	resp, err := request.ParseResponse[map[ExternalAuthType]ExternalAuth](res)
+	if err != nil {
+		return data, err
+	}
+
+	return resp.Data, err
+}
+
+func (c *Client) GetUsersByExternalIDBulk(externalAuthType ExternalAuthType, ids []string) (data map[ExternalAuthType]ExternalAuth, err error) {
+	req, err := request.MakeRequest(
+		http.MethodPost,
+		consts.AccountService,
+		"account/api/public/account/lookup/externalId",
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithJSONBody(&getUsersByExternalIDBulkPayload{externalAuthType, ids}),
+	)
+	if err != nil {
+		return data, err
+	}
+
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return data, err
+	}
+
+	resp, err := request.ParseResponse[map[ExternalAuthType]ExternalAuth](res)
+	if err != nil {
+		return data, err
+	}
+
+	return resp.Data, err
+}

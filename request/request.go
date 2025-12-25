@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 func MakeRequest(method string, serviceURL string, endpoint string, opts ...Option) (*http.Request, error) {
@@ -20,7 +21,16 @@ func MakeRequest(method string, serviceURL string, endpoint string, opts ...Opti
 
 	fullURL := fmt.Sprint(serviceURL, "/", endpoint)
 
-	req, err := http.NewRequest(method, fullURL, cfg.body)
+	u, err := url.Parse(fullURL)
+    if err != nil {
+		return nil, fmt.Errorf("failed to parse built url: %w", err)
+    }
+
+	if len(cfg.query) > 0 {
+		u.RawQuery = cfg.query.Encode()
+    }
+
+	req, err := http.NewRequest(method, u.String(), cfg.body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

@@ -8,12 +8,14 @@ import (
 	"github.com/8h9x/fortgo/auth"
 	"github.com/8h9x/fortgo/avatars"
 	"github.com/8h9x/fortgo/caldera"
+	"github.com/8h9x/fortgo/eos"
 	"github.com/8h9x/fortgo/fortnite"
 	"github.com/8h9x/fortgo/friends"
 	"github.com/8h9x/fortgo/fulfillment"
 	"github.com/8h9x/fortgo/links"
 	"github.com/8h9x/fortgo/locker"
 	"github.com/8h9x/fortgo/party"
+	"github.com/8h9x/fortgo/publickey"
 	"github.com/8h9x/fortgo/usersearch"
 )
 
@@ -24,16 +26,18 @@ type Client struct {
 	CredentialsMap map[string]auth.TokenResponse
 	OnTokenRefresh OnTokenRefresh
 
-	AccountService *account.Client
-	AvatarService *avatars.Client
-	CalderaService *caldera.Client
-	FortniteService *fortnite.Client
-	FriendService *friends.Client
+	AccountService     *account.Client
+	AvatarService      *avatars.Client
+	CalderaService     *caldera.Client
+	EOS                *eos.Client
+	FortniteService    *fortnite.Client
+	FriendService      *friends.Client
 	FulfillmentService *fulfillment.Client
-	LinkService *links.Client
-	LockerService *locker.Client
-	PartyService *party.Client
-	UserSearchService *usersearch.Client
+	LinkService        *links.Client
+	LockerService      *locker.Client
+	PartyService       *party.Client
+	PublicKeyService   *publickey.Client
+	UserSearchService  *usersearch.Client
 }
 
 func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client {
@@ -46,16 +50,18 @@ func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client 
 
 	client.CredentialsMap[credentials.ClientID] = credentials
 
-	client.AccountService = account.NewClient(httpClient, &credentials)
-	client.AvatarService = avatars.NewClient(httpClient, &credentials)
-	client.CalderaService = caldera.NewClient(httpClient, &credentials)
-	client.FortniteService = fortnite.NewClient(httpClient, &credentials)
-	client.FriendService = friends.NewClient(httpClient, &credentials)
+	client.AccountService     = account.NewClient(httpClient, &credentials)
+	client.AvatarService      = avatars.NewClient(httpClient, &credentials)
+	client.CalderaService     = caldera.NewClient(httpClient, &credentials)
+	client.EOS                = eos.NewClient(httpClient, &credentials)
+	client.FortniteService    = fortnite.NewClient(httpClient, &credentials)
+	client.FriendService      = friends.NewClient(httpClient, &credentials)
 	client.FulfillmentService = fulfillment.NewClient(httpClient, &credentials)
-	client.LinkService = links.NewClient(httpClient, &credentials)
-	client.LockerService = locker.NewClient(httpClient, &credentials)
-	client.PartyService = party.NewClient(httpClient, &credentials)
-	client.UserSearchService = usersearch.NewClient(httpClient, &credentials)
+	client.LinkService        = links.NewClient(httpClient, &credentials)
+	client.LockerService      = locker.NewClient(httpClient, &credentials)
+	client.PartyService       = party.NewClient(httpClient, &credentials)
+	client.PublicKeyService   = publickey.NewClient(httpClient, &credentials)
+	client.UserSearchService  = usersearch.NewClient(httpClient, &credentials)
 
 	return client
 }
