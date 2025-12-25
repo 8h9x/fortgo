@@ -31,8 +31,9 @@ func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](http
 	req, err := request.MakeRequest(
 		http.MethodGet,
 		consts.LinksService,
-		fmt.Sprintf("links/api/%s/mnemonic/%s?%s", namespace, mnemonic, query.Encode()),
+		fmt.Sprintf("links/api/%s/mnemonic/%s", namespace, mnemonic),
 		request.WithBearerToken(credentials.AccessToken),
+		request.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return data, err
@@ -72,7 +73,9 @@ func (c *Client) GetRelatedMnemonics(namespace Namespace, mnemonic string, versi
 	req, err := request.MakeRequest(
 		http.MethodGet,
 		consts.LinksService,
-		fmt.Sprintf("links/api/%s/mnemonic/%s/related?%s", namespace, mnemonic, query.Encode()),
+		fmt.Sprintf("links/api/%s/mnemonic/%s/related", namespace, mnemonic),
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return GetRelatedMnemonicsResponse{}, err
@@ -100,8 +103,9 @@ func (c *Client) GetMnemonicInfoBulk(namespace Namespace, mnemonics []GetMnemoni
 	req, err := request.MakeRequest(
 		http.MethodPost,
 		consts.LinksService,
-		fmt.Sprintf("links/api/%s/mnemonic?%s", namespace, query.Encode()),
+		fmt.Sprintf("links/api/%s/mnemonic", namespace),
 		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithQueryParamaters(query),
 		request.WithJSONBody(&mnemonics),
 	)
 	if err != nil {

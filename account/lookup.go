@@ -42,8 +42,9 @@ func (c *Client) GetUsersByIDBulk(accountIDs []string) ([]GetUserResponse, error
 	req, err := request.MakeRequest(
 		http.MethodGet,
 		consts.AccountService,
-		fmt.Sprintf("account/api/public/account?%s", query.Encode()),
+		fmt.Sprintf("account/api/public/account",),
 		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return []GetUserResponse{}, err

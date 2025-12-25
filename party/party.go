@@ -26,8 +26,9 @@ func (c *Client) Invite(buildID string, partyID string, friendID string, platfor
 	req, err := request.MakeRequest(
 		http.MethodPost,
 		consts.PartyService,
-		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/invites/%s?%s", partyID, friendID, query.Encode()),
+		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/invites/%s", partyID, friendID),
 		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithQueryParamaters(query),
 		request.WithJSONBody(payload),
 	)
 	if err != nil {

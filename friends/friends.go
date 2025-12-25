@@ -17,8 +17,9 @@ func (c *Client) AcceptBulk(accountID string, targetIDs []string) ([]string, err
 	req, err := request.MakeRequest(
 		http.MethodPost,
 		consts.FriendsService,
-		fmt.Sprintf("friends/api/v1/%s/incoming/accept?%s", accountID, query.Encode()),
+		fmt.Sprintf("friends/api/v1/%s/incoming/accept", accountID),
 		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return []string{}, err
