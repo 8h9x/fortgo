@@ -49,4 +49,4 @@ func main() {
 }
 ```
 
-For a more comple example, see [Blast](https://github.com/8h9x/BlastBot)
+For an example project with more complexity, see [Blast](https://github.com/8h9x/BlastBot)
