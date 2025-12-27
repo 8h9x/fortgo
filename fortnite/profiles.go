@@ -10,23 +10,33 @@ type ProfileStatsType interface {
 		CommonCoreProfileStats | CreativeProfileStats | MetadataProfileStats | OutpostProfileStats | RecycleBinProfileStats | Theater0ProfileStats | Theater1ProfileStats | Theater2ProfileStats
 }
 
-type Profile[ST ProfileStatsType, NT CampaignNotifications | []interface{}] struct {
+type ProfileNotificationsType interface {
+	CampaignNotifications | []any
+}
+
+type MCPItem struct {
+	TemplateID string          `json:"templateId"`
+	Attributes json.RawMessage `json:"attributes"`
+	Quantity   int             `json:"quantity"`
+}
+
+type Profile[ST ProfileStatsType, NT ProfileNotificationsType] struct {
 	ProfileRevision            int    `json:"profileRevision"`
 	ProfileID                  string `json:"profileId"`
 	ProfileChangesBaseRevision int    `json:"profileChangesBaseRevision"`
 	ProfileChanges             []struct {
 		ChangeType string `json:"changeType"`
 		Profile    struct {
-			Created         string                     `json:"created"`
-			Updated         string                     `json:"updated"`
-			RVN             int                        `json:"rvn"`
-			WipeNumber      int                        `json:"wipeNumber"`
-			AccountID       string                     `json:"accountId"`
-			ProfileID       string                     `json:"profileId"`
-			Version         string                     `json:"version"`
-			Items           map[string]json.RawMessage `json:"items"`
-			Stats           ST                         `json:"stats"`
-			CommandRevision int                        `json:"commandRevision"`
+			Created         string             `json:"created"`
+			Updated         string             `json:"updated"`
+			RVN             int                `json:"rvn"`
+			WipeNumber      int                `json:"wipeNumber"`
+			AccountID       string             `json:"accountId"`
+			ProfileID       string             `json:"profileId"`
+			Version         string             `json:"version"`
+			Items           map[string]MCPItem `json:"items"`
+			Stats           ST                 `json:"stats"`
+			CommandRevision int                `json:"commandRevision"`
 		} `json:"profile"`
 	} `json:"profileChanges"`
 	ProfileCommandRevision int       `json:"profileCommandRevision"`
