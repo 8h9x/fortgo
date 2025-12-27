@@ -27,9 +27,7 @@ const (
 )
 
 type ClientCredentials struct {
-
 }
 
 type Credentials struct {
-
 }

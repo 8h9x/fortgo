@@ -2,11 +2,12 @@ package auth
 
 import (
 	"fmt"
-	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/8h9x/fortgo/consts"
+	"github.com/8h9x/fortgo/request"
 )
 
 type PayloadAuthorizationCode struct {

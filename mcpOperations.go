@@ -106,7 +106,7 @@ func (c *Client) ClearHeroLoadout(loadoutID string) (*http.Response, error) {
 
 // ClientQuestLogin athena, campaign
 func (c *Client) ClientQuestLogin(profileID string, streamingAppKey string) (*http.Response, error) {
-	return c.ProfileOperation("ClientQuestLogin", profileID, fortnite. ClientQuestLoginPayload{StreamingAppKey: streamingAppKey})
+	return c.ProfileOperation("ClientQuestLogin", profileID, fortnite.ClientQuestLoginPayload{StreamingAppKey: streamingAppKey})
 }
 
 func (c *Client) CollectExpedition(payload fortnite.CollectExpeditionPayload) (*http.Response, error) {
@@ -146,7 +146,7 @@ func (c *Client) DeleteCosmeticLoadout(profileID string, payload fortnite.Delete
 
 // DestroyWorldItems outpost0, theater0, theater1, theater2
 func (c *Client) DestroyWorldItems(profileID string, itemIDs []string) (*http.Response, error) {
-	return c.ProfileOperation("DestroyWorldItems", profileID, fortnite. DestroyWorldItemsPayload{ItemIDs: itemIDs})
+	return c.ProfileOperation("DestroyWorldItems", profileID, fortnite.DestroyWorldItemsPayload{ItemIDs: itemIDs})
 }
 
 // DisassembleWorldItems theater0, theater1, theater2
@@ -164,7 +164,7 @@ func (c *Client) ExchangeGiftToken() (*http.Response, error) {
 
 // FortRerollDailyQuest athena, campaign
 func (c *Client) FortRerollDailyQuest(profileID string, questID string) (*http.Response, error) {
-	return c.ProfileOperation("FortRerollDailyQuest", profileID, fortnite. FortRerollDailyQuestPayload{QuestID: questID})
+	return c.ProfileOperation("FortRerollDailyQuest", profileID, fortnite.FortRerollDailyQuestPayload{QuestID: questID})
 }
 
 func (c *Client) GiftCatalogEntry(payload fortnite.GiftCatalogEntryPayload) (*http.Response, error) {
@@ -181,12 +181,12 @@ func (c *Client) MarkCollectedItemsSeen(payload fortnite.MarkCollectedItemsSeenP
 
 // MarkItemSeen athena, campaign, common_core
 func (c *Client) MarkItemSeen(profileID string, itemIDs []string) (*http.Response, error) {
-	return c.ProfileOperation("MarkItemSeen", profileID, fortnite. MarkItemSeenPayload{ItemIDs: itemIDs})
+	return c.ProfileOperation("MarkItemSeen", profileID, fortnite.MarkItemSeenPayload{ItemIDs: itemIDs})
 }
 
 // MarkNewQuestNotificationSent athena, campaign
 func (c *Client) MarkNewQuestNotificationSent(profileID string, itemIDs []string) (*http.Response, error) {
-	return c.ProfileOperation("MarkNewQuestNotificationSent", profileID, fortnite. MarkNewQuestNotificationSentPayload{ItemIDs: itemIDs})
+	return c.ProfileOperation("MarkNewQuestNotificationSent", profileID, fortnite.MarkNewQuestNotificationSentPayload{ItemIDs: itemIDs})
 }
 
 // ModifyQuickbar theater0, theater1, theater2
@@ -208,7 +208,7 @@ func (c *Client) PopulatePrerolledOffers() (*http.Response, error) {
 
 // PromoteItem campaign, collection_book_people0, collection_book_schematics0
 func (c *Client) PromoteItem(profileID string, targetItemID string) (*http.Response, error) {
-	return c.ProfileOperation("PromoteItem", profileID, fortnite. PromoteItemPayload{TargetItemID: targetItemID})
+	return c.ProfileOperation("PromoteItem", profileID, fortnite.PromoteItemPayload{TargetItemID: targetItemID})
 }
 
 func (c *Client) PurchaseCatalogEntry(payload fortnite.PurchaseCatalogEntryPayload) (*http.Response, error) {
@@ -262,7 +262,7 @@ func (c *Client) RefundMtxPurchase(payload fortnite.RefundMtxPurchasePayload) (*
 }
 
 func (c *Client) RemoveGiftBox(profileID string, giftBoxItemIDs []string) (*http.Response, error) {
-	return c.ProfileOperation("RemoveGiftBox", profileID, fortnite. RemoveGiftBoxPayload{GiftBoxItemIDs: giftBoxItemIDs})
+	return c.ProfileOperation("RemoveGiftBox", profileID, fortnite.RemoveGiftBoxPayload{GiftBoxItemIDs: giftBoxItemIDs})
 }
 
 func (c *Client) RequestRestedStateIncrease(payload fortnite.RequestRestedStateIncreasePayload) (*http.Response, error) {
@@ -271,7 +271,7 @@ func (c *Client) RequestRestedStateIncrease(payload fortnite.RequestRestedStateI
 
 // ResearchItemFromCollectionBook campaign, theater0, theater1, theater2
 func (c *Client) ResearchItemFromCollectionBook(profileID string, templateID string) (*http.Response, error) {
-	return c.ProfileOperation("ResearchItemFromCollectionBook", profileID, fortnite. ResearchItemFromCollectionBookPayload{TemplateID: templateID})
+	return c.ProfileOperation("ResearchItemFromCollectionBook", profileID, fortnite.ResearchItemFromCollectionBookPayload{TemplateID: templateID})
 }
 
 func (c *Client) RespecAlteration(payload fortnite.RespecAlterationPayload) (*http.Response, error) {
@@ -367,7 +367,7 @@ func (c *Client) SetPinnedQuests(pinnedQuestIDs []string) (*http.Response, error
 
 // SetRandomCosmeticLoadoutFlag athena, campaign
 func (c *Client) SetRandomCosmeticLoadoutFlag(profileID string, random bool) (*http.Response, error) {
-	return c.ProfileOperation("SetRandomCosmeticLoadoutFlag", profileID, fortnite. SetRandomCosmeticLoadoutFlagPayload{Random: random})
+	return c.ProfileOperation("SetRandomCosmeticLoadoutFlag", profileID, fortnite.SetRandomCosmeticLoadoutFlagPayload{Random: random})
 }
 
 func (c *Client) SetReceiveGiftsEnabled(receiveGifts bool) (*http.Response, error) {

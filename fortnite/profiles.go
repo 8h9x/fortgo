@@ -442,7 +442,7 @@ type CampaignNotifications []struct {
 type GenericItem struct {
 	TemplateID string                     `json:"templateId"`
 	Attributes map[string]json.RawMessage `json:"attributes"`
-	Quantity int                          `json:"quantity"`
+	Quantity   int                        `json:"quantity"`
 }
 
 type AthenaCosmeticItem struct {

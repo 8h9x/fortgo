@@ -10,7 +10,7 @@ const (
 
 type Loadout struct {
 	LoadoutSlots []LoadoutSlot `json:"loadoutSlots"`
-	ShuffleType string `json:"shuffleType"`
+	ShuffleType  string        `json:"shuffleType"`
 }
 
 type ItemCustomization struct {

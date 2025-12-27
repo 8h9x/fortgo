@@ -28,10 +28,10 @@ type ImageMap struct {
 type LocalizationMap map[string]string
 
 type GetMnemonicInfoBulkPayload struct {
-	Mnemonic string `json:"mnemonic"`
+	Mnemonic string       `json:"mnemonic"`
 	Type     MnemonicType `json:"type"`
-	Filter   bool   `json:"filter"`
-	Version  int    `json:"v"`
+	Filter   bool         `json:"filter"`
+	Version  int          `json:"v"`
 }
 
 type ActivationHistoryEntry struct {
@@ -51,20 +51,20 @@ type MnemonicMetadataMatchmakingData struct {
 }
 
 type MnemonicMetadata struct {
-	ParentSet           string `json:"parent_set"`
-	FavoriteOverride    string `json:"favorite_override"`
-	PlayHistoryOverride string `json:"play_history_override"`
-	AltTitle            LocalizationMap `json:"alt_title"`
-	ImageURL   string `json:"image_url"`
-	ProductTag string `json:"product_tag"`
-	ImageURLs ImageMap `json:"image_urls"`
-	DynamicXP MnemonicMetadataDynamicXPData `json:"dynamicXp"`
-	Matchmaking MnemonicMetadataMatchmakingData `json:"matchmaking"`
-	VideoVUID string `json:"video_vuid"`
-	Title     string `json:"title"`
+	ParentSet           string                          `json:"parent_set"`
+	FavoriteOverride    string                          `json:"favorite_override"`
+	PlayHistoryOverride string                          `json:"play_history_override"`
+	AltTitle            LocalizationMap                 `json:"alt_title"`
+	ImageURL            string                          `json:"image_url"`
+	ProductTag          string                          `json:"product_tag"`
+	ImageURLs           ImageMap                        `json:"image_urls"`
+	DynamicXP           MnemonicMetadataDynamicXPData   `json:"dynamicXp"`
+	Matchmaking         MnemonicMetadataMatchmakingData `json:"matchmaking"`
+	VideoVUID           string                          `json:"video_vuid"`
+	Title               string                          `json:"title"`
 }
 
-type MnemonicMetadataExtended    struct {
+type MnemonicMetadataExtended struct {
 	MnemonicMetadata
 	ExtraVideoVUIDs          []string `json:"extra_video_vuids"`
 	LobbyBackgroundImageUrls struct {
@@ -112,24 +112,24 @@ type MnemonicMetadataExtended    struct {
 }
 
 type MnemonicData struct {
-	Namespace   string `json:"namespace"`
-	AccountID   string `json:"accountId"`
-	CreatorName string `json:"creatorName"`
-	Mnemonic    string `json:"mnemonic"`
-	LinkType    string `json:"linkType"`
-	Metadata    MnemonicMetadata `json:"metadata"`
-	Version          int           `json:"version"`
-	Active           bool          `json:"active"`
-	Disabled         bool          `json:"disabled"`
-	Created          time.Time     `json:"created"`
-	Published        time.Time     `json:"published"`
-	DescriptionTags  []interface{} `json:"descriptionTags"`
-	ModerationStatus string        `json:"moderationStatus"`
+	Namespace        string           `json:"namespace"`
+	AccountID        string           `json:"accountId"`
+	CreatorName      string           `json:"creatorName"`
+	Mnemonic         string           `json:"mnemonic"`
+	LinkType         string           `json:"linkType"`
+	Metadata         MnemonicMetadata `json:"metadata"`
+	Version          int              `json:"version"`
+	Active           bool             `json:"active"`
+	Disabled         bool             `json:"disabled"`
+	Created          time.Time        `json:"created"`
+	Published        time.Time        `json:"published"`
+	DescriptionTags  []interface{}    `json:"descriptionTags"`
+	ModerationStatus string           `json:"moderationStatus"`
 }
 
 type MnemonicDataWithActivationHistory struct {
 	MnemonicData
-	Metadata    MnemonicMetadataExtended `json:"metadata"`
+	Metadata          MnemonicMetadataExtended `json:"metadata"`
 	DiscoveryIntent   string                   `json:"discoveryIntent"`
 	ActivationHistory []ActivationHistoryEntry `json:"activationHistory"`
 	LinkCategory      string                   `json:"linkCategory"`
@@ -137,5 +137,5 @@ type MnemonicDataWithActivationHistory struct {
 
 type GetRelatedMnemonicsResponse struct {
 	ParentLinks []MnemonicData `json:"parentLinks"`
-	Links []MnemonicData `json:"links"`
+	Links       []MnemonicData `json:"links"`
 }

@@ -16,7 +16,7 @@ const (
 
 type AnticheatProviderResponse struct {
 	Provider string `json:"provider"`
-	JWT string `json:"jwt"`
+	JWT      string `json:"jwt"`
 }
 
 type GetAnticheatProviderPayload struct {

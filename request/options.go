@@ -36,9 +36,9 @@ func WithHeaders(headers map[string]string) Option {
 func WithQueryParamaters(query url.Values) Option {
 	return func(cfg *requestConfig) error {
 		for key, values := range query {
-            for _, value := range values {
-                cfg.query.Add(key, value)
-            }
+			for _, value := range values {
+				cfg.query.Add(key, value)
+			}
 		}
 		return nil
 	}

@@ -42,7 +42,7 @@ func (c *Client) GetUsersByIDBulk(accountIDs []string) ([]GetUserResponse, error
 	req, err := request.MakeRequest(
 		http.MethodGet,
 		consts.AccountService,
-		fmt.Sprintf("account/api/public/account",),
+		fmt.Sprintf("account/api/public/account"),
 		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 	)

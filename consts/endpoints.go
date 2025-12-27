@@ -22,7 +22,7 @@ const (
 	PublicKeyService              = "https://publickey-service-live.ecosec.on.epicgames.com"
 	StatsService                  = "https://statsproxy-public-service-live.ol.epicgames.com"
 	UserSearchService             = "https://user-search-service-prod.ol.epicgames.com"
-	
-	EOSService = "https://api.epicgames.dev/epic"
+
+	EOSService     = "https://api.epicgames.dev/epic"
 	EOSServiceAuth = EOSService + "/oauth/v2"
 )

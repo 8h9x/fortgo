@@ -50,18 +50,18 @@ func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client 
 
 	client.CredentialsMap[credentials.ClientID] = credentials
 
-	client.AccountService     = account.NewClient(httpClient, &credentials)
-	client.AvatarService      = avatars.NewClient(httpClient, &credentials)
-	client.CalderaService     = caldera.NewClient(httpClient, &credentials)
-	client.EOS                = eos.NewClient(httpClient, &credentials)
-	client.FortniteService    = fortnite.NewClient(httpClient, &credentials)
-	client.FriendService      = friends.NewClient(httpClient, &credentials)
+	client.AccountService = account.NewClient(httpClient, &credentials)
+	client.AvatarService = avatars.NewClient(httpClient, &credentials)
+	client.CalderaService = caldera.NewClient(httpClient, &credentials)
+	client.EOS = eos.NewClient(httpClient, &credentials)
+	client.FortniteService = fortnite.NewClient(httpClient, &credentials)
+	client.FriendService = friends.NewClient(httpClient, &credentials)
 	client.FulfillmentService = fulfillment.NewClient(httpClient, &credentials)
-	client.LinkService        = links.NewClient(httpClient, &credentials)
-	client.LockerService      = locker.NewClient(httpClient, &credentials)
-	client.PartyService       = party.NewClient(httpClient, &credentials)
-	client.PublicKeyService   = publickey.NewClient(httpClient, &credentials)
-	client.UserSearchService  = usersearch.NewClient(httpClient, &credentials)
+	client.LinkService = links.NewClient(httpClient, &credentials)
+	client.LockerService = locker.NewClient(httpClient, &credentials)
+	client.PartyService = party.NewClient(httpClient, &credentials)
+	client.PublicKeyService = publickey.NewClient(httpClient, &credentials)
+	client.UserSearchService = usersearch.NewClient(httpClient, &credentials)
 
 	return client
 }
@@ -90,7 +90,6 @@ func (c *Client) Connect() error {
 	return nil
 }
 
-
 func (c *Client) CurrentCredentials() auth.TokenResponse {
 	credentials := c.CredentialsMap[c.ClientID]
 
@@ -114,7 +113,7 @@ func (c *Client) GetMnemonic(mnemonic string, mnemonicType links.MnemonicType, v
 		return Mnemonic{}, err
 	}
 
-	return Mnemonic{c, 	res}, nil
+	return Mnemonic{c, res}, nil
 }
 
 func (c *Client) ComposeProfileOperation(operation string, profileID string, payload string) (*http.Response, error) {

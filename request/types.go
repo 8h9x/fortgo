@@ -22,10 +22,10 @@ type Response[T any] struct {
 }
 
 type Error struct {
-	Message    string
-	ErrorCode  string
-	Raw        any
-	Err        error
+	Message   string
+	ErrorCode string
+	Raw       any
+	Err       error
 }
 
 func (e Error) Error() string {
@@ -40,13 +40,13 @@ func (e Error) Unwrap() error {
 }
 
 type EpicErrorResponse struct {
-	ErrorCode          string `json:"errorCode"`
-	ErrorMessage       string `json:"errorMessage"`
-	NumericErrorCode   int    `json:"numericErrorCode"`
-	OriginatingService string `json:"originatingService"`
+	ErrorCode          string   `json:"errorCode"`
+	ErrorMessage       string   `json:"errorMessage"`
+	NumericErrorCode   int      `json:"numericErrorCode"`
+	OriginatingService string   `json:"originatingService"`
 	MessageVars        []string `json:"messageVars,omitempty"`
-	Intent             string `json:"intent"`
-	Continuation       string `json:"continuation,omitempty"`
-	ContinuationURL    string `json:"continuationUrl,omitempty"`
-	CorrectiveAction   string `json:"correctiveAction,omitempty"`
+	Intent             string   `json:"intent"`
+	Continuation       string   `json:"continuation,omitempty"`
+	ContinuationURL    string   `json:"continuationUrl,omitempty"`
+	CorrectiveAction   string   `json:"correctiveAction,omitempty"`
 }

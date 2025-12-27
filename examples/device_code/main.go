@@ -14,7 +14,7 @@ import (
 const (
 	USE_CUSTOM_CHECK_TIMEOUT = false
 
-	CHECK_INTERVAL = time.Second * 10
+	CHECK_INTERVAL       = time.Second * 10
 	CUSTOM_CHECK_TIMEOUT = time.Minute * 2
 )
 

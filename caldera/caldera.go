@@ -9,13 +9,13 @@ import (
 
 func (c *Client) GetAnticheatProvider(accountID string, exchangeCode string, epicApp string, testMode bool, cloudGamingProvider CloudGamingProvider) (AnticheatProviderResponse, error) {
 	payload := &GetAnticheatProviderPayload{
-		AccountID: accountID,
+		AccountID:    accountID,
 		ExchangeCode: exchangeCode,
-		TestMode: testMode,
-		EpicApp: epicApp,
-		Nvidia: false,
-		Luna: false,
-		Salmon: false,
+		TestMode:     testMode,
+		EpicApp:      epicApp,
+		Nvidia:       false,
+		Luna:         false,
+		Salmon:       false,
 	}
 
 	if cloudGamingProvider == CloudGamingProviderGeforceNow {

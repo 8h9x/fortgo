@@ -12,17 +12,17 @@ type GetPublicKeyResponse struct {
 type ExternalAuthType string
 
 const (
-	ExternalAuthTypeApple   ExternalAuthType = "apple"
-	ExternalAuthTypeFacebook   ExternalAuthType = "facebook"
+	ExternalAuthTypeApple    ExternalAuthType = "apple"
+	ExternalAuthTypeFacebook ExternalAuthType = "facebook"
 	ExternalAuthTypeGithub   ExternalAuthType = "github"
 	ExternalAuthTypeGoogle   ExternalAuthType = "google"
-	ExternalAuthTypeInternal   ExternalAuthType = "internal"
+	ExternalAuthTypeInternal ExternalAuthType = "internal"
 	ExternalAuthTypeNintendo ExternalAuthType = "nintendo"
 	ExternalAuthTypePSN      ExternalAuthType = "psn"
 	ExternalAuthTypeSteam    ExternalAuthType = "steam"
 	ExternalAuthTypeTwitch   ExternalAuthType = "twitch"
-	ExternalAuthTypeUbisoft      ExternalAuthType = "ubisoft"
-	ExternalAuthTypeVK      ExternalAuthType = "vk"
+	ExternalAuthTypeUbisoft  ExternalAuthType = "ubisoft"
+	ExternalAuthTypeVK       ExternalAuthType = "vk"
 	ExternalAuthTypeXBL      ExternalAuthType = "xbl"
 )
 
@@ -32,21 +32,21 @@ type ExternalAuthID struct {
 }
 
 type ExternalAuth struct {
-	AccountID               string `json:"accountId"`
-	Type                    string `json:"type"`
-	ExternalAuthID          string `json:"externalAuthId"`
-	ExternalAuthIDType      string `json:"externalAuthIdType"`
-	ExternalAuthSecondaryID string `json:"externalAuthSecondaryId"`
-	ExternalDisplayName     string `json:"externalDisplayName"`
-	Avatar                  string `json:"avatar"`
+	AccountID               string           `json:"accountId"`
+	Type                    string           `json:"type"`
+	ExternalAuthID          string           `json:"externalAuthId"`
+	ExternalAuthIDType      string           `json:"externalAuthIdType"`
+	ExternalAuthSecondaryID string           `json:"externalAuthSecondaryId"`
+	ExternalDisplayName     string           `json:"externalDisplayName"`
+	Avatar                  string           `json:"avatar"`
 	AuthIDs                 []ExternalAuthID `json:"authIds"`
-//	DateAdded               time.Time `json:"dateAdded"`
-//	RegionInfo              string `json:"regionInfo"`
+	// DateAdded               time.Time `json:"dateAdded"`
+	// RegionInfo              string `json:"regionInfo"`
 }
 
 type GetUserResponse struct {
-	ID            string `json:"id"`
-	DisplayName   string `json:"displayName"`
+	ID            string                            `json:"id"`
+	DisplayName   string                            `json:"displayName"`
 	ExternalAuths map[ExternalAuthType]ExternalAuth `json:"externalAuths"`
 }
 
@@ -79,12 +79,11 @@ type GetUserResponseExtended struct {
 }
 
 type getUsersByExternalDisplayNameBulkPayload struct {
-	AuthType     ExternalAuthType   `json:"authType"`
-	DisplayNames []string `json:"displayNames"`
+	AuthType     ExternalAuthType `json:"authType"`
+	DisplayNames []string         `json:"displayNames"`
 }
 
 type getUsersByExternalIDBulkPayload struct {
-	AuthType     ExternalAuthType   `json:"authType"`
-	IDs []string `json:"ids"`
+	AuthType ExternalAuthType `json:"authType"`
+	IDs      []string         `json:"ids"`
 }
-

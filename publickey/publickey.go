@@ -1,9 +1,9 @@
 package publickey
 
 import (
-    "crypto/ed25519"
-    "crypto/rsa"
-    "crypto/x509"
+	"crypto/ed25519"
+	"crypto/rsa"
+	"crypto/x509"
 	"encoding/base64"
 	"net/http"
 

@@ -8,10 +8,9 @@ type RedemetionCodeDetails struct {
 	Country         string `json:"country"`
 }
 
-
 type RedeemCodeResponse struct {
-	OfferID    string `json:"offerId"`
-	AccountID  string `json:"accountId"`
-	IdentityID string `json:"identityId"`
+	OfferID    string                  `json:"offerId"`
+	AccountID  string                  `json:"accountId"`
+	IdentityID string                  `json:"identityId"`
 	Details    []RedemetionCodeDetails `json:"details"`
 }

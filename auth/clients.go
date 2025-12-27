@@ -7,7 +7,7 @@ import (
 )
 
 type AuthClient struct {
-	ID string
+	ID     string
 	Secret string
 }
 

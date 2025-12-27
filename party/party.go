@@ -16,11 +16,11 @@ func (c *Client) Invite(buildID string, partyID string, friendID string, platfor
 	}
 
 	payload := &InvitePayload{
-		BuildID: buildID,
-		Platform: string(platform),
-		UrnEpicConnTypeS: "game",
+		BuildID:                    buildID,
+		Platform:                   string(platform),
+		UrnEpicConnTypeS:           "game",
 		UrnEpicInvitePlatformdataS: "",
-		DisplayName: senderDisplayName,
+		DisplayName:                senderDisplayName,
 	}
 
 	req, err := request.MakeRequest(

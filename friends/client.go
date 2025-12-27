@@ -7,8 +7,8 @@ import (
 )
 
 type Client struct {
-    HTTPClient  *http.Client
-    Credentials *auth.TokenResponse
+	HTTPClient  *http.Client
+	Credentials *auth.TokenResponse
 }
 
 func NewClient(httpClient *http.Client, credentials *auth.TokenResponse) *Client {

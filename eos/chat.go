@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	
+
 	"github.com/8h9x/fortgo/consts"
 	"github.com/8h9x/fortgo/request"
 )
@@ -22,8 +22,8 @@ func (c *Client) CreateConversation(title string, conversationType string, membe
 		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 		request.WithJSONBody(&CreateConversationPayload{
-			Title: title,
-			Type: conversationType,
+			Title:   title,
+			Type:    conversationType,
 			Members: members,
 		}),
 	)

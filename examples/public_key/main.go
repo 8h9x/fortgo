@@ -6,7 +6,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/base64"
-    "flag"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -23,7 +23,7 @@ func main() {
 	case "ed25519", "rsa":
 		fmt.Printf("Using %s key type\n", *keyType)
 	default:
-		log.Fatalln(fmt.Sprintf("Error: invalid key type %q. Must be 'ed25519' or 'rsa'", *keyType))
+		log.Fatalf("Error: invalid key type %q. Must be 'ed25519' or 'rsa'\n", *keyType)
 	}
 
 	httpClient := &http.Client{}
@@ -61,7 +61,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		log.Println(fmt.Sprintf("RSA public key registered\nPublic Key: %s\nPrivate Key: %s\nJWT: %s", res.Key, base64.StdEncoding.EncodeToString(x509.MarshalPKCS1PrivateKey(rsaKey)), res.JWT))
+		log.Printf("RSA public key registered\nPublic Key: %s\nPrivate Key: %s\nJWT: %s\n", res.Key, base64.StdEncoding.EncodeToString(x509.MarshalPKCS1PrivateKey(rsaKey)), res.JWT)
 	} else {
 		pub, priv, _ := ed25519.GenerateKey(rand.Reader)
 		res, err := client.PublicKeyService.RegisterKeyED25519(pub)
@@ -69,6 +69,6 @@ func main() {
 			log.Fatal(err)
 		}
 
-		log.Println(fmt.Sprintf("ED25519 public key registered\nPublic Key: %s\nPrivate Key: %s\nJWT: %s", base64.StdEncoding.EncodeToString(pub), base64.StdEncoding.EncodeToString(priv), res.JWT))
+		log.Printf("ED25519 public key registered\nPublic Key: %s\nPrivate Key: %s\nJWT: %s\n", base64.StdEncoding.EncodeToString(pub), base64.StdEncoding.EncodeToString(priv), res.JWT)
 	}
 }

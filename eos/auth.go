@@ -1,9 +1,10 @@
 package eos
 
 import (
-	"github.com/8h9x/fortgo/auth"
 	"net/http"
 	"time"
+
+	"github.com/8h9x/fortgo/auth"
 )
 
 type ClientCredentials struct {

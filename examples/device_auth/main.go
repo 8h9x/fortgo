@@ -22,8 +22,8 @@ func main() {
 
 	deviceAuthPayload := auth.PayloadDeviceAuth{
 		AccountID: deviceAuth.AccountID,
-		DeviceID: deviceAuth.DeviceID,
-		Secret: deviceAuth.Secret,
+		DeviceID:  deviceAuth.DeviceID,
+		Secret:    deviceAuth.Secret,
 	}
 
 	credentials, err := auth.Authenticate(httpClient, auth.FortniteNewIOSClient, deviceAuthPayload, true)
@@ -96,7 +96,7 @@ func authCodeFlow(httpClient *http.Client, authClient *auth.AuthClient) (auth.To
 		return auth.TokenResponse{}, err
 	}
 
-	credentials, err := auth.Authenticate(httpClient, authClient,  auth.PayloadAuthorizationCode{code}, true)
+	credentials, err := auth.Authenticate(httpClient, authClient, auth.PayloadAuthorizationCode{code}, true)
 	if err != nil {
 		return auth.TokenResponse{}, err
 	}

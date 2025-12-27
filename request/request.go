@@ -22,13 +22,13 @@ func MakeRequest(method string, serviceURL string, endpoint string, opts ...Opti
 	fullURL := fmt.Sprint(serviceURL, "/", endpoint)
 
 	u, err := url.Parse(fullURL)
-    if err != nil {
+	if err != nil {
 		return nil, fmt.Errorf("failed to parse built url: %w", err)
-    }
+	}
 
 	if len(cfg.query) > 0 {
 		u.RawQuery = cfg.query.Encode()
-    }
+	}
 
 	req, err := http.NewRequest(method, u.String(), cfg.body)
 	if err != nil {
@@ -54,37 +54,37 @@ func ParseResponse[T any](resp *http.Response) (Response[T], error) {
 		var epicError EpicErrorResponse
 		if err := json.Unmarshal(body, &epicError); err == nil && epicError.ErrorCode != "" {
 			return Response[T]{
-				StatusCode: resp.StatusCode,
-				Headers:    resp.Header,
-			}, Error{
-				Message:   epicError.ErrorMessage,
-				ErrorCode: epicError.ErrorCode,
-				Raw:       epicError,
-				Err:       fmt.Errorf("epic games error: %s", epicError.ErrorCode),
-			}
+					StatusCode: resp.StatusCode,
+					Headers:    resp.Header,
+				}, Error{
+					Message:   epicError.ErrorMessage,
+					ErrorCode: epicError.ErrorCode,
+					Raw:       epicError,
+					Err:       fmt.Errorf("epic games error: %s", epicError.ErrorCode),
+				}
 		}
 
 		return Response[T]{
-			StatusCode: resp.StatusCode,
-			Headers:    resp.Header,
-		}, Error{
-			Message: fmt.Sprintf("request failed with status %d: %s", resp.StatusCode, string(body)),
-			Raw:     string(body),
-			Err:     fmt.Errorf("http error %d", resp.StatusCode),
-		}
+				StatusCode: resp.StatusCode,
+				Headers:    resp.Header,
+			}, Error{
+				Message: fmt.Sprintf("request failed with status %d: %s", resp.StatusCode, string(body)),
+				Raw:     string(body),
+				Err:     fmt.Errorf("http error %d", resp.StatusCode),
+			}
 	}
 
 	var data T
 	if len(body) > 0 {
 		if err := json.Unmarshal(body, &data); err != nil {
 			return Response[T]{
-				StatusCode: resp.StatusCode,
-				Headers:    resp.Header,
-			}, Error{
-				Message: "failed to decode response body",
-				Raw:     string(body),
-				Err:     err,
-			}
+					StatusCode: resp.StatusCode,
+					Headers:    resp.Header,
+				}, Error{
+					Message: "failed to decode response body",
+					Raw:     string(body),
+					Err:     err,
+				}
 		}
 	}
 
