@@ -22,8 +22,9 @@ type AnticheatProviderResponse struct {
 type GetAnticheatProviderPayload struct {
 	AccountID    string `json:"account_id"`
 	ExchangeCode string `json:"exchange_code"`
-	TestMode     bool   `json:"test_mode"`
 	EpicApp      string `json:"epic_app"`
+	TestMode     bool   `json:"test_mode"`
+	GDKMode      bool   `json:"gdk_mode"`
 	Nvidia       bool   `json:"nvidia"`
 	Luna         bool   `json:"luna"`
 	Salmon       bool   `json:"salmon"`

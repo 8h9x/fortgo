@@ -11,18 +11,20 @@ func (c *Client) GetAnticheatProvider(accountID string, exchangeCode string, epi
 	payload := &GetAnticheatProviderPayload{
 		AccountID:    accountID,
 		ExchangeCode: exchangeCode,
-		TestMode:     testMode,
 		EpicApp:      epicApp,
+		TestMode:     testMode,
+		GDKMode:      false,
 		Nvidia:       false,
 		Luna:         false,
 		Salmon:       false,
 	}
 
-	if cloudGamingProvider == CloudGamingProviderGeforceNow {
+	switch cloudGamingProvider {
+	case CloudGamingProviderGeforceNow:
 		payload.Nvidia = true
-	} else if cloudGamingProvider == CloudGamingProviderAmazonLuna {
+	case CloudGamingProviderAmazonLuna:
 		payload.Luna = true
-	} else if cloudGamingProvider == CloudGamingProviderSalmon {
+	case CloudGamingProviderSalmon:
 		payload.Salmon = true
 	}
 
