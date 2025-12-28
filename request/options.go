@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"net/url"
 	"strings"
 )
@@ -26,20 +27,19 @@ func WithHeader(key, value string) Option {
 
 func WithHeaders(headers map[string]string) Option {
 	return func(cfg *requestConfig) error {
-		for k, v := range headers {
-			cfg.headers[k] = v
-		}
+		maps.Copy(cfg.headers, headers)
 		return nil
 	}
 }
 
 func WithQueryParamaters(query url.Values) Option {
 	return func(cfg *requestConfig) error {
-		for key, values := range query {
-			for _, value := range values {
-				cfg.query.Add(key, value)
-			}
+		if cfg.query == nil {
+			cfg.query = make(url.Values)
 		}
+
+		maps.Copy(cfg.query, query)
+
 		return nil
 	}
 }
