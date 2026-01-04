@@ -123,7 +123,7 @@ type MnemonicData struct {
 	Disabled         bool             `json:"disabled"`
 	Created          time.Time        `json:"created"`
 	Published        time.Time        `json:"published"`
-	DescriptionTags  []interface{}    `json:"descriptionTags"`
+	DescriptionTags  []any            `json:"descriptionTags"`
 	ModerationStatus string           `json:"moderationStatus"`
 }
 
@@ -133,9 +133,18 @@ type MnemonicDataWithActivationHistory struct {
 	DiscoveryIntent   string                   `json:"discoveryIntent"`
 	ActivationHistory []ActivationHistoryEntry `json:"activationHistory"`
 	LinkCategory      string                   `json:"linkCategory"`
+	LastActivatedDate time.Time                `json:"lastActivatedDate"`
 }
 
 type GetRelatedMnemonicsResponse struct {
 	ParentLinks []MnemonicData `json:"parentLinks"`
 	Links       []MnemonicData `json:"links"`
+}
+
+type CreateUserMnemonicPayload struct {
+	CreatorName     string         `json:"creatorName"`
+	LinkType        string         `json:"linkType"`
+	Metadata        map[string]any `json:"metadata"`
+	DescriptionTags []string       `json:"descriptionTags,omitempty"`
+	DiscoveryIntent string         `json:"discoveryIntent,omitempty"`
 }
