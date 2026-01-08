@@ -217,7 +217,7 @@ type VerifyTokenResponse struct {
 	Perms          []VerifyTokenResponsePermission `json:"perms"`
 }
 
-func CreateDeviceAuth(httpClient *http.Client, credentials TokenResponse) (DeviceAuthResponse, error) {
+func CreateDeviceAuth(httpClient *http.Client, credentials *TokenResponse) (DeviceAuthResponse, error) {
 	req, err := request.MakeRequest(
 		http.MethodPost,
 		consts.AccountService,
@@ -250,7 +250,7 @@ type DeviceAuthResponse struct {
 	UserAgent string `json:"userAgent"`
 }
 
-func GetExchangeCode(httpClient *http.Client, credentials TokenResponse) (ExchangeResponse, error) {
+func GetExchangeCode(httpClient *http.Client, credentials *TokenResponse) (ExchangeResponse, error) {
 	req, err := request.MakeRequest(
 		http.MethodGet,
 		consts.AccountService,
@@ -277,7 +277,7 @@ type ExchangeResponse struct {
 	ExpiresInSeconds int    `json:"expiresInSeconds"`
 }
 
-func CreateDeviceCode(httpClient *http.Client, credentials TokenResponse) (GetDeviceCodeResponse, error) {
+func CreateDeviceCode(httpClient *http.Client, credentials *TokenResponse) (GetDeviceCodeResponse, error) {
 	req, err := request.MakeRequest(
 		http.MethodPost,
 		consts.AccountService,

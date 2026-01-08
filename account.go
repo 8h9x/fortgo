@@ -6,11 +6,11 @@ import (
 )
 
 func (c *Client) GetExchangeCode() (auth.ExchangeResponse, error) {
-	return auth.GetExchangeCode(c.HTTPClient, c.CredentialsMap[c.ClientID])
+	return auth.GetExchangeCode(c.HTTPClient, c.CurrentCredentials())
 }
 
 func (c *Client) CreateDeviceAuth() (auth.DeviceAuthResponse, error) {
-	return auth.CreateDeviceAuth(c.HTTPClient, c.CredentialsMap[c.ClientID])
+	return auth.CreateDeviceAuth(c.HTTPClient, c.CurrentCredentials())
 }
 
 func (c *Client) FetchMe() (account.GetUserResponseExtended, error) {

@@ -23,7 +23,7 @@ type Client struct {
 	HTTPClient     *http.Client
 	Header         http.Header
 	ClientID       string
-	CredentialsMap map[string]auth.TokenResponse
+	CredentialsMap map[string]*auth.TokenResponse
 	OnTokenRefresh OnTokenRefresh
 
 	AccountService     *account.Client
@@ -45,23 +45,24 @@ func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client 
 		HTTPClient:     httpClient,
 		Header:         make(http.Header),
 		ClientID:       credentials.ClientID,
-		CredentialsMap: make(map[string]auth.TokenResponse),
+		CredentialsMap: make(map[string]*auth.TokenResponse),
 	}
 
-	client.CredentialsMap[credentials.ClientID] = credentials
+	client.CredentialsMap[credentials.ClientID] = &credentials
+	credsPtr := client.CredentialsMap[client.ClientID]
 
-	client.AccountService = account.NewClient(httpClient, &credentials)
-	client.AvatarService = avatars.NewClient(httpClient, &credentials)
-	client.CalderaService = caldera.NewClient(httpClient, &credentials)
-	client.EOS = eos.NewClient(httpClient, &credentials)
-	client.FortniteService = fortnite.NewClient(httpClient, &credentials)
-	client.FriendService = friends.NewClient(httpClient, &credentials)
-	client.FulfillmentService = fulfillment.NewClient(httpClient, &credentials)
-	client.LinkService = links.NewClient(httpClient, &credentials)
-	client.LockerService = locker.NewClient(httpClient, &credentials)
-	client.PartyService = party.NewClient(httpClient, &credentials)
-	client.PublicKeyService = publickey.NewClient(httpClient, &credentials)
-	client.UserSearchService = usersearch.NewClient(httpClient, &credentials)
+	client.AccountService = account.NewClient(httpClient, credsPtr)
+	client.AvatarService = avatars.NewClient(httpClient, credsPtr)
+	client.CalderaService = caldera.NewClient(httpClient, credsPtr)
+	client.EOS = eos.NewClient(httpClient, credsPtr)
+	client.FortniteService = fortnite.NewClient(httpClient, credsPtr)
+	client.FriendService = friends.NewClient(httpClient, credsPtr)
+	client.FulfillmentService = fulfillment.NewClient(httpClient, credsPtr)
+	client.LinkService = links.NewClient(httpClient, credsPtr)
+	client.LockerService = locker.NewClient(httpClient, credsPtr)
+	client.PartyService = party.NewClient(httpClient, credsPtr)
+	client.PublicKeyService = publickey.NewClient(httpClient, credsPtr)
+	client.UserSearchService = usersearch.NewClient(httpClient, credsPtr)
 
 	return client
 }
@@ -90,7 +91,7 @@ func (c *Client) Connect() error {
 	return nil
 }
 
-func (c *Client) CurrentCredentials() auth.TokenResponse {
+func (c *Client) CurrentCredentials() *auth.TokenResponse {
 	credentials := c.CredentialsMap[c.ClientID]
 
 	_, err := auth.VerifyToken(c.HTTPClient, credentials.AccessToken, false)
@@ -101,7 +102,7 @@ func (c *Client) CurrentCredentials() auth.TokenResponse {
 			// TODO: handle
 		}
 
-		c.CredentialsMap[c.ClientID] = res
+		*c.CredentialsMap[c.ClientID] = res
 	}
 
 	return c.CredentialsMap[c.ClientID]
