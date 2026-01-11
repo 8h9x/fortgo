@@ -3,17 +3,18 @@ package fortnite
 import "time"
 
 type CloudstorageFilePointer struct {
-	UniqueFilename string    `json:"uniqueFilename"`
-	Filename       string    `json:"filename"`
-	Hash           string    `json:"hash"`
-	Hash256        string    `json:"hash256"`
-	Length         int       `json:"length"`
-	ContentType    string    `json:"contentType"`
-	Uploaded       time.Time `json:"uploaded"`
-	StorageType    string    `json:"storageType"`
-	StorageIDs     struct {
-		DSS string `json:"DSS"`
-	} `json:"storageIds"`
+	UniqueFilename string            `json:"uniqueFilename"`
+	Filename       string            `json:"filename"`
+	Hash           string            `json:"hash"`
+	Hash256        string            `json:"hash256"`
+	Length         int               `json:"length"`
+	ContentType    string            `json:"contentType"`
+	Uploaded       time.Time         `json:"uploaded"`
+	StorageType    string            `json:"storageType"`
+	StorageIDs     map[string]string `json:"storageIds"`
+	// StorageIDs     struct {
+	// 	DSS string `json:"DSS"`
+	// } `json:"storageIds"`
 }
 
 type CloudstorageFilePointerSystem struct {
