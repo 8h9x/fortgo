@@ -79,7 +79,7 @@ func generateDeviceAuth(httpClient *http.Client, authClient *auth.AuthClient) (a
 		return auth.DeviceAuthResponse{}, err
 	}
 
-	deviceAuth, err := auth.CreateDeviceAuth(httpClient, credentials)
+	deviceAuth, err := auth.CreateDeviceAuth(httpClient, &credentials)
 	if err != nil {
 		return auth.DeviceAuthResponse{}, err
 	}

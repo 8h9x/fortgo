@@ -26,7 +26,7 @@ func main() {
 		log.Fatal("Unable to generate client credentials: ", err)
 	}
 
-	deviceAuthorization, err := auth.CreateDeviceCode(httpClient, clientCredentials)
+	deviceAuthorization, err := auth.CreateDeviceCode(httpClient, &clientCredentials)
 	if err != nil {
 		log.Fatal("Unable to start device code flow: ", err)
 	}

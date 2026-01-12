@@ -13,7 +13,7 @@ type AddToCollectionPayload struct {
 	Category    string              `json:"category"`
 	Variant     string              `json:"variant"`
 	ContextTags []string            `json:"contextTags"`
-	Properties  interface{}         `json:"properties"`
+	Properties  map[string]any      `json:"properties"`
 	SeenState   EFortCollectedState `json:"seenState"`
 	Count       int                 `json:"count"`
 }
