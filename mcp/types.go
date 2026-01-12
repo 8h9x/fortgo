@@ -29,7 +29,8 @@ type ProfileChangeProfileEntry[ST ProfileStatsType] struct {
 
 type ProfileStatsType interface {
 	AthenaProfileStats | CampaignProfileStats | CollectionBookPeopleProfileStats | CollectionBookSchematicsProfileStats | CollectionsProfileStats | CommonPublicProfileStats |
-		CommonCoreProfileStats | CreativeProfileStats | MetadataProfileStats | OutpostProfileStats | RecycleBinProfileStats | Theater0ProfileStats | Theater1ProfileStats | Theater2ProfileStats
+		CommonCoreProfileStats | CreativeProfileStats | MetadataProfileStats | OutpostProfileStats | RecycleBinProfileStats | Theater0ProfileStats | Theater1ProfileStats |
+		Theater2ProfileStats | Profile0ProfileStats | ProtoJunoProfileStats
 }
 
 type ProfileNotificationType interface {
@@ -204,6 +205,14 @@ type RecycleBinProfileStats struct {
 	Attributes struct {
 		NextReceiptSequence int `json:"next_receipt_sequence"`
 	} `json:"attributes"`
+}
+
+type ProtoJunoProfileStats struct {
+	Attributes map[string]any `json:"attributes"`
+}
+
+type Profile0ProfileStats struct {
+	Attributes map[string]any `json:"attributes"`
 }
 
 type Theater0ProfileStats struct {
