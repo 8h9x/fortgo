@@ -14,7 +14,7 @@ func (c *Client) ChangeCompanionName(accountID string, cosmeticItemID string, co
 	req, err := request.MakeRequest(
 		http.MethodPatch,
 		consts.FortniteLockerService,
-		fmt.Sprintf("api/locker/v4/%s/account/%s/companion-name", DeploymentIDLiveFN, accountID),
+		fmt.Sprintf("api/locker/v4/%s/account/%s/companion-name", consts.DeploymentIDLiveFN, accountID),
 		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(payload),
 	)
@@ -59,7 +59,7 @@ func (c *Client) UpdateActiveLockerLoadout(accountID string, payload UpdateActiv
 	req, err := request.MakeRequest(
 		http.MethodPut,
 		consts.FortniteLockerService,
-		fmt.Sprintf("api/locker/v4/%s/account/%s/active-loadout-group", DeploymentIDLiveFN, accountID),
+		fmt.Sprintf("api/locker/v4/%s/account/%s/active-loadout-group", consts.DeploymentIDLiveFN, accountID),
 		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(payload),
 	)
@@ -86,7 +86,7 @@ func (c *Client) LockInImmutableItem(accountID string, templateID string, itemGU
 	req, err := request.MakeRequest(
 		http.MethodPost,
 		consts.FortniteLockerService,
-		fmt.Sprintf("api/locker/v4/%s/account/%s/lock-in-immutable-item/%s:%s", DeploymentIDLiveFN, accountID, templateID, itemGUID),
+		fmt.Sprintf("api/locker/v4/%s/account/%s/lock-in-immutable-item/%s:%s", consts.DeploymentIDLiveFN, accountID, templateID, itemGUID),
 		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(payload),
 	)

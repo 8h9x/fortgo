@@ -2,15 +2,41 @@ package locker
 
 import "time"
 
-type DeploymentID string
+type ArchivedStatus string
 
 const (
-	DeploymentIDLiveFN = "62a9473a2dca46b29ccf17577fcf42d7"
+	ArchivedStatusArchived ArchivedStatus = "ARCHIVED"
+)
+
+type CosmeticLoadoutSchema string
+
+const (
+	CosmeticLoadoutSchemaCharacter CosmeticLoadoutSchema = "CosmeticLoadout:LoadoutSchema_Character"
+	CosmeticLoadoutSchemaEmotes    CosmeticLoadoutSchema = "CosmeticLoadout:LoadoutSchema_Emotes"
+	CosmeticLoadoutSchemaJam       CosmeticLoadoutSchema = "CosmeticLoadout:LoadoutSchema_Jam"
+	CosmeticLoadoutSchemaMimosa    CosmeticLoadoutSchema = "CosmeticLoadout:LoadoutSchema_Mimosa"
+	CosmeticLoadoutSchemaPlatform  CosmeticLoadoutSchema = "CosmeticLoadout:LoadoutSchema_Platform"
+	CosmeticLoadoutSchemaSparks    CosmeticLoadoutSchema = "CosmeticLoadout:LoadoutSchema_Sparks"
+	CosmeticLoadoutSchemaVehicle   CosmeticLoadoutSchema = "CosmeticLoadout:LoadoutSchema_Vehicle"
+	CosmeticLoadoutSchemaWraps     CosmeticLoadoutSchema = "CosmeticLoadout:LoadoutSchema_Wraps"
+)
+
+type PresetFavoriteStatus string
+
+const (
+	PresetFavoriteStatusEmpty PresetFavoriteStatus = "EMPTY"
+)
+
+type ShuffleType string
+
+const (
+	ShuffleTypeEnabled  ShuffleType = "ENABLED"
+	ShuffleTypeDisabled ShuffleType = "DISABLED"
 )
 
 type Loadout struct {
 	LoadoutSlots []LoadoutSlot `json:"loadoutSlots"`
-	ShuffleType  string        `json:"shuffleType"`
+	ShuffleType  ShuffleType   `json:"shuffleType"`
 }
 
 type ItemCustomization struct {
@@ -21,44 +47,56 @@ type ItemCustomization struct {
 
 type LoadoutSlot struct {
 	SlotTemplate       string              `json:"slotTemplate"`
-	EquippedItemId     string              `json:"equippedItemId"`
+	EquippedItemID     string              `json:"equippedItemId"`
 	ItemCustomizations []ItemCustomization `json:"itemCustomizations"`
 }
 
 type LoadoutPreset struct {
-	DeploymentId string        `json:"deploymentId"`
-	AccountId    string        `json:"accountId"`
+	DeploymentID string        `json:"deploymentId"`
+	AccountID    string        `json:"accountId"`
 	LoadoutType  string        `json:"loadoutType"`
 	PresetId     string        `json:"presetId"`
 	PresetIndex  int           `json:"presetIndex"`
-	AthenaItemId string        `json:"athenaItemId"`
+	AthenaItemID string        `json:"athenaItemId"`
 	CreationTime time.Time     `json:"creationTime"`
 	UpdatedTime  time.Time     `json:"updatedTime"`
 	LoadoutSlots []LoadoutSlot `json:"loadoutSlots"`
 }
 
 type ActiveLoadoutGroup struct {
-	DeploymentId string               `json:"deploymentId"`
-	AccountId    string               `json:"accountId"`
-	AthenaItemId string               `json:"athenaItemId"`
-	CreationTime time.Time            `json:"creationTime"`
-	UpdatedTime  time.Time            `json:"updatedTime"`
-	Loadouts     []map[string]Loadout `json:"loadouts"`
-	ShuffleType  string               `json:"shuffleType"`
+	DeploymentID string                              `json:"deploymentId"`
+	AccountID    string                              `json:"accountId"`
+	AthenaItemId string                              `json:"athenaItemId"`
+	CreationTime time.Time                           `json:"creationTime"`
+	UpdatedTime  time.Time                           `json:"updatedTime"`
+	Loadouts     []map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
+	ShuffleType  ShuffleType                         `json:"shuffleType"`
+}
+
+type LoadoutGroupPreset struct {
+	Loadouts             []map[string]Loadout `json:"loadouts"`
+	DisplayName          string               `json:"displayName"`
+	PresetFavoriteStatus PresetFavoriteStatus `json:"presetFavoriteStatus"`
+	DeploymentID         string               `json:"deploymentId"`
+	AccountID            string               `json:"accountId"`
+	PresetID             string               `json:"presetId"`
+	AthenaItemID         string               `json:"athenaItemId"`
+	CreationTime         time.Time            `json:"creationTime"`
+	UpdatedTime          time.Time            `json:"updatedTime"`
 }
 
 type LockerItems struct {
-	ActiveLoadoutGroup  ActiveLoadoutGroup `json:"activeLoadoutGroup"`
-	LoadoutGroupPresets []any              `json:"loadoutGroupPresets"`
-	LoadoutPresets      []LoadoutPreset    `json:"loadoutPresets"`
+	ActiveLoadoutGroup  ActiveLoadoutGroup   `json:"activeLoadoutGroup"`
+	LoadoutGroupPresets []LoadoutGroupPreset `json:"loadoutGroupPresets"`
+	LoadoutPresets      []LoadoutPreset      `json:"loadoutPresets"`
 }
 
 type UpdateActiveLockerLoadoutPayload struct {
-	Loadouts             []map[string]Loadout `json:"loadouts"`
-	ShuffleType          string               `json:"shuffleType"`
-	EquippedPresetItemId string               `json:"equippedPresetItemId"`
-	AthenaItemId         string               `json:"athenaItemId"`
-	CreationTime         time.Time            `json:"creationTime"`
+	Loadouts             []map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
+	ShuffleType          ShuffleType                         `json:"shuffleType"`
+	EquippedPresetItemID string                              `json:"equippedPresetItemId"`
+	AthenaItemID         string                              `json:"athenaItemId"`
+	CreationTime         time.Time                           `json:"creationTime"`
 }
 
 type ChangeCompanionNamePayload struct {
