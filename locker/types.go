@@ -92,7 +92,7 @@ type LockerItems struct {
 }
 
 type UpdateActiveLockerLoadoutPayload struct {
-	Loadouts             []map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
+	Loadouts             map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
 	ShuffleType          ShuffleType                         `json:"shuffleType"`
 	EquippedPresetItemID string                              `json:"equippedPresetItemId"`
 	AthenaItemID         string                              `json:"athenaItemId"`
