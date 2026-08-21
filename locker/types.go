@@ -71,6 +71,7 @@ type ActiveLoadoutGroup struct {
 	UpdatedTime  time.Time                           `json:"updatedTime"`
 	Loadouts     map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
 	ShuffleType  ShuffleType                         `json:"shuffleType"`
+	Namespace    string                              `json:"namespace"`
 }
 
 type LoadoutGroupPreset struct {
