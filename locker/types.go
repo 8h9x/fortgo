@@ -47,7 +47,7 @@ type ItemCustomization struct {
 
 type LoadoutSlot struct {
 	SlotTemplate       string              `json:"slotTemplate"`
-	EquippedItemID     string              `json:"equippedItemId"`
+	EquippedItemID     string              `json:"equippedItemId,omitempty"`
 	ItemCustomizations []ItemCustomization `json:"itemCustomizations"`
 }
 
@@ -69,7 +69,7 @@ type ActiveLoadoutGroup struct {
 	AthenaItemId string                              `json:"athenaItemId"`
 	CreationTime time.Time                           `json:"creationTime"`
 	UpdatedTime  time.Time                           `json:"updatedTime"`
-	Loadouts     map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
+	Loadouts     map[CosmeticLoadoutSchema]Loadout   `json:"loadouts"`
 	ShuffleType  ShuffleType                         `json:"shuffleType"`
 	Namespace    string                              `json:"namespace"`
 }
@@ -93,7 +93,7 @@ type LockerItems struct {
 }
 
 type UpdateActiveLockerLoadoutPayload struct {
-	Loadouts             map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
+	Loadouts             map[CosmeticLoadoutSchema]Loadout   `json:"loadouts"`
 	ShuffleType          ShuffleType                         `json:"shuffleType"`
 	EquippedPresetItemID string                              `json:"equippedPresetItemId"`
 	AthenaItemID         string                              `json:"athenaItemId"`
