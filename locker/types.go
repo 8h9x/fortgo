@@ -69,7 +69,7 @@ type ActiveLoadoutGroup struct {
 	AthenaItemId string                              `json:"athenaItemId"`
 	CreationTime time.Time                           `json:"creationTime"`
 	UpdatedTime  time.Time                           `json:"updatedTime"`
-	Loadouts     []map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
+	Loadouts     map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
 	ShuffleType  ShuffleType                         `json:"shuffleType"`
 }
 
