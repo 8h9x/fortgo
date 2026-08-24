@@ -31,50 +31,34 @@ func (c *Client) ChangeCompanionName(accountID string, cosmeticItemID string, co
 	return err
 }
 
-func (c *Client) QueryItems(accountID string) (LockerItems, error) {
+func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken string) (CosmeticData, error) {
+	query := url.Values{}
+	if limit > 0 {
+		query.Set("limit", limit)
+	}
+	if nextToken != "" {
+		query.Set("nextToken", nextToken)
+	}
+	
 	req, err := request.MakeRequest(
 		http.MethodGet,
 		consts.FortniteLockerService,
-		"api/locker/v4/%s/account/%s/items",
+		"api/locker/v4/%s/account/%s/cosmetic-data",
 		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithQueryParamaters(query),
 	)
 	if err != nil {
-		return LockerItems{}, err
+		return CosmeticData{}, err
 	}
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return LockerItems{}, err
+		return CosmeticData{}, err
 	}
 
-	resp, err := request.ParseResponse[LockerItems](res)
+	resp, err := request.ParseResponse[CosmeticData](res)
 	if err != nil {
-		return LockerItems{}, err
-	}
-
-	return resp.Data, nil
-}
-
-func (c *Client) UpdateActiveLockerLoadout(accountID string, payload UpdateActiveLockerLoadoutPayload) (ActiveLoadoutGroup, error) {
-	req, err := request.MakeRequest(
-		http.MethodPut,
-		consts.FortniteLockerService,
-		fmt.Sprintf("api/locker/v4/%s/account/%s/active-loadout-group", consts.DeploymentIDLiveFN, accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
-		request.WithJSONBody(payload),
-	)
-	if err != nil {
-		return ActiveLoadoutGroup{}, err
-	}
-
-	res, err := c.HTTPClient.Do(req)
-	if err != nil {
-		return ActiveLoadoutGroup{}, err
-	}
-
-	resp, err := request.ParseResponse[ActiveLoadoutGroup](res)
-	if err != nil {
-		return ActiveLoadoutGroup{}, err
+		return CosmeticData{}, err
 	}
 
 	return resp.Data, nil
@@ -101,4 +85,53 @@ func (c *Client) LockInImmutableItem(accountID string, templateID string, itemGU
 
 	_, err = request.ParseResponse[any](res)
 	return err
+}
+
+func (c *Client) QueryItems(accountID string) (LockerItems, error) {
+	req, err := request.MakeRequest(
+		http.MethodGet,
+		consts.FortniteLockerService,
+		"api/locker/v4/%s/account/%s/items",
+		request.WithBearerToken(c.Credentials.AccessToken),
+	)
+	if err != nil {
+		return LockerItems{}, err
+	}
+
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return LockerItems{}, err
+	}
+
+	resp, err := request.ParseResponse[LockerItems](res)
+	if err != nil {
+		return LockerItems{}, err
+	}
+
+	return resp.Data, nil
+}
+
+func (c *Client) UpdateActiveLoadoutGroup(accountID string, payload UpdateActiveLockerLoadoutPayload) (ActiveLoadoutGroup, error) {
+	req, err := request.MakeRequest(
+		http.MethodPut,
+		consts.FortniteLockerService,
+		fmt.Sprintf("api/locker/v4/%s/account/%s/active-loadout-group", consts.DeploymentIDLiveFN, accountID),
+		request.WithBearerToken(c.Credentials.AccessToken),
+		request.WithJSONBody(payload),
+	)
+	if err != nil {
+		return ActiveLoadoutGroup{}, err
+	}
+
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return ActiveLoadoutGroup{}, err
+	}
+
+	resp, err := request.ParseResponse[ActiveLoadoutGroup](res)
+	if err != nil {
+		return ActiveLoadoutGroup{}, err
+	}
+
+	return resp.Data, nil
 }
