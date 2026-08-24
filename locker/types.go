@@ -120,7 +120,7 @@ type CosmeticItem struct {
 	AthenaItemID   string   						`json:"athenaItemId"`
 	UpdatedTime    time.Time 						`json:"updatedTime"`
 	ActiveVariants map[string]CosmeticItemVariant	`json:"activeVariants"`
-	OwnedVariants  map[string]CosmeticItemVariant	`json:"ownedVariants,omitempty"`
+	OwnedVariants  map[string][]CosmeticItemVariant	`json:"ownedVariants,omitempty"`
 	CreationTime   time.Time						`json:"creationTime,omitempty"`
 	LockedIn       bool      						`json:"lockedIn,omitempty"`
 }
