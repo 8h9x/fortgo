@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+    "strconv"
 
 	"github.com/8h9x/fortgo/consts"
 	"github.com/8h9x/fortgo/request"
@@ -35,7 +36,7 @@ func (c *Client) ChangeCompanionName(accountID string, cosmeticItemID string, co
 func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken string) (CosmeticData, error) {
 	query := url.Values{}
 	if limit > 0 {
-		query.Set("limit", limit)
+		query.Set("limit", strconv.Itoa(int(limit)))
 	}
 	if nextToken != "" {
 		query.Set("nextToken", nextToken)
