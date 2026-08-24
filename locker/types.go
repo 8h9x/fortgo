@@ -108,3 +108,26 @@ type ChangeCompanionNamePayload struct {
 type LockInImmutableItemPayload struct {
 	Variants map[string]ItemCustomization `json:"variants"`
 }
+
+type CosmeticItemVariant struct {
+	VariantTag string `json:"variantTag"`
+	AdditionalData string `json:"additionalData,omitempty"`
+}
+
+type CosmeticItem struct {
+	TemplateID     string    						`json:"templateId"`
+	CosmeticItemID string    						`json:"cosmeticItemId"`
+	AthenaItemID   string   						`json:"athenaItemId"`
+	UpdatedTime    time.Time 						`json:"updatedTime"`
+	ActiveVariants map[string]CosmeticItemVariant	`json:"activeVariants"`
+	OwnedVariants  map[string]CosmeticItemVariant	`json:"ownedVariants,omitempty"`
+	CreationTime   time.Time						`json:"creationTime,omitempty"`
+	LockedIn       bool      						`json:"lockedIn,omitempty"`
+}
+
+type CosmeticData struct {
+	CosmeticItems            []CosmeticItem	`json:"cosmeticItems"`
+	CosmeticItemAccessTokens []string		`json:"cosmeticItemAccessTokens"`
+	RequestTime              time.Time		`json:"requestTime"`
+	NextToken                string			`json:"nextToken"`
+}
