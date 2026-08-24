@@ -3,6 +3,7 @@ package locker
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/8h9x/fortgo/consts"
 	"github.com/8h9x/fortgo/request"
