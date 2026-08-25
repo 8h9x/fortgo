@@ -304,10 +304,15 @@ type CampaignNotification struct {
 type AthenaCosmeticItem baseItem[AthenaCosmeticItemAttributes]
 
 type AthenaCosmeticItemAttributes struct {
-	CreationTime time.Time                             `json:"creation_time"`
-	Level        int                                   `json:"level"`
-	ItemSeen     bool                                  `json:"item_seen"`
-	Variants     []AthenaCosmeticItemAttributesVariant `json:"variants,omitempty"`
+	CreationTime  time.Time                             `json:"creation_time"`
+	Level         int                                   `json:"level"`
+	MaxLevelBonus int  									`json:"max_level_bonus"`
+	RndSelCnt     int 									`json:"rnd_sel_cnt"`
+	XP            int 									`json:"xp"`
+	Variants      []AthenaCosmeticItemAttributesVariant `json:"variants,omitempty"`
+	ItemSeen      bool                                  `json:"item_seen"`
+	Favorite      bool                                  `json:"favorite,omitempty"`
+	Archived      bool                                  `json:"archived,omitempty"`
 }
 
 // type AthenaCosmeticItem struct {
