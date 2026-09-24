@@ -1,4 +1,4 @@
-package friends
+package base
 
 import (
 	"net/http"
@@ -11,6 +11,6 @@ type Client struct {
 	Credentials *account.TokenResponse
 }
 
-func NewClient(httpClient *http.Client, credentials *account.TokenResponse) *Client {
-	return &Client{httpClient, credentials}
+func New(httpClient *http.Client, credentials *account.TokenResponse) Client {
+	return Client{httpClient, credentials}
 }

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/8h9x/fortgo/auth"
+	"github.com/8h9x/fortgo/account"
 )
 
 type ClientCredentials struct {
@@ -47,7 +47,7 @@ type Exchange struct {
 	ExpiresInSeconds int    `json:"expiresInSeconds"`
 }
 
-type AuthPayload auth.Payload
+type AuthPayload account.TokenPayload
 
 func Authenticate[T AuthPayload](httpClient *http.Client, clientId, clientSecret string, payload T, eg1 bool) (T, error) {
 	return payload, nil

@@ -2,15 +2,13 @@ package account
 
 import (
 	"net/http"
-
-	"github.com/8h9x/fortgo/auth"
 )
 
 type Client struct {
 	HTTPClient  *http.Client
-	Credentials *auth.TokenResponse
+	Credentials *TokenResponse
 }
 
-func NewClient(httpClient *http.Client, credentials *auth.TokenResponse) *Client {
+func NewClient(httpClient *http.Client, credentials *TokenResponse) *Client {
 	return &Client{httpClient, credentials}
 }

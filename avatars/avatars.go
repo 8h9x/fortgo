@@ -2,7 +2,6 @@ package avatars
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -22,7 +21,7 @@ func (c *Client) Get(accountIDs ...string) (GetAvatarsResponse, error) {
 	req, err := request.MakeRequest(
 		http.MethodGet,
 		consts.AvatarService,
-		fmt.Sprintf("v1/avatar/fortnite/ids"),
+		"v1/avatar/fortnite/ids",
 		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 	)

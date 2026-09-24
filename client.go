@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/account"
-	"github.com/8h9x/fortgo/auth"
 	"github.com/8h9x/fortgo/avatars"
 	"github.com/8h9x/fortgo/caldera"
 	"github.com/8h9x/fortgo/eos"
@@ -23,7 +22,7 @@ type Client struct {
 	HTTPClient     *http.Client
 	Header         http.Header
 	ClientID       string
-	CredentialsMap map[string]*auth.TokenResponse
+	CredentialsMap map[string]*account.TokenResponse
 	OnTokenRefresh OnTokenRefresh
 
 	AccountService     *account.Client
@@ -40,12 +39,12 @@ type Client struct {
 	UserSearchService  *usersearch.Client
 }
 
-func NewClient(httpClient *http.Client, credentials auth.TokenResponse) *Client {
+func NewClient(httpClient *http.Client, credentials account.TokenResponse) *Client {
 	client := &Client{
 		HTTPClient:     httpClient,
 		Header:         make(http.Header),
 		ClientID:       credentials.ClientID,
-		CredentialsMap: make(map[string]*auth.TokenResponse),
+		CredentialsMap: make(map[string]*account.TokenResponse),
 	}
 
 	client.CredentialsMap[credentials.ClientID] = &credentials
@@ -74,7 +73,7 @@ func Startup() {
 func (c *Client) Connect() error {
 	credentials := c.CurrentCredentials()
 
-	if _, err := auth.VerifyToken(c.HTTPClient, credentials.AccessToken, false); err != nil {
+	if _, err := account.VerifyToken(c.HTTPClient, credentials.AccessToken, false); err != nil {
 		return fmt.Errorf("verify token: %w", err)
 	}
 
@@ -91,12 +90,12 @@ func (c *Client) Connect() error {
 	return nil
 }
 
-func (c *Client) CurrentCredentials() *auth.TokenResponse {
+func (c *Client) CurrentCredentials() *account.TokenResponse {
 	credentials := c.CredentialsMap[c.ClientID]
 
-	_, err := auth.VerifyToken(c.HTTPClient, credentials.AccessToken, false)
+	_, err := account.VerifyToken(c.HTTPClient, credentials.AccessToken, false)
 	if err != nil {
-		res, err := auth.Authenticate(c.HTTPClient, auth.FortnitePS4USClient, auth.PayloadRefreshToken{credentials.RefreshToken}, true)
+		res, err := account.Authenticate(c.HTTPClient, account.FortnitePS4USClient, account.TokenPayloadRefreshToken{RefreshToken: credentials.RefreshToken}, true)
 		if err != nil {
 			println(err)
 			// TODO: handle

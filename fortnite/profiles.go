@@ -97,7 +97,7 @@ package fortnite
 // 	} `json:"attributes"`
 // }
 
-type CampaignProfileStats struct {
+type CampaignProfileStats_ struct {
 	Attributes struct {
 		NodeCosts struct {
 			HomebaseNodeDefaultPage struct {
@@ -175,7 +175,7 @@ type CampaignProfileStats struct {
 	} `json:"attributes"`
 }
 
-type CommonCoreProfileStats struct {
+type CommonCoreProfileStats_ struct {
 	Attributes struct {
 		SurveyData struct {
 			AllSurveysMetadata struct {
@@ -274,7 +274,7 @@ type CommonCoreProfileStats struct {
 	} `json:"attributes"`
 }
 
-type CommonCoreMtxItem struct {
+type CommonCoreMtxItem_ struct {
 	TemplateID string `json:"templateId"`
 	Quantity   int    `json:"quantity"`
 	Attributes struct {

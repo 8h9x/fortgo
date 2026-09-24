@@ -1,5 +1,5 @@
 package fortgo
 
-import "github.com/8h9x/fortgo/auth"
+import "github.com/8h9x/fortgo/account"
 
-type OnTokenRefresh func(credentials auth.TokenResponse)
+type OnTokenRefresh func(credentials account.TokenResponse)

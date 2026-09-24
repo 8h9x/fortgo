@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/8h9x/fortgo"
-	"github.com/8h9x/fortgo/auth"
+	"github.com/8h9x/fortgo/account"
 )
 
 const (
@@ -21,12 +21,12 @@ const (
 func main() {
 	httpClient := &http.Client{}
 
-	clientCredentials, err := auth.Authenticate(httpClient, auth.FortnitePS4USClient, auth.PayloadClientCredentials{}, false)
+	clientCredentials, err := account.Authenticate(httpClient, account.FortnitePS4USClient, account.TokenPayloadClientCredentials{}, false)
 	if err != nil {
 		log.Fatal("Unable to generate client credentials: ", err)
 	}
 
-	deviceAuthorization, err := auth.CreateDeviceCode(httpClient, &clientCredentials)
+	deviceAuthorization, err := account.CreateDeviceCode(httpClient, &clientCredentials)
 	if err != nil {
 		log.Fatal("Unable to start device code flow: ", err)
 	}
@@ -55,23 +55,23 @@ func main() {
 	log.Println("Fortgo client connected!")
 }
 
-func waitForDeviceCodeConfirm(httpClient *http.Client, deviceCode string, interval, timeout time.Duration) (auth.TokenResponse, error) {
+func waitForDeviceCodeConfirm(httpClient *http.Client, deviceCode string, interval, timeout time.Duration) (account.TokenResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
-	payload := auth.PayloadDeviceCode{
+	payload := account.TokenPayloadDeviceCode{
 		DeviceCode: deviceCode,
 	}
 
 	for {
 		select {
 		case <-ctx.Done():
-			return auth.TokenResponse{}, ctx.Err()
+			return account.TokenResponse{}, ctx.Err()
 		case <-ticker.C:
-			credentials, err := auth.Authenticate(httpClient, auth.FortnitePS4USClient, payload, true)
+			credentials, err := account.Authenticate(httpClient, account.FortnitePS4USClient, payload, true)
 			if err != nil {
 				continue
 			}

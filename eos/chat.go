@@ -18,7 +18,7 @@ func (c *Client) CreateConversation(title string, conversationType string, membe
 	req, err := request.MakeRequest(
 		http.MethodPost,
 		consts.EOSService,
-		fmt.Sprintf("chat/v1/public/_/conversations"),
+		"chat/v1/public/_/conversations",
 		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 		request.WithJSONBody(&CreateConversationPayload{
