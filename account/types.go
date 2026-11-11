@@ -242,8 +242,3 @@ type GetDeviceCodeResponse struct {
 	Interval                int    `json:"interval"`
 	ClientID                string `json:"client_id"`
 }
-
-type AuthClient struct {
-	ID     string
-	Secret string
-}
