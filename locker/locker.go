@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-    "strconv"
+	"strconv"
 
 	"github.com/8h9x/fortgo/consts"
 	"github.com/8h9x/fortgo/request"
@@ -13,11 +13,10 @@ import (
 func (c *Client) ChangeCompanionName(accountID string, cosmeticItemID string, companionName string) error {
 	payload := &ChangeCompanionNamePayload{cosmeticItemID, companionName}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPatch,
 		consts.FortniteLockerService,
 		fmt.Sprintf("api/locker/v4/%s/account/%s/companion-name", consts.DeploymentIDLiveFN, accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(payload),
 	)
 	if err != nil {
@@ -29,7 +28,7 @@ func (c *Client) ChangeCompanionName(accountID string, cosmeticItemID string, co
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }
 
@@ -41,12 +40,11 @@ func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken stri
 	if nextToken != "" {
 		query.Set("nextToken", nextToken)
 	}
-	
-	req, err := request.MakeRequest(
+
+	req, err := request.New(
 		http.MethodGet,
 		consts.FortniteLockerService,
 		"api/locker/v4/%s/account/%s/cosmetic-data",
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 	)
 	if err != nil {
@@ -58,7 +56,7 @@ func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken stri
 		return CosmeticData{}, err
 	}
 
-	resp, err := request.ParseResponse[CosmeticData](res)
+	resp, err := request.DecodeResponse[CosmeticData](res)
 	if err != nil {
 		return CosmeticData{}, err
 	}
@@ -69,11 +67,10 @@ func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken stri
 func (c *Client) LockInImmutableItem(accountID string, templateID string, itemGUID string, variants map[string]ItemCustomization) error {
 	payload := &LockInImmutableItemPayload{variants}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.FortniteLockerService,
 		fmt.Sprintf("api/locker/v4/%s/account/%s/lock-in-immutable-item/%s:%s", consts.DeploymentIDLiveFN, accountID, templateID, itemGUID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(payload),
 	)
 	if err != nil {
@@ -85,16 +82,15 @@ func (c *Client) LockInImmutableItem(accountID string, templateID string, itemGU
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }
 
 func (c *Client) QueryItems(accountID string) (LockerItems, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FortniteLockerService,
 		"api/locker/v4/%s/account/%s/items",
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return LockerItems{}, err
@@ -105,7 +101,7 @@ func (c *Client) QueryItems(accountID string) (LockerItems, error) {
 		return LockerItems{}, err
 	}
 
-	resp, err := request.ParseResponse[LockerItems](res)
+	resp, err := request.DecodeResponse[LockerItems](res)
 	if err != nil {
 		return LockerItems{}, err
 	}
@@ -114,11 +110,10 @@ func (c *Client) QueryItems(accountID string) (LockerItems, error) {
 }
 
 func (c *Client) UpdateActiveLoadoutGroup(accountID string, payload UpdateActiveLockerLoadoutPayload) (ActiveLoadoutGroup, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPut,
 		consts.FortniteLockerService,
 		fmt.Sprintf("api/locker/v4/%s/account/%s/active-loadout-group", consts.DeploymentIDLiveFN, accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(payload),
 	)
 	if err != nil {
@@ -130,7 +125,7 @@ func (c *Client) UpdateActiveLoadoutGroup(accountID string, payload UpdateActive
 		return ActiveLoadoutGroup{}, err
 	}
 
-	resp, err := request.ParseResponse[ActiveLoadoutGroup](res)
+	resp, err := request.DecodeResponse[ActiveLoadoutGroup](res)
 	if err != nil {
 		return ActiveLoadoutGroup{}, err
 	}

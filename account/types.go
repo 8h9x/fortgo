@@ -1,6 +1,9 @@
 package account
 
-import "time"
+import (
+	"net/url"
+	"time"
+)
 
 type TokenType string
 
@@ -104,7 +107,7 @@ type GetUserResponseExtended struct {
 	LastReviewedSecuritySettings time.Time `json:"lastReviewedSecuritySettings"`
 }
 
-type TokenResponse struct {
+type Token struct {
 	AccessToken      string `json:"access_token"`
 	ExpiresIn        int64  `json:"expires_in"`
 	ExpiresAt        string `json:"expires_at"`
@@ -133,55 +136,85 @@ type getUsersByExternalIDBulkPayload struct {
 	IDs      []string         `json:"ids"`
 }
 
-type TokenPayloadAuthorizationCode struct {
-	Code string `json:"code"`
+type TokenGrant = url.Values
+
+func TokenGrantAuthorizationCode(code string) TokenGrant {
+	return TokenGrant{
+		"grant_type": {"authorization_code"},
+		"code":       {code},
+	}
 }
 
-type TokenPayloadClientCredentials struct{}
-
-type TokenPayloadContinuationToken struct {
-	ContinuationToken string `json:"continuation_token"`
+func TokenGrantClientCredentials() TokenGrant {
+	return TokenGrant{
+		"grant_type": {"client_credentials"},
+	}
 }
 
-type TokenPayloadDeviceAuth struct {
-	AccountID string `json:"account_id"`
-	DeviceID  string `json:"device_id"`
-	Secret    string `json:"secret"`
+func TokenGrantContinuationToken(continuationToken string) TokenGrant {
+	return TokenGrant{
+		"grant_type":         {"continuation_token"},
+		"continuation_token": {continuationToken},
+	}
 }
 
-type TokenPayloadDeviceCode struct {
-	DeviceCode string `json:"device_code"`
+func TokenGrantDeviceAuth(accountId, deviceId, secret string) TokenGrant {
+	return TokenGrant{
+		"grant_type": {"device_auth"},
+		"account_id": {accountId},
+		"device_id":  {deviceId},
+		"secret":     {secret},
+	}
 }
 
-type TokenPayloadExchangeCode struct {
-	ExchangeCode string `json:"exchange_code"`
+func TokenGrantDeviceCode(deviceCode string) TokenGrant {
+	return TokenGrant{
+		"grant_type":  {"device_code"},
+		"device_code": {deviceCode},
+	}
 }
 
-type TokenPayloadExternalAuth struct {
-	ExternalAuthToken string `json:"external_auth_token"`
+func TokenGrantExchangeCode(code string) TokenGrant {
+	return TokenGrant{
+		"grant_type":    {"device_code"},
+		"exchange_code": {code},
+	}
 }
 
-type TokenPayloadOTP struct {
-	OTP string `json:"otp"`
+func TokenGrantExternalAuth(externalAuthToken string) TokenGrant {
+	return TokenGrant{
+		"grant_type":          {"external_auth"},
+		"external_auth_token": {externalAuthToken},
+	}
 }
 
-type TokenPayloadPassword struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+func TokenGrantOTP(otp string) TokenGrant {
+	return TokenGrant{
+		"grant_type": {"otp"},
+		"otp":        {otp},
+	}
 }
 
-type TokenPayloadRefreshToken struct {
-	RefreshToken string `json:"refresh_token"`
+func TokenGrantPassword(username, password string) TokenGrant {
+	return TokenGrant{
+		"grant_type": {"password"},
+		"username":   {username},
+		"password":   {password},
+	}
 }
 
-type TokenPayloadTokenToToken struct {
-	AccessToken string `json:"access_token"`
+func TokenGrantRefreshToken(refreshToken string) TokenGrant {
+	return TokenGrant{
+		"grant_type":    {"refresh_token"},
+		"refresh_token": {refreshToken},
+	}
 }
 
-type TokenPayload interface {
-	TokenPayloadAuthorizationCode | TokenPayloadClientCredentials | TokenPayloadContinuationToken |
-		TokenPayloadDeviceAuth | TokenPayloadDeviceCode | TokenPayloadExchangeCode | TokenPayloadExternalAuth |
-		TokenPayloadOTP | TokenPayloadPassword | TokenPayloadRefreshToken | TokenPayloadTokenToToken
+func TokenGrantAccessToken(accessToken string) TokenGrant {
+	return TokenGrant{
+		"grant_type":   {"token_to_token"},
+		"access_token": {accessToken},
+	}
 }
 
 type VerifyTokenResponsePermission struct {
@@ -214,7 +247,7 @@ type VerifyTokenResponse struct {
 	Perms          []VerifyTokenResponsePermission `json:"perms"`
 }
 
-type DeviceAuthResponse struct {
+type DeviceAuth struct {
 	AccountID string `json:"accountId"`
 	Created   struct {
 		DateTime  time.Time `json:"dateTime"`

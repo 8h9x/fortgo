@@ -23,11 +23,10 @@ func (c *Client) Invite(buildID string, partyID string, friendID string, platfor
 		DisplayName:                senderDisplayName,
 	}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.PartyService,
 		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/invites/%s", partyID, friendID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 		request.WithJSONBody(payload),
 	)
@@ -40,16 +39,15 @@ func (c *Client) Invite(buildID string, partyID string, friendID string, platfor
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }
 
 func (c *Client) Remove(partyID string, memberID string) error {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodDelete,
 		consts.PartyService,
 		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/members/%s", partyID, memberID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return err
@@ -60,16 +58,15 @@ func (c *Client) Remove(partyID string, memberID string) error {
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }
 
 func (c *Client) Promote(partyID string, memberID string) error {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.PartyService,
 		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/members/%s/promote", partyID, memberID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return err
@@ -80,6 +77,6 @@ func (c *Client) Promote(partyID string, memberID string) error {
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }

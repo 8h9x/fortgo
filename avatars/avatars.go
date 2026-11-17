@@ -11,18 +11,13 @@ import (
 )
 
 func (c *Client) Get(accountIDs ...string) (GetAvatarsResponse, error) {
-	if len(accountIDs) == 0 {
-		accountIDs = []string{c.Credentials.AccountID}
-	}
-
 	query := url.Values{}
 	query.Set("accountIds", strings.Join(accountIDs, ","))
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.AvatarService,
 		"v1/avatar/fortnite/ids",
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 	)
 	if err != nil {
@@ -34,7 +29,7 @@ func (c *Client) Get(accountIDs ...string) (GetAvatarsResponse, error) {
 		return GetAvatarsResponse{}, err
 	}
 
-	resp, err := request.ParseResponse[GetAvatarsResponse](res)
+	resp, err := request.DecodeResponse[GetAvatarsResponse](res)
 	if err != nil {
 		return GetAvatarsResponse{}, err
 	}

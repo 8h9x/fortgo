@@ -9,7 +9,7 @@ import (
 )
 
 func (c *Client) GetPublicKey(thumbprint string) (GetPublicKeyResponse, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.AccountService,
 		fmt.Sprintf("account/api/publickeys/%s", thumbprint),
@@ -23,7 +23,7 @@ func (c *Client) GetPublicKey(thumbprint string) (GetPublicKeyResponse, error) {
 		return GetPublicKeyResponse{}, err
 	}
 
-	resp, err := request.ParseResponse[GetPublicKeyResponse](res)
+	resp, err := request.DecodeResponse[GetPublicKeyResponse](res)
 	if err != nil {
 		return GetPublicKeyResponse{}, err
 	}

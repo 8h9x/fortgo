@@ -10,11 +10,10 @@ import (
 )
 
 func (c *Client) GetSystemCloudstorageConfig() (CloudstorageConfig, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FortniteMCPService,
 		"fortnite/api/cloudstorage/system/config",
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return CloudstorageConfig{}, err
@@ -25,7 +24,7 @@ func (c *Client) GetSystemCloudstorageConfig() (CloudstorageConfig, error) {
 		return CloudstorageConfig{}, err
 	}
 
-	resp, err := request.ParseResponse[CloudstorageConfig](res)
+	resp, err := request.DecodeResponse[CloudstorageConfig](res)
 	if err != nil {
 		return CloudstorageConfig{}, err
 	}
@@ -34,11 +33,10 @@ func (c *Client) GetSystemCloudstorageConfig() (CloudstorageConfig, error) {
 }
 
 func (c *Client) GetUserCloudstorageConfig() (CloudstorageConfig, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FortniteMCPService,
 		"fortnite/api/cloudstorage/user/config",
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return CloudstorageConfig{}, err
@@ -49,7 +47,7 @@ func (c *Client) GetUserCloudstorageConfig() (CloudstorageConfig, error) {
 		return CloudstorageConfig{}, err
 	}
 
-	resp, err := request.ParseResponse[CloudstorageConfig](res)
+	resp, err := request.DecodeResponse[CloudstorageConfig](res)
 	if err != nil {
 		return CloudstorageConfig{}, err
 	}
@@ -58,11 +56,10 @@ func (c *Client) GetUserCloudstorageConfig() (CloudstorageConfig, error) {
 }
 
 func (c *Client) ListSystemCloudstorage() ([]CloudstorageFilePointerSystem, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FortniteMCPService,
 		"fortnite/api/cloudstorage/system",
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return nil, err
@@ -73,7 +70,7 @@ func (c *Client) ListSystemCloudstorage() ([]CloudstorageFilePointerSystem, erro
 		return nil, err
 	}
 
-	resp, err := request.ParseResponse[[]CloudstorageFilePointerSystem](res)
+	resp, err := request.DecodeResponse[[]CloudstorageFilePointerSystem](res)
 	if err != nil {
 		return nil, err
 	}
@@ -82,11 +79,10 @@ func (c *Client) ListSystemCloudstorage() ([]CloudstorageFilePointerSystem, erro
 }
 
 func (c *Client) ListUserCloudstorage(accountID string) ([]CloudstorageFilePointerUser, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FortniteMCPService,
 		fmt.Sprintf("fortnite/api/cloudstorage/user/%s", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return nil, err
@@ -97,7 +93,7 @@ func (c *Client) ListUserCloudstorage(accountID string) ([]CloudstorageFilePoint
 		return nil, err
 	}
 
-	resp, err := request.ParseResponse[[]CloudstorageFilePointerUser](res)
+	resp, err := request.DecodeResponse[[]CloudstorageFilePointerUser](res)
 	if err != nil {
 		return nil, err
 	}
@@ -111,11 +107,10 @@ func (c *Client) UpdateUserFilePointer(accountID string, filename string, should
 		query.Set("shouldMigrate", "true")
 	}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.FortniteMCPService,
 		fmt.Sprintf("fortnite/api/cloudstorage/user/%s/%s/updatePointer", accountID, filename),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 		request.WithJSONBody(&payload),
 	)
@@ -128,7 +123,7 @@ func (c *Client) UpdateUserFilePointer(accountID string, filename string, should
 		return CloudstorageFilePointerUser{}, err
 	}
 
-	resp, err := request.ParseResponse[CloudstorageFilePointerUser](res)
+	resp, err := request.DecodeResponse[CloudstorageFilePointerUser](res)
 	if err != nil {
 		return CloudstorageFilePointerUser{}, err
 	}

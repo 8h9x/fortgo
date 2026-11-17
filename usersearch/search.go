@@ -14,11 +14,10 @@ func (c *Client) Search(accountID string, platform Platform, term string) (Searc
 	query.Set("platform", string(platform))
 	query.Set("prefix", term)
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.UserSearchService,
 		fmt.Sprintf("api/v1/search/%s", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 	)
 	if err != nil {
@@ -30,7 +29,7 @@ func (c *Client) Search(accountID string, platform Platform, term string) (Searc
 		return SearchUsersResponse{}, err
 	}
 
-	resp, err := request.ParseResponse[SearchUsersResponse](res)
+	resp, err := request.DecodeResponse[SearchUsersResponse](res)
 	if err != nil {
 		return SearchUsersResponse{}, err
 	}

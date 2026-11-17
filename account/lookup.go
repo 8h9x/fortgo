@@ -10,11 +10,10 @@ import (
 )
 
 func (c *Client) GetUserByID(accountID string) (GetUserResponseExtended, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.AccountService,
 		fmt.Sprintf("account/api/public/account/%s", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return GetUserResponseExtended{}, err
@@ -25,7 +24,7 @@ func (c *Client) GetUserByID(accountID string) (GetUserResponseExtended, error) 
 		return GetUserResponseExtended{}, err
 	}
 
-	resp, err := request.ParseResponse[GetUserResponseExtended](res)
+	resp, err := request.DecodeResponse[GetUserResponseExtended](res)
 	if err != nil {
 		return GetUserResponseExtended{}, err
 	}
@@ -39,11 +38,10 @@ func (c *Client) GetUsersByIDBulk(accountIDs []string) ([]GetUserResponse, error
 		query.Add("accountId", accountID)
 	}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.AccountService,
 		"account/api/public/account",
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 	)
 	if err != nil {
@@ -55,7 +53,7 @@ func (c *Client) GetUsersByIDBulk(accountIDs []string) ([]GetUserResponse, error
 		return []GetUserResponse{}, err
 	}
 
-	resp, err := request.ParseResponse[[]GetUserResponse](res)
+	resp, err := request.DecodeResponse[[]GetUserResponse](res)
 	if err != nil {
 		return []GetUserResponse{}, err
 	}
@@ -64,11 +62,10 @@ func (c *Client) GetUsersByIDBulk(accountIDs []string) ([]GetUserResponse, error
 }
 
 func (c *Client) GetUserByDisplayName(displayName string) (GetUserResponseExtended, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.AccountService,
 		fmt.Sprintf("account/api/public/account/displayName/%s", displayName),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return GetUserResponseExtended{}, err
@@ -79,7 +76,7 @@ func (c *Client) GetUserByDisplayName(displayName string) (GetUserResponseExtend
 		return GetUserResponseExtended{}, err
 	}
 
-	resp, err := request.ParseResponse[GetUserResponseExtended](res)
+	resp, err := request.DecodeResponse[GetUserResponseExtended](res)
 	if err != nil {
 		return GetUserResponseExtended{}, err
 	}
@@ -88,11 +85,10 @@ func (c *Client) GetUserByDisplayName(displayName string) (GetUserResponseExtend
 }
 
 func (c *Client) GetUserByExternalDisplayName(externalAuthType ExternalAuthType, displayName string, caseSensitive bool) ([]GetUserResponse, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.AccountService,
 		fmt.Sprintf("account/api/public/account/lookup/externalAuth/%s/displayName/%s?caseInsensitive=%t", externalAuthType, displayName, !caseSensitive),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return []GetUserResponse{}, err
@@ -103,7 +99,7 @@ func (c *Client) GetUserByExternalDisplayName(externalAuthType ExternalAuthType,
 		return []GetUserResponse{}, err
 	}
 
-	resp, err := request.ParseResponse[[]GetUserResponse](res)
+	resp, err := request.DecodeResponse[[]GetUserResponse](res)
 	if err != nil {
 		return []GetUserResponse{}, err
 	}
@@ -112,11 +108,10 @@ func (c *Client) GetUserByExternalDisplayName(externalAuthType ExternalAuthType,
 }
 
 func (c *Client) GetUsersByExternalDisplayNameBulk(externalAuthType ExternalAuthType, displayNames []string) (data map[ExternalAuthType]ExternalAuth, err error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.AccountService,
 		"account/api/public/account/lookup/externalDisplayName",
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(&getUsersByExternalDisplayNameBulkPayload{externalAuthType, displayNames}),
 	)
 	if err != nil {
@@ -128,7 +123,7 @@ func (c *Client) GetUsersByExternalDisplayNameBulk(externalAuthType ExternalAuth
 		return data, err
 	}
 
-	resp, err := request.ParseResponse[map[ExternalAuthType]ExternalAuth](res)
+	resp, err := request.DecodeResponse[map[ExternalAuthType]ExternalAuth](res)
 	if err != nil {
 		return data, err
 	}
@@ -137,11 +132,10 @@ func (c *Client) GetUsersByExternalDisplayNameBulk(externalAuthType ExternalAuth
 }
 
 func (c *Client) GetUsersByExternalIDBulk(externalAuthType ExternalAuthType, ids []string) (data map[ExternalAuthType]ExternalAuth, err error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.AccountService,
 		"account/api/public/account/lookup/externalId",
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(&getUsersByExternalIDBulkPayload{externalAuthType, ids}),
 	)
 	if err != nil {
@@ -153,7 +147,7 @@ func (c *Client) GetUsersByExternalIDBulk(externalAuthType ExternalAuthType, ids
 		return data, err
 	}
 
-	resp, err := request.ParseResponse[map[ExternalAuthType]ExternalAuth](res)
+	resp, err := request.DecodeResponse[map[ExternalAuthType]ExternalAuth](res)
 	if err != nil {
 		return data, err
 	}

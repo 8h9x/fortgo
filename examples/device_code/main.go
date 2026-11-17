@@ -4,78 +4,70 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/8h9x/fortgo"
 	"github.com/8h9x/fortgo/account"
 )
 
-const (
-	USE_CUSTOM_CHECK_TIMEOUT = false
-
-	CHECK_INTERVAL       = time.Second * 10
-	CUSTOM_CHECK_TIMEOUT = time.Minute * 2
-)
+const checkInterval = time.Second * 10
 
 func main() {
-	httpClient := &http.Client{}
+	client := fortgo.NewClient()
 
-	clientCredentials, err := account.Authenticate(httpClient, account.FortnitePS4USClient, account.TokenPayloadClientCredentials{}, false)
+	clientToken, err := client.AccountService.GetToken(
+		account.FortnitePS4USClient,
+		account.TokenGrantClientCredentials(),
+		account.TokenTypeDefault,
+	)
 	if err != nil {
 		log.Fatal("Unable to generate client credentials: ", err)
 	}
 
-	deviceAuthorization, err := account.CreateDeviceCode(httpClient, &clientCredentials)
+	deviceAuthorization, err := client.AccountService.CreateDeviceCode(clientToken)
 	if err != nil {
-		log.Fatal("Unable to start device code flow: ", err)
+		log.Fatal("Unable to generate client credentials: ", err)
 	}
 
-	var timeout time.Duration
-	if USE_CUSTOM_CHECK_TIMEOUT {
-		timeout = CUSTOM_CHECK_TIMEOUT
-	} else {
-		timeout = time.Second * time.Duration(deviceAuthorization.ExpiresIn)
-	}
+	log.Println(deviceAuthorization)
+
+	timeout := time.Second * time.Duration(deviceAuthorization.ExpiresIn)
 
 	fmt.Printf("Visit this URL: %s\nthen press 'Confirm' on the epic games login page.\n\nThis login flow will time out in %v minutes\n", deviceAuthorization.VerificationURIComplete, timeout.Minutes())
 
-	credentials, err := waitForDeviceCodeConfirm(httpClient, deviceAuthorization.DeviceCode, CHECK_INTERVAL, timeout)
-	if err != nil {
-		log.Fatal("Unable to complete device code flow: ", err)
-	}
-
-	client := fortgo.NewClient(httpClient, credentials)
-
-	err = client.Connect()
+	token, err := getTokenAfterConfirmed(client, deviceAuthorization.DeviceCode, checkInterval, timeout)
 	if err != nil {
 		log.Fatal("Failed to connect to client", err)
 	}
 
+	client.ConnectWithToken(token)
+
 	log.Println("Fortgo client connected!")
 }
 
-func waitForDeviceCodeConfirm(httpClient *http.Client, deviceCode string, interval, timeout time.Duration) (account.TokenResponse, error) {
+func getTokenAfterConfirmed(client *fortgo.Client, deviceCode string, interval, timeout time.Duration) (account.Token, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
-	payload := account.TokenPayloadDeviceCode{
-		DeviceCode: deviceCode,
-	}
-
 	for {
 		select {
 		case <-ctx.Done():
-			return account.TokenResponse{}, ctx.Err()
+			return account.Token{}, ctx.Err()
 		case <-ticker.C:
-			credentials, err := account.Authenticate(httpClient, account.FortnitePS4USClient, payload, true)
+			token, err := client.AccountService.GetToken(
+				account.FortnitePS4USClient,
+				account.TokenGrantDeviceCode(deviceCode),
+				account.TokenTypeEG1,
+			)
 			if err != nil {
+				log.Println(err)
 				continue
 			}
-			return credentials, nil
+
+			return token, nil
 		}
 	}
 }

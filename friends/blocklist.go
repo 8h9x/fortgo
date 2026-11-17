@@ -9,11 +9,10 @@ import (
 )
 
 func (c *Client) Block(accountID string, targetID string) error {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/blocklist/%s", accountID, targetID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return err
@@ -24,16 +23,15 @@ func (c *Client) Block(accountID string, targetID string) error {
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }
 
 func (c *Client) GetBlockedList(accountID string) ([]BlockedPlayer, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/blocklist", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return []BlockedPlayer{}, err
@@ -44,7 +42,7 @@ func (c *Client) GetBlockedList(accountID string) ([]BlockedPlayer, error) {
 		return []BlockedPlayer{}, err
 	}
 
-	resp, err := request.ParseResponse[[]BlockedPlayer](res)
+	resp, err := request.DecodeResponse[[]BlockedPlayer](res)
 	if err != nil {
 		return []BlockedPlayer{}, err
 	}
@@ -53,11 +51,10 @@ func (c *Client) GetBlockedList(accountID string) ([]BlockedPlayer, error) {
 }
 
 func (c *Client) Unblock(accountID string, targetID string) error {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodDelete,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/blocklist/%s", accountID, targetID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return err
@@ -68,6 +65,6 @@ func (c *Client) Unblock(accountID string, targetID string) error {
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }

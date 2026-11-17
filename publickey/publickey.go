@@ -29,11 +29,10 @@ func (c *Client) registerKey(algorithm, publicKey string) (RegisterPublicKeyResp
 		PublicKey: publicKey,
 	}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.PublicKeyService,
 		"publickey/v2/publickey",
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(payload),
 	)
 	if err != nil {
@@ -45,7 +44,7 @@ func (c *Client) registerKey(algorithm, publicKey string) (RegisterPublicKeyResp
 		return RegisterPublicKeyResponse{}, err
 	}
 
-	resp, err := request.ParseResponse[RegisterPublicKeyResponse](res)
+	resp, err := request.DecodeResponse[RegisterPublicKeyResponse](res)
 	if err != nil {
 		return RegisterPublicKeyResponse{}, err
 	}

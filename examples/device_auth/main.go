@@ -4,102 +4,92 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/8h9x/fortgo"
 	"github.com/8h9x/fortgo/account"
 )
 
+const deviceAuthFile = "./deviceAuth.json"
+
 func main() {
-	httpClient := &http.Client{}
-	deviceAuthPath := "./deviceAuth.json"
+	var tokenGrant account.TokenGrant
+	shouldGenerate := false
 
-	deviceAuth, err := fetchDeviceAuth(httpClient, account.FortniteNewIOSClient, deviceAuthPath)
+	deviceAuth, err := readDeviceAuthData(deviceAuthFile)
 	if err != nil {
-		log.Fatal(err)
+		var code string
+
+		fmt.Printf("Enter an auth code from https://www.epicgames.com/id/api/redirect?clientId=%s&responseType=code:\n", account.FortniteNewIOSClient.ID)
+		_, err := fmt.Scan(&code)
+		if err != nil {
+			log.Fatal("Failed to read auth code input: ", err)
+		}
+
+		tokenGrant = account.TokenGrantAuthorizationCode(code)
+		shouldGenerate = true
+	} else {
+		tokenGrant = account.TokenGrantDeviceAuth(
+			deviceAuth.AccountID,
+			deviceAuth.DeviceID,
+			deviceAuth.Secret,
+		)
 	}
 
-	deviceAuthPayload := account.TokenPayloadDeviceAuth{
-		AccountID: deviceAuth.AccountID,
-		DeviceID:  deviceAuth.DeviceID,
-		Secret:    deviceAuth.Secret,
-	}
-
-	credentials, err := account.Authenticate(httpClient, account.FortniteNewIOSClient, deviceAuthPayload, true)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	client := fortgo.NewClient(httpClient, credentials)
+	client := fortgo.NewClient(
+		fortgo.WithAuthClient(account.FortniteNewIOSClient),
+		fortgo.WithTokenGrant(tokenGrant),
+	)
 
 	err = client.Connect()
 	if err != nil {
-		log.Fatal("Failed to connect to client", err)
+		log.Fatal("Failed to connect to client: ", err)
 	}
 
 	log.Println("Fortgo client connected!")
+
+	if shouldGenerate {
+		log.Println("Generating new deviceAuth...")
+
+		deviceAuth, err := client.AccountService.CreateDeviceAuth(client.CurrentCredentials().AccountID)
+		if err != nil {
+			log.Fatal("Unable to create deviceAuth: ", err)
+		}
+
+		err = writeDeviceAuthData(deviceAuth)
+		if err != nil {
+			log.Fatal("Unable to save deviceAuth to file: ", err)
+		}
+
+		log.Println(fmt.Sprintf("New deviceAuth saved to '%s'", deviceAuthFile))
+	}
 }
 
-func fetchDeviceAuth(httpClient *http.Client, authClient *account.AuthClient, filepath string) (account.DeviceAuthResponse, error) {
+func readDeviceAuthData(filepath string) (account.DeviceAuth, error) {
 	data, err := os.ReadFile(filepath)
-	if os.IsNotExist(err) || len(data) == 0 {
-		deviceAuth, err := generateDeviceAuth(httpClient, authClient)
-		if err != nil {
-			return account.DeviceAuthResponse{}, err
-		}
-
-		buf, err := json.Marshal(deviceAuth)
-		if err != nil {
-			return account.DeviceAuthResponse{}, err
-		}
-
-		err = os.WriteFile(filepath, buf, 0600)
-		if err != nil {
-			return account.DeviceAuthResponse{}, err
-		}
-
-		return deviceAuth, nil
-	} else if err != nil {
-		return account.DeviceAuthResponse{}, err
+	if err != nil {
+		return account.DeviceAuth{}, err
 	}
 
-	deviceAuth := &account.DeviceAuthResponse{}
-	err = json.Unmarshal(data, deviceAuth)
+	deviceAuth := account.DeviceAuth{}
+	err = json.Unmarshal(data, &deviceAuth)
 	if err != nil {
-		return account.DeviceAuthResponse{}, err
-	}
-
-	return *deviceAuth, nil
-}
-
-func generateDeviceAuth(httpClient *http.Client, authClient *account.AuthClient) (account.DeviceAuthResponse, error) {
-	credentials, err := authCodeFlow(httpClient, authClient)
-	if err != nil {
-		return account.DeviceAuthResponse{}, err
-	}
-
-	deviceAuth, err := account.CreateDeviceAuth(httpClient, &credentials)
-	if err != nil {
-		return account.DeviceAuthResponse{}, err
+		return account.DeviceAuth{}, err
 	}
 
 	return deviceAuth, nil
 }
 
-func authCodeFlow(httpClient *http.Client, authClient *account.AuthClient) (account.TokenResponse, error) {
-	var code string
-
-	fmt.Printf("Enter an auth code from https://www.epicgames.com/id/api/redirect?clientId=%s&responseType=code:\n", authClient.ID)
-	_, err := fmt.Scan(&code)
+func writeDeviceAuthData(deviceAuth account.DeviceAuth) error {
+	deviceAuthBytes, err := json.Marshal(deviceAuth)
 	if err != nil {
-		return account.TokenResponse{}, err
+		return err
 	}
 
-	credentials, err := account.Authenticate(httpClient, authClient, account.TokenPayloadAuthorizationCode{Code: code}, true)
+	err = os.WriteFile(deviceAuthFile, deviceAuthBytes, 0666)
 	if err != nil {
-		return account.TokenResponse{}, err
+		return err
 	}
 
-	return credentials, nil
+	return nil
 }

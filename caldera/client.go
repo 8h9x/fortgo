@@ -2,15 +2,12 @@ package caldera
 
 import (
 	"net/http"
-
-	"github.com/8h9x/fortgo/account"
-	"github.com/8h9x/fortgo/base"
 )
 
 type Client struct {
-	base.Client
+	HTTPClient *http.Client
 }
 
-func NewClient(httpClient *http.Client, credentials *account.TokenResponse) *Client {
-	return &Client{base.New(httpClient, credentials)}
+func New(httpClient *http.Client) *Client {
+	return &Client{httpClient}
 }

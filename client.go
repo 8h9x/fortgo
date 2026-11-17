@@ -1,6 +1,7 @@
 package fortgo
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -18,12 +19,21 @@ import (
 	"github.com/8h9x/fortgo/usersearch"
 )
 
+type config struct {
+	httpClient *http.Client
+	authClient *account.AuthClient
+	tokenGrant account.TokenGrant
+}
+
 type Client struct {
-	HTTPClient     *http.Client
+	config         *config
 	Header         http.Header
-	ClientID       string
-	CredentialsMap map[string]*account.TokenResponse
+	CredentialsMap map[string]*account.Token
 	OnTokenRefresh OnTokenRefresh
+
+	tokenSource *ClientTokenSource
+
+	ClientID string
 
 	AccountService     *account.Client
 	AvatarService      *avatars.Client
@@ -39,41 +49,59 @@ type Client struct {
 	UserSearchService  *usersearch.Client
 }
 
-func NewClient(httpClient *http.Client, credentials account.TokenResponse) *Client {
-	client := &Client{
-		HTTPClient:     httpClient,
-		Header:         make(http.Header),
-		ClientID:       credentials.ClientID,
-		CredentialsMap: make(map[string]*account.TokenResponse),
+type ClientTokenSource struct {
+	token *account.Token
+}
+
+func (s *ClientTokenSource) Token(ctx context.Context) (string, error) {
+	return s.token.AccessToken, nil
+}
+
+func NewClient(opts ...Option) *Client {
+	tokenSource := &ClientTokenSource{}
+
+	cfg := &config{
+		httpClient: NewHTTPClient(tokenSource),
+		authClient: account.FortnitePS4USClient,
 	}
 
-	client.CredentialsMap[credentials.ClientID] = &credentials
-	credsPtr := client.CredentialsMap[client.ClientID]
+	for _, opt := range opts {
+		opt(cfg)
+	}
 
-	client.AccountService = account.NewClient(httpClient, credsPtr)
-	client.AvatarService = avatars.NewClient(httpClient, credsPtr)
-	client.CalderaService = caldera.NewClient(httpClient, credsPtr)
-	client.EOS = eos.NewClient(httpClient, credsPtr)
-	client.FortniteService = fortnite.NewClient(httpClient, credsPtr)
-	client.FriendService = friends.NewClient(httpClient, credsPtr)
-	client.FulfillmentService = fulfillment.NewClient(httpClient, credsPtr)
-	client.LinkService = links.NewClient(httpClient, credsPtr)
-	client.LockerService = locker.NewClient(httpClient, credsPtr)
-	client.PartyService = party.NewClient(httpClient, credsPtr)
-	client.PublicKeyService = publickey.NewClient(httpClient, credsPtr)
-	client.UserSearchService = usersearch.NewClient(httpClient, credsPtr)
+	client := &Client{
+		config:         cfg,
+		Header:         make(http.Header),
+		CredentialsMap: make(map[string]*account.Token),
+		tokenSource:    tokenSource,
+		ClientID:       cfg.authClient.ID,
+	}
+
+	//	client.config.httpClient.Timeout = 30 * time.Second
+	//	client.config.httpClient.Transport = &authenticatedTransport{src: src, base: http.DefaultTransport}
+
+	client.AccountService = account.New(client.config.httpClient)
+	client.AvatarService = avatars.New(client.config.httpClient)
+	client.CalderaService = caldera.New(client.config.httpClient)
+	client.EOS = eos.New(client.config.httpClient)
+	client.FortniteService = fortnite.New(client.config.httpClient)
+	client.FriendService = friends.New(client.config.httpClient)
+	client.FulfillmentService = fulfillment.New(client.config.httpClient)
+	client.LinkService = links.New(client.config.httpClient)
+	client.LockerService = locker.New(client.config.httpClient)
+	client.PartyService = party.New(client.config.httpClient)
+	client.PublicKeyService = publickey.New(client.config.httpClient)
+	client.UserSearchService = usersearch.New(client.config.httpClient)
 
 	return client
 }
 
-func Startup() {
+func (c *Client) ConnectWithToken(token account.Token) error {
+	c.tokenSource.token = &token
 
-}
+	c.CredentialsMap[c.config.authClient.ID] = &token
 
-func (c *Client) Connect() error {
-	credentials := c.CurrentCredentials()
-
-	if _, err := account.VerifyToken(c.HTTPClient, credentials.AccessToken, false); err != nil {
+	if _, err := c.AccountService.VerifyToken(false); err != nil {
 		return fmt.Errorf("verify token: %w", err)
 	}
 
@@ -90,21 +118,38 @@ func (c *Client) Connect() error {
 	return nil
 }
 
-func (c *Client) CurrentCredentials() *account.TokenResponse {
-	credentials := c.CredentialsMap[c.ClientID]
-
-	_, err := account.VerifyToken(c.HTTPClient, credentials.AccessToken, false)
+func (c *Client) Connect() error {
+	token, err := c.AccountService.GetToken(
+		c.config.authClient,
+		c.config.tokenGrant,
+		account.TokenTypeEG1,
+	)
 	if err != nil {
-		res, err := account.Authenticate(c.HTTPClient, account.FortnitePS4USClient, account.TokenPayloadRefreshToken{RefreshToken: credentials.RefreshToken}, true)
+		return fmt.Errorf("get token: %w", err)
+	}
+
+	return c.ConnectWithToken(token)
+}
+
+func (c *Client) CurrentCredentials() *account.Token {
+	credentials := c.CredentialsMap[c.config.authClient.ID]
+
+	_, err := c.AccountService.VerifyToken(false)
+	if err != nil {
+		token, err := c.AccountService.GetToken(
+			account.FortnitePS4USClient,
+			account.TokenGrantRefreshToken(credentials.RefreshToken),
+			account.TokenTypeEG1,
+		)
 		if err != nil {
 			println(err)
 			// TODO: handle
 		}
 
-		*c.CredentialsMap[c.ClientID] = res
+		*c.CredentialsMap[c.config.authClient.ID] = token
 	}
 
-	return c.CredentialsMap[c.ClientID]
+	return c.CredentialsMap[c.config.authClient.ID]
 }
 
 func (c *Client) GetMnemonic(mnemonic string, mnemonicType links.MnemonicType, version int) (Mnemonic, error) {

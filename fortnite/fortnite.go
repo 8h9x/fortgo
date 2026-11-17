@@ -10,7 +10,7 @@ import (
 )
 
 func (c *Client) GetMCPVersion() (MCPVersionResponse, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FortniteMCPService,
 		"fortnite/api/version",
@@ -24,7 +24,7 @@ func (c *Client) GetMCPVersion() (MCPVersionResponse, error) {
 		return MCPVersionResponse{}, err
 	}
 
-	resp, err := request.ParseResponse[MCPVersionResponse](res)
+	resp, err := request.DecodeResponse[MCPVersionResponse](res)
 	if err != nil {
 		return MCPVersionResponse{}, err
 	}
@@ -33,11 +33,10 @@ func (c *Client) GetMCPVersion() (MCPVersionResponse, error) {
 }
 
 func (c *Client) ComposeProfileOperation(accountID string, operation string, profileID string, payload string) (*http.Response, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.FortniteMCPService,
 		fmt.Sprintf("fortnite/api/game/v2/profile/%s/client/%s?profileId=%s&rvn=-1", accountID, operation, profileID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithTextBody(payload),
 		request.WithHeader("Content-Type", "application/json"), // TODO: fix, this is yucky
 	)

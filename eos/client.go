@@ -2,15 +2,12 @@ package eos
 
 import (
 	"net/http"
-
-	"github.com/8h9x/fortgo/account"
 )
 
 type Client struct {
-	HTTPClient  *http.Client
-	Credentials *account.TokenResponse
+	HTTPClient *http.Client
 }
 
-func NewClient(httpClient *http.Client, credentials *account.TokenResponse) *Client {
-	return &Client{httpClient, credentials}
+func New(httpClient *http.Client) *Client {
+	return &Client{httpClient}
 }

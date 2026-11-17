@@ -5,10 +5,9 @@ import (
 )
 
 type Client struct {
-	HTTPClient  *http.Client
-	Credentials *TokenResponse
+	HTTPClient *http.Client
 }
 
-func NewClient(httpClient *http.Client, credentials *TokenResponse) *Client {
-	return &Client{httpClient, credentials}
+func New(httpClient *http.Client) *Client {
+	return &Client{httpClient}
 }

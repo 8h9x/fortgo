@@ -15,11 +15,10 @@ func (c *Client) CreateConversation(title string, conversationType string, membe
 		query.Add("createIfExists", "true")
 	}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.EOSService,
 		"chat/v1/public/_/conversations",
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 		request.WithJSONBody(&CreateConversationPayload{
 			Title:   title,
@@ -36,7 +35,7 @@ func (c *Client) CreateConversation(title string, conversationType string, membe
 		return Conversation{}, err
 	}
 
-	resp, err := request.ParseResponse[Conversation](res)
+	resp, err := request.DecodeResponse[Conversation](res)
 	if err != nil {
 		return Conversation{}, err
 	}
@@ -45,11 +44,10 @@ func (c *Client) CreateConversation(title string, conversationType string, membe
 }
 
 func (c *Client) GetConversationSummary(accountID string) (ConversationSummary, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.EOSService,
 		fmt.Sprintf("chat/v1/public/_/users/%s/summary", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return ConversationSummary{}, err
@@ -60,7 +58,7 @@ func (c *Client) GetConversationSummary(accountID string) (ConversationSummary, 
 		return ConversationSummary{}, err
 	}
 
-	resp, err := request.ParseResponse[ConversationSummary](res)
+	resp, err := request.DecodeResponse[ConversationSummary](res)
 	if err != nil {
 		return ConversationSummary{}, err
 	}

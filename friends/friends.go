@@ -14,11 +14,10 @@ func (c *Client) AcceptBulk(accountID string, targetIDs []string) ([]string, err
 	query := url.Values{}
 	query.Set("targetIds", strings.Join(targetIDs, ","))
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/incoming/accept", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 	)
 	if err != nil {
@@ -30,7 +29,7 @@ func (c *Client) AcceptBulk(accountID string, targetIDs []string) ([]string, err
 		return []string{}, err
 	}
 
-	resp, err := request.ParseResponse[[]string](res)
+	resp, err := request.DecodeResponse[[]string](res)
 	if err != nil {
 		return []string{}, err
 	}
@@ -39,11 +38,10 @@ func (c *Client) AcceptBulk(accountID string, targetIDs []string) ([]string, err
 }
 
 func (c *Client) AddFriend(accountID string, targetID string, parentalControlsPin string) error {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends/%s", accountID, targetID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(&ParentalControlsPinPayload{parentalControlsPin}),
 	)
 	if err != nil {
@@ -55,16 +53,15 @@ func (c *Client) AddFriend(accountID string, targetID string, parentalControlsPi
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }
 
 func (c *Client) GetFriend(accountID string, friendID string) (Friend, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends/%s", accountID, friendID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return Friend{}, err
@@ -75,7 +72,7 @@ func (c *Client) GetFriend(accountID string, friendID string) (Friend, error) {
 		return Friend{}, err
 	}
 
-	resp, err := request.ParseResponse[Friend](res)
+	resp, err := request.DecodeResponse[Friend](res)
 	if err != nil {
 		return Friend{}, err
 	}
@@ -84,11 +81,10 @@ func (c *Client) GetFriend(accountID string, friendID string) (Friend, error) {
 }
 
 func (c *Client) GetFriendsList(accountID string) ([]Friend, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return []Friend{}, err
@@ -99,7 +95,7 @@ func (c *Client) GetFriendsList(accountID string) ([]Friend, error) {
 		return []Friend{}, err
 	}
 
-	resp, err := request.ParseResponse[[]Friend](res)
+	resp, err := request.DecodeResponse[[]Friend](res)
 	if err != nil {
 		return []Friend{}, err
 	}
@@ -108,11 +104,10 @@ func (c *Client) GetFriendsList(accountID string) ([]Friend, error) {
 }
 
 func (c *Client) GetMutual(accountID string, friendID string) ([]string, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends/%s/mutual", accountID, friendID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return []string{}, err
@@ -123,7 +118,7 @@ func (c *Client) GetMutual(accountID string, friendID string) ([]string, error) 
 		return []string{}, err
 	}
 
-	resp, err := request.ParseResponse[[]string](res)
+	resp, err := request.DecodeResponse[[]string](res)
 	if err != nil {
 		return []string{}, err
 	}
@@ -132,11 +127,10 @@ func (c *Client) GetMutual(accountID string, friendID string) ([]string, error) 
 }
 
 func (c *Client) GetSummary(accountID string) (FriendSummaryResponse, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/summary", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return FriendSummaryResponse{}, err
@@ -147,7 +141,7 @@ func (c *Client) GetSummary(accountID string) (FriendSummaryResponse, error) {
 		return FriendSummaryResponse{}, err
 	}
 
-	resp, err := request.ParseResponse[FriendSummaryResponse](res)
+	resp, err := request.DecodeResponse[FriendSummaryResponse](res)
 	if err != nil {
 		return FriendSummaryResponse{}, err
 	}
@@ -156,11 +150,10 @@ func (c *Client) GetSummary(accountID string) (FriendSummaryResponse, error) {
 }
 
 func (c *Client) GetSuggested(accountID string) ([]SuggestedFriend, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/suggested", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return []SuggestedFriend{}, err
@@ -171,7 +164,7 @@ func (c *Client) GetSuggested(accountID string) ([]SuggestedFriend, error) {
 		return []SuggestedFriend{}, err
 	}
 
-	resp, err := request.ParseResponse[[]SuggestedFriend](res)
+	resp, err := request.DecodeResponse[[]SuggestedFriend](res)
 	if err != nil {
 		return []SuggestedFriend{}, err
 	}
@@ -180,11 +173,10 @@ func (c *Client) GetSuggested(accountID string) ([]SuggestedFriend, error) {
 }
 
 func (c *Client) GetRelations(accountID string) (any, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/relations", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return []SuggestedFriend{}, err
@@ -195,7 +187,7 @@ func (c *Client) GetRelations(accountID string) (any, error) {
 		return []SuggestedFriend{}, err
 	}
 
-	resp, err := request.ParseResponse[[]SuggestedFriend](res)
+	resp, err := request.DecodeResponse[[]SuggestedFriend](res)
 	if err != nil {
 		return []SuggestedFriend{}, err
 	}
@@ -204,11 +196,10 @@ func (c *Client) GetRelations(accountID string) (any, error) {
 }
 
 func (c *Client) GetRequestsIncoming(accountID string) ([]FriendRequest, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/incoming", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return []FriendRequest{}, err
@@ -219,7 +210,7 @@ func (c *Client) GetRequestsIncoming(accountID string) ([]FriendRequest, error) 
 		return []FriendRequest{}, err
 	}
 
-	resp, err := request.ParseResponse[[]FriendRequest](res)
+	resp, err := request.DecodeResponse[[]FriendRequest](res)
 	if err != nil {
 		return []FriendRequest{}, err
 	}
@@ -228,11 +219,10 @@ func (c *Client) GetRequestsIncoming(accountID string) ([]FriendRequest, error) 
 }
 
 func (c *Client) GetRequestsOutgoing(accountID string) ([]FriendRequest, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/outgoing", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return []FriendRequest{}, err
@@ -243,7 +233,7 @@ func (c *Client) GetRequestsOutgoing(accountID string) ([]FriendRequest, error) 
 		return []FriendRequest{}, err
 	}
 
-	resp, err := request.ParseResponse[[]FriendRequest](res)
+	resp, err := request.DecodeResponse[[]FriendRequest](res)
 	if err != nil {
 		return []FriendRequest{}, err
 	}
@@ -252,11 +242,10 @@ func (c *Client) GetRequestsOutgoing(accountID string) ([]FriendRequest, error) 
 }
 
 func (c *Client) RemoveAllFriends(accountID string) error {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodDelete,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends", accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return err
@@ -267,16 +256,15 @@ func (c *Client) RemoveAllFriends(accountID string) error {
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }
 
 func (c *Client) RemoveFriend(accountID string, targetID string) error {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodDelete,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends/%s", accountID, targetID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return err
@@ -287,6 +275,6 @@ func (c *Client) RemoveFriend(accountID string, targetID string) error {
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }

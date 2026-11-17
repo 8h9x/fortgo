@@ -10,7 +10,7 @@ package fortgo
 //		header.Set(key, value[0])
 //	}
 //
-//	req, err := request.MakeRequest(method, serviceURL, endpoint, request.WithHeaders(header), )
+//	req, err := request.New(method, serviceURL, endpoint, request.WithHeaders(header), )
 //
 //	return request.Request(c.HTTPClient, method, url, header, body)
 //}

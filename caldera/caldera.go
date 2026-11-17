@@ -28,7 +28,7 @@ func (c *Client) GetAnticheatProvider(accountID string, exchangeCode string, epi
 		payload.Salmon = true
 	}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.CalderaService,
 		"caldera/api/v1/launcher/racp",
@@ -43,7 +43,7 @@ func (c *Client) GetAnticheatProvider(accountID string, exchangeCode string, epi
 		return AnticheatProviderResponse{}, err
 	}
 
-	res, err := request.ParseResponse[AnticheatProviderResponse](resp)
+	res, err := request.DecodeResponse[AnticheatProviderResponse](resp)
 	if err != nil {
 		return AnticheatProviderResponse{}, err
 	}

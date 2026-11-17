@@ -9,11 +9,10 @@ import (
 )
 
 func (c *Client) CreateUserMnemonic(namespace string, accountID string, payload CreateUserMnemonicPayload) (MnemonicDataWithActivationHistory, error) {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/author/%s", namespace, accountID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithJSONBody(payload),
 	)
 	if err != nil {
@@ -25,7 +24,7 @@ func (c *Client) CreateUserMnemonic(namespace string, accountID string, payload 
 		return MnemonicDataWithActivationHistory{}, err
 	}
 
-	resp, err := request.ParseResponse[MnemonicDataWithActivationHistory](res)
+	resp, err := request.DecodeResponse[MnemonicDataWithActivationHistory](res)
 	if err != nil {
 		return MnemonicDataWithActivationHistory{}, err
 	}

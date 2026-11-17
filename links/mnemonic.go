@@ -10,7 +10,7 @@ import (
 	"github.com/8h9x/fortgo/request"
 )
 
-func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](httpClient *http.Client, credentials *account.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (T, error) {
+func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](httpClient *http.Client, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (T, error) {
 	includeActivationHistory := false
 
 	var data T
@@ -28,11 +28,10 @@ func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](http
 		query.Set("includeActivationHistory", "true")
 	}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/mnemonic/%s", namespace, mnemonic),
-		request.WithBearerToken(credentials.AccessToken),
 		request.WithQueryParamaters(query),
 	)
 	if err != nil {
@@ -44,7 +43,7 @@ func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](http
 		return data, err
 	}
 
-	resp, err := request.ParseResponse[T](res)
+	resp, err := request.DecodeResponse[T](res)
 	if err != nil {
 		return data, err
 	}
@@ -55,13 +54,13 @@ func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](http
 // GetMnemonicInfo fetches information about provided mnemonic on the namespace given a matching mnemonicType,
 // set version to '-1' in order to fetch latest
 func (c *Client) GetMnemonicInfo(namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicData, error) {
-	return getMnemonicInfoRaw[MnemonicData](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
+	return getMnemonicInfoRaw[MnemonicData](c.HTTPClient, namespace, mnemonic, mnemonicType, version)
 }
 
 // GetMnemonicInfoWithActivationHistory fetches information with activation history and extended metadata about provided mnemonic on the namespace given a matching mnemonicType,
 // set version to '-1' in order to fetch latest
-func (c *Client) GetMnemonicInfoWithActivationHistory(httpClient *http.Client, credentials account.TokenResponse, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicDataWithActivationHistory, error) {
-	return getMnemonicInfoRaw[MnemonicDataWithActivationHistory](c.HTTPClient, c.Credentials, namespace, mnemonic, mnemonicType, version)
+func (c *Client) GetMnemonicInfoWithActivationHistory(httpClient *http.Client, credentials account.Token, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicDataWithActivationHistory, error) {
+	return getMnemonicInfoRaw[MnemonicDataWithActivationHistory](c.HTTPClient, namespace, mnemonic, mnemonicType, version)
 }
 
 func (c *Client) GetRelatedMnemonics(namespace Namespace, mnemonic string, version int) (GetRelatedMnemonicsResponse, error) {
@@ -70,11 +69,10 @@ func (c *Client) GetRelatedMnemonics(namespace Namespace, mnemonic string, versi
 		query.Set("v", string(rune(version)))
 	}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodGet,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/mnemonic/%s/related", namespace, mnemonic),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 	)
 	if err != nil {
@@ -86,7 +84,7 @@ func (c *Client) GetRelatedMnemonics(namespace Namespace, mnemonic string, versi
 		return GetRelatedMnemonicsResponse{}, err
 	}
 
-	resp, err := request.ParseResponse[GetRelatedMnemonicsResponse](res)
+	resp, err := request.DecodeResponse[GetRelatedMnemonicsResponse](res)
 	if err != nil {
 		return GetRelatedMnemonicsResponse{}, err
 	}
@@ -100,11 +98,10 @@ func (c *Client) GetMnemonicInfoBulk(namespace Namespace, mnemonics []GetMnemoni
 		query.Set("ignoreFailures", "true")
 	}
 
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPost,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/mnemonic", namespace),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithQueryParamaters(query),
 		request.WithJSONBody(&mnemonics),
 	)
@@ -117,7 +114,7 @@ func (c *Client) GetMnemonicInfoBulk(namespace Namespace, mnemonics []GetMnemoni
 		return []MnemonicData{}, err
 	}
 
-	resp, err := request.ParseResponse[[]MnemonicData](res)
+	resp, err := request.DecodeResponse[[]MnemonicData](res)
 	if err != nil {
 		return []MnemonicData{}, err
 	}

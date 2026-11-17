@@ -9,11 +9,10 @@ import (
 )
 
 func (c *Client) EditNode(accountID string, friendID string, note string) error {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodPut,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends/%s/note", accountID, friendID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 		request.WithTextBody(note),
 	)
 	if err != nil {
@@ -25,16 +24,15 @@ func (c *Client) EditNode(accountID string, friendID string, note string) error 
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }
 
 func (c *Client) RemoveNode(accountID string, friendID string) error {
-	req, err := request.MakeRequest(
+	req, err := request.New(
 		http.MethodDelete,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends/%s/note", accountID, friendID),
-		request.WithBearerToken(c.Credentials.AccessToken),
 	)
 	if err != nil {
 		return err
@@ -45,6 +43,6 @@ func (c *Client) RemoveNode(accountID string, friendID string) error {
 		return err
 	}
 
-	_, err = request.ParseResponse[any](res)
+	_, err = request.DecodeResponse[any](res)
 	return err
 }

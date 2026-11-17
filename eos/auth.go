@@ -2,55 +2,74 @@ package eos
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/8h9x/fortgo/account"
+	"github.com/8h9x/fortgo/consts"
+	"github.com/8h9x/fortgo/request"
 )
 
-type ClientCredentials struct {
-	AccessToken   string    `json:"access_token"`
-	ApplicationID string    `json:"application_id"`
-	ClientID      string    `json:"client_id"`
-	ExpiresAt     time.Time `json:"expires_at"`
-	ExpiresIn     int       `json:"expires_in"`
-	TokenType     string    `json:"token_type"`
+func (c *Client) GetExchangeCode() (ExchangeResponse, error) {
+	req, err := request.New(
+		http.MethodGet,
+		consts.EOSServiceAuth,
+		"exchange",
+	)
+
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return ExchangeResponse{}, err
+	}
+
+	resp, err := request.DecodeResponse[ExchangeResponse](res)
+	if err != nil {
+		return ExchangeResponse{}, err
+	}
+
+	return resp.Data, err
 }
 
-type DeviceAuthorization struct {
-	ClientID                string `json:"client_id"`
-	DeviceCode              string `json:"device_code"`
-	ExpiresIn               int    `json:"expires_in"`
-	Interval                int    `json:"interval"`
-	Prompt                  string `json:"prompt"`
-	UserCode                string `json:"user_code"`
-	VerificationURI         string `json:"verification_uri"`
-	VerificationURIComplete string `json:"verification_uri_complete"`
+func (c *Client) CreateDeviceCode() (GetDeviceCodeResponse, error) {
+	req, err := request.New(
+		http.MethodPost,
+		consts.EOSServiceAuth,
+		"deviceAuthorization",
+	)
+
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return GetDeviceCodeResponse{}, err
+	}
+
+	resp, err := request.DecodeResponse[GetDeviceCodeResponse](res)
+	if err != nil {
+		return GetDeviceCodeResponse{}, err
+	}
+
+	return resp.Data, err
 }
 
-type UserCredentials struct {
-	AccessToken      string    `json:"access_token"`
-	AccountID        string    `json:"account_id"`
-	ApplicationID    string    `json:"application_id"`
-	ClientID         string    `json:"client_id"`
-	ExpiresAt        time.Time `json:"expires_at"`
-	ExpiresIn        int       `json:"expires_in"`
-	RefreshExpiresAt time.Time `json:"refresh_expires_at"`
-	RefreshExpiresIn int       `json:"refresh_expires_in"`
-	RefreshToken     string    `json:"refresh_token"`
-	Scope            string    `json:"scope"`
-	TokenType        string    `json:"token_type"`
-}
+func (c *Client) GetToken(authClient *account.AuthClient, tokenGrant account.TokenGrant, tokenType account.TokenType) (Token, error) {
+	tokenGrant.Set("token_type", string(tokenType))
 
-type Exchange struct {
-	Code             string `json:"code"`
-	CreatingClientID string `json:"creatingClientId"`
-	ExpiresInSeconds int    `json:"expiresInSeconds"`
-}
+	req, err := request.New(
+		http.MethodPost,
+		consts.EOSServiceAuth,
+		"token",
+		request.WithBasicToken(authClient.Base64()),
+		request.WithFormBody(tokenGrant),
+	)
 
-type AuthPayload account.TokenPayload
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return Token{}, err
+	}
 
-func Authenticate[T AuthPayload](httpClient *http.Client, clientId, clientSecret string, payload T, eg1 bool) (T, error) {
-	return payload, nil
+	resp, err := request.DecodeResponse[Token](res)
+	if err != nil {
+		return Token{}, err
+	}
+
+	return resp.Data, err
 }
 
 //func (c Client) DeviceCodeLogin(clientId string, clientSecret string, deviceCode string) (credentials UserCredentials, err error) {
