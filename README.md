@@ -10,42 +10,33 @@ Simple client creation example:
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
+    "fmt"
+    "log"
 
-	"github.com/8h9x/fortgo"
-	"github.com/8h9x/fortgo/auth"
+    "github.com/8h9x/fortgo"
+    "github.com/8h9x/fortgo/account"
 )
 
 func main() {
-	httpClient := &http.Client{}
+    var code string
 
-	var code string
+    fmt.Printf("Enter an auth code from https://www.epicgames.com/id/api/redirect?clientId=%s&responseType=code:\n", account.FortniteNewIOSClient.ID)
+    _, err := fmt.Scan(&code)
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	fmt.Printf("Enter an auth code from https://www.epicgames.com/id/api/redirect?clientId=%s&responseType=code:\n", auth.FortniteNewIOSClient.ID)
-	_, err := fmt.Scan(&code)
-	if err != nil {
-		log.Fatal(err)
-	}
+    client := fortgo.NewClient(
+        fortgo.WithAuthClient(account.FortniteNewIOSClient),
+        fortgo.WithTokenGrant(account.TokenGrantAuthorizationCode(code)),
+    )
 
-	authCodePayload := auth.PayloadAuthorizationCode{
-		Code: code,
-	}
+    err = client.Connect()
+    if err != nil {
+        log.Fatal("Failed to connect to client: ", err)
+    }
 
-	credentials, err := auth.Authenticate(httpClient, auth.FortniteNewIOSClient, authCodePayload, true)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	client := fortgo.NewClient(httpClient, credentials)
-
-	err = client.Connect()
-	if err != nil {
-		log.Fatal("Failed to connect to client", err)
-	}
-
-	log.Println("Fortgo client connected!")
+    log.Println("Fortgo client connected!")
 }
 ```
 
