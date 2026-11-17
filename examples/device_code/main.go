@@ -29,8 +29,6 @@ func main() {
 		log.Fatal("Unable to generate client credentials: ", err)
 	}
 
-	log.Println(deviceAuthorization)
-
 	timeout := time.Second * time.Duration(deviceAuthorization.ExpiresIn)
 
 	fmt.Printf("Visit this URL: %s\nthen press 'Confirm' on the epic games login page.\n\nThis login flow will time out in %v minutes\n", deviceAuthorization.VerificationURIComplete, timeout.Minutes())
