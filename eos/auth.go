@@ -2,6 +2,7 @@ package eos
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/8h9x/fortgo/account"
 	"github.com/8h9x/fortgo/consts"
@@ -28,11 +29,12 @@ func (c *Client) GetExchangeCode() (ExchangeResponse, error) {
 	return resp.Data, err
 }
 
-func (c *Client) CreateDeviceCode() (GetDeviceCodeResponse, error) {
+func (c *Client) CreateDeviceCode(clientToken Token) (GetDeviceCodeResponse, error) {
 	req, err := request.New(
 		http.MethodPost,
 		consts.EOSServiceAuth,
 		"deviceAuthorization",
+		request.WithBearerToken(clientToken.AccessToken),
 	)
 
 	res, err := c.HTTPClient.Do(req)
@@ -48,8 +50,11 @@ func (c *Client) CreateDeviceCode() (GetDeviceCodeResponse, error) {
 	return resp.Data, err
 }
 
-func (c *Client) GetToken(authClient *account.AuthClient, tokenGrant account.TokenGrant, tokenType account.TokenType) (Token, error) {
+func (c *Client) GetToken(authClient *account.AuthClient, tokenGrant account.TokenGrant, tokenType account.TokenType, scope ...string) (Token, error) {
 	tokenGrant.Set("token_type", string(tokenType))
+	if len(scope) > 0 {
+		tokenGrant.Set("scope", strings.Join(scope, " "))
+	}
 
 	req, err := request.New(
 		http.MethodPost,

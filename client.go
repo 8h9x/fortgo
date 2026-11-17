@@ -31,7 +31,8 @@ type Client struct {
 	CredentialsMap map[string]*account.Token
 	OnTokenRefresh OnTokenRefresh
 
-	tokenSource *ClientTokenSource
+	tokenSource    *ClientTokenSource
+	tokenSourceEOS *ClientTokenSourceEOS
 
 	ClientID string
 
@@ -57,8 +58,17 @@ func (s *ClientTokenSource) Token(ctx context.Context) (string, error) {
 	return s.token.AccessToken, nil
 }
 
+type ClientTokenSourceEOS struct {
+	token *eos.Token
+}
+
+func (s *ClientTokenSourceEOS) Token(ctx context.Context) (string, error) {
+	return s.token.AccessToken, nil
+}
+
 func NewClient(opts ...Option) *Client {
 	tokenSource := &ClientTokenSource{}
+	tokenSourceEOS := &ClientTokenSourceEOS{}
 
 	cfg := &config{
 		httpClient: NewHTTPClient(tokenSource),
@@ -74,6 +84,7 @@ func NewClient(opts ...Option) *Client {
 		Header:         make(http.Header),
 		CredentialsMap: make(map[string]*account.Token),
 		tokenSource:    tokenSource,
+		tokenSourceEOS: tokenSourceEOS,
 		ClientID:       cfg.authClient.ID,
 	}
 
@@ -83,7 +94,7 @@ func NewClient(opts ...Option) *Client {
 	client.AccountService = account.New(client.config.httpClient)
 	client.AvatarService = avatars.New(client.config.httpClient)
 	client.CalderaService = caldera.New(client.config.httpClient)
-	client.EOS = eos.New(client.config.httpClient)
+	client.EOS = eos.New(NewHTTPClient(tokenSourceEOS))
 	client.FortniteService = fortnite.New(client.config.httpClient)
 	client.FriendService = friends.New(client.config.httpClient)
 	client.FulfillmentService = fulfillment.New(client.config.httpClient)

@@ -35,17 +35,20 @@ func main() {
 
 	fmt.Printf("Visit this URL: %s\nthen press 'Confirm' on the epic games login page.\n\nThis login flow will time out in %v minutes\n", deviceAuthorization.VerificationURIComplete, timeout.Minutes())
 
-	token, err := getTokenAfterConfirmed(client, deviceAuthorization.DeviceCode, checkInterval, timeout)
+	token, err := waitForConfirmAndGetToken(client, deviceAuthorization.DeviceCode, checkInterval, timeout)
+	if err != nil {
+		log.Fatal("Failed to login: ", err)
+	}
+
+	err = client.ConnectWithToken(token)
 	if err != nil {
 		log.Fatal("Failed to connect to client", err)
 	}
 
-	client.ConnectWithToken(token)
-
 	log.Println("Fortgo client connected!")
 }
 
-func getTokenAfterConfirmed(client *fortgo.Client, deviceCode string, interval, timeout time.Duration) (account.Token, error) {
+func waitForConfirmAndGetToken(client *fortgo.Client, deviceCode string, interval, timeout time.Duration) (account.Token, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
