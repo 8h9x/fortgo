@@ -19,7 +19,7 @@ func (c *Client) CreateConversation(title string, conversationType string, membe
 		http.MethodPost,
 		consts.EOSService,
 		"chat/v1/public/_/conversations",
-		rest.WithQueryParamaters(query),
+		rest.WithQueryParameters(query),
 		rest.WithJSONBody(&CreateConversationPayload{
 			Title:   title,
 			Type:    conversationType,

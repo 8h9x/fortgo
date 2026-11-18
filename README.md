@@ -44,4 +44,4 @@ func main() {
 }
 ```
 
-For a more comple example, see [Blast](https://github.com/8h9x/BlastBot)
+For a more complete example, see [Blast](https://github.com/8h9x/BlastBot)

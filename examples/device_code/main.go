@@ -59,7 +59,7 @@ func waitForConfirmAndGetToken(client *fortgo.Client, deviceCode string, interva
 			return account.Token{}, ctx.Err()
 		case <-ticker.C:
 			token, err := client.AccountService.GetToken(
-				account.FortnitePS4USClient,
+				client.AuthClient(),
 				account.TokenGrantDeviceCode(deviceCode),
 				account.TokenTypeEG1,
 			)

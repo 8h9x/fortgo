@@ -18,7 +18,7 @@ func (c *Client) Get(accountIDs ...string) (GetAvatarsResponse, error) {
 		http.MethodGet,
 		consts.AvatarService,
 		"v1/avatar/fortnite/ids",
-		rest.WithQueryParamaters(query),
+		rest.WithQueryParameters(query),
 	)
 	if err != nil {
 		return GetAvatarsResponse{}, err

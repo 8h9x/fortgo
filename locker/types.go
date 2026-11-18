@@ -55,7 +55,7 @@ type LoadoutPreset struct {
 	DeploymentID string        `json:"deploymentId"`
 	AccountID    string        `json:"accountId"`
 	LoadoutType  string        `json:"loadoutType"`
-	PresetId     string        `json:"presetId"`
+	PresetID     string        `json:"presetId"`
 	PresetIndex  int           `json:"presetIndex"`
 	AthenaItemID string        `json:"athenaItemId"`
 	CreationTime time.Time     `json:"creationTime"`
@@ -130,4 +130,13 @@ type CosmeticData struct {
 	CosmeticItemAccessTokens []string       `json:"cosmeticItemAccessTokens"`
 	RequestTime              time.Time      `json:"requestTime"`
 	NextToken                string         `json:"nextToken"`
+}
+
+type CosmeticUsageEntry struct {
+	LastUsedTimestamp time.Time `json:"lastUsedTimestamp"`
+	UsageCounter      int       `json:"usageCounter"`
+}
+
+type CosmeticUsageResponse struct {
+	CosmeticUsage map[string]CosmeticUsageEntry `json:"cosmeticUsage"`
 }

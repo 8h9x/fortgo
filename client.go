@@ -26,6 +26,8 @@ type config struct {
 }
 
 type Client struct {
+	Me *ClientUser
+
 	config         *config
 	Header         http.Header
 	CredentialsMap map[string]*account.Token
@@ -33,8 +35,6 @@ type Client struct {
 
 	tokenSource    *ClientTokenSource
 	tokenSourceEOS *ClientTokenSourceEOS
-
-	ClientID string
 
 	AccountService     *account.Client
 	AvatarService      *avatars.Client
@@ -85,11 +85,14 @@ func NewClient(opts ...Option) *Client {
 		CredentialsMap: make(map[string]*account.Token),
 		tokenSource:    tokenSource,
 		tokenSourceEOS: tokenSourceEOS,
-		ClientID:       cfg.authClient.ID,
 	}
 
 	//	client.config.httpClient.Timeout = 30 * time.Second
 	//	client.config.httpClient.Transport = &authenticatedTransport{src: src, base: http.DefaultTransport}
+
+	client.Me = &ClientUser{
+		client: client,
+	}
 
 	client.AccountService = account.New(client.config.httpClient)
 	client.AvatarService = avatars.New(client.config.httpClient)
@@ -105,6 +108,10 @@ func NewClient(opts ...Option) *Client {
 	client.UserSearchService = usersearch.New(client.config.httpClient)
 
 	return client
+}
+
+func (c *Client) AuthClient() *account.AuthClient {
+	return c.config.authClient
 }
 
 func (c *Client) ConnectWithToken(token account.Token) error {
@@ -148,7 +155,7 @@ func (c *Client) CurrentCredentials() *account.Token {
 	_, err := c.AccountService.VerifyToken(false)
 	if err != nil {
 		token, err := c.AccountService.GetToken(
-			account.FortnitePS4USClient,
+			c.AuthClient(),
 			account.TokenGrantRefreshToken(credentials.RefreshToken),
 			account.TokenTypeEG1,
 		)

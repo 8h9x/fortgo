@@ -11,6 +11,13 @@ type AuthClient struct {
 	Secret string
 }
 
+func NewAuthClient(clientId, secret string) *AuthClient {
+	return &AuthClient{
+		ID:     clientId,
+		Secret: secret,
+	}
+}
+
 func (ac *AuthClient) String() string {
 	return ac.ID + ":" + ac.Secret
 }
@@ -19,5 +26,5 @@ func (ac *AuthClient) Base64() string {
 	return base64.StdEncoding.EncodeToString([]byte(ac.String()))
 }
 
-var FortnitePS4USClient = &AuthClient{consts.FortnitePS4USClientID, consts.FortnitePS4USClientSecret}
-var FortniteNewIOSClient = &AuthClient{consts.FortniteNewIOSClientID, consts.FortniteNewIOSClientSecret}
+var FortnitePS4USClient = NewAuthClient(consts.FortnitePS4USClientID, consts.FortnitePS4USClientSecret)
+var FortniteNewIOSClient = NewAuthClient(consts.FortniteNewIOSClientID, consts.FortniteNewIOSClientSecret)

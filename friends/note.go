@@ -8,7 +8,7 @@ import (
 	"github.com/8h9x/fortgo/rest"
 )
 
-func (c *Client) EditNode(accountID string, friendID string, note string) error {
+func (c *Client) EditNote(accountID string, friendID string, note string) error {
 	req, err := rest.NewRequest(
 		http.MethodPut,
 		consts.FriendsService,
@@ -31,7 +31,7 @@ func (c *Client) EditNode(accountID string, friendID string, note string) error 
 	return nil
 }
 
-func (c *Client) RemoveNode(accountID string, friendID string) error {
+func (c *Client) RemoveNote(accountID string, friendID string) error {
 	req, err := rest.NewRequest(
 		http.MethodDelete,
 		consts.FriendsService,

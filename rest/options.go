@@ -32,7 +32,7 @@ func WithHeaders(headers map[string]string) Option {
 	}
 }
 
-func WithQueryParamaters(query url.Values) Option {
+func WithQueryParameters(query url.Values) Option {
 	return func(cfg *requestConfig) error {
 		if cfg.query == nil {
 			cfg.query = make(url.Values)

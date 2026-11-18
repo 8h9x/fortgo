@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/8h9x/fortgo/account"
 	"github.com/8h9x/fortgo/consts"
@@ -22,7 +23,7 @@ func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](http
 	query := url.Values{}
 	query.Set("type", string(mnemonicType))
 	if version != -1 {
-		query.Set("v", string(rune(version)))
+		query.Set("v", strconv.Itoa(version))
 	}
 	if includeActivationHistory {
 		query.Set("includeActivationHistory", "true")
@@ -32,7 +33,7 @@ func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](http
 		http.MethodGet,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/mnemonic/%s", namespace, mnemonic),
-		rest.WithQueryParamaters(query),
+		rest.WithQueryParameters(query),
 	)
 	if err != nil {
 		return data, err
@@ -72,7 +73,7 @@ func (c *Client) GetRelatedMnemonics(namespace Namespace, mnemonic string, versi
 		http.MethodGet,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/mnemonic/%s/related", namespace, mnemonic),
-		rest.WithQueryParamaters(query),
+		rest.WithQueryParameters(query),
 	)
 	if err != nil {
 		return GetRelatedMnemonicsResponse{}, err
@@ -101,7 +102,7 @@ func (c *Client) GetMnemonicInfoBulk(namespace Namespace, mnemonics []GetMnemoni
 		http.MethodPost,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/mnemonic", namespace),
-		rest.WithQueryParamaters(query),
+		rest.WithQueryParameters(query),
 		rest.WithJSONBody(&mnemonics),
 	)
 	if err != nil {

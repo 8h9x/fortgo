@@ -21,7 +21,7 @@ const (
 	FortniteSwitchClientID     = "5229dcd3ac3845208b496649092f251b"
 	FortniteSwitchClientSecret = "e3bd2d3e-bf8c-4857-9e7d-f3d947d220c7"
 
-	FortniteNewSwitchClientID     = "5229dcd3ac3845208b496649092f251b"
+	FortniteNewSwitchClientID     = "98f7e42c2e3a4f86a74eb43fbb41ed39"
 	FortniteNewSwitchClientSecret = "0a2449a2-001a-451e-afec-3e812901c4d7"
 
 	FortniteXSXClientID     = "db84fa58b60e468ba64e3b17209b56e9"

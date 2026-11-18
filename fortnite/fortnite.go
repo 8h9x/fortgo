@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/8h9x/fortgo/consts"
 	"github.com/8h9x/fortgo/rest"
@@ -36,7 +37,11 @@ func (c *Client) ComposeProfileOperation(accountID string, operation string, pro
 	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.FortniteMCPService,
-		fmt.Sprintf("fortnite/api/game/v2/profile/%s/client/%s?profileId=%s&rvn=-1", accountID, operation, profileID),
+		fmt.Sprintf("fortnite/api/game/v2/profile/%s/client/%s", accountID, operation),
+		rest.WithQueryParameters(url.Values{
+			"profileId": {profileID},
+			"rvn":       {"-1"},
+		}),
 		rest.WithTextBody(payload),
 		rest.WithHeader("Content-Type", "application/json"), // TODO: fix, this is yucky
 	)

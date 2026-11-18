@@ -86,7 +86,7 @@ func writeDeviceAuthData(deviceAuth account.DeviceAuth) error {
 		return err
 	}
 
-	err = os.WriteFile(deviceAuthFile, deviceAuthBytes, 0666)
+	err = os.WriteFile(deviceAuthFile, deviceAuthBytes, 0600)
 	if err != nil {
 		return err
 	}

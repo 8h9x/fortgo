@@ -1,7 +1,6 @@
 package account
 
 import (
-	"net/url"
 	"time"
 )
 
@@ -13,22 +12,6 @@ const (
 	TokenTypeEP1     TokenType = "ep1"
 	TokenTypeEpicID  TokenType = "epic_id"
 	TokenTypeIDToken TokenType = "id_token"
-)
-
-type GrantType string
-
-const (
-	GrantTypeAuthorizationCode GrantType = "authorization_code"
-	GrantTypeClientCredentials GrantType = "client_credentials"
-	GrantTypeContinuationToken GrantType = "continuation_token"
-	GrantTypeDeviceAuth        GrantType = "device_auth"
-	GrantTypeDeviceCode        GrantType = "device_code"
-	GrantTypeExchangeCode      GrantType = "exchange_code"
-	GrantTypeExternalAuth      GrantType = "exteral_auth"
-	GrantTypeOTP               GrantType = "otp"
-	GrantTypePassword          GrantType = "password"
-	GrantTypeRefreshToken      GrantType = "refresh_token"
-	GrantTypeTokenToToken      GrantType = "token_to_token"
 )
 
 type GetPublicKeyResponse struct {
@@ -110,22 +93,22 @@ type GetUserResponseExtended struct {
 }
 
 type Token struct {
-	AccessToken      string `json:"access_token"`
-	ExpiresIn        int64  `json:"expires_in"`
-	ExpiresAt        string `json:"expires_at"`
-	TokenType        string `json:"token_type"`
-	RefreshToken     string `json:"refresh_token,omitempty"`
-	RefreshExpires   int64  `json:"refresh_expires,omitempty"`
-	RefreshExpiresAt string `json:"refresh_expires_at,omitempty"`
-	AccountID        string `json:"account_id,omitempty"`
-	ClientID         string `json:"client_id"`
-	InternalClient   bool   `json:"internal_client"`
-	ClientService    string `json:"client_service"`
-	DisplayName      string `json:"displayName,omitempty"`
-	App              string `json:"app,omitempty"`
-	InAppID          string `json:"in_app_id,omitempty"`
-	ProductID        string `json:"product_id"`
-	ApplicationID    string `json:"application_id"`
+	AccessToken      string    `json:"access_token"`
+	ExpiresIn        int64     `json:"expires_in"`
+	ExpiresAt        time.Time `json:"expires_at"`
+	TokenType        string    `json:"token_type"`
+	RefreshToken     string    `json:"refresh_token,omitempty"`
+	RefreshExpires   int64     `json:"refresh_expires,omitempty"`
+	RefreshExpiresAt time.Time `json:"refresh_expires_at"`
+	AccountID        string    `json:"account_id,omitempty"`
+	ClientID         string    `json:"client_id"`
+	InternalClient   bool      `json:"internal_client"`
+	ClientService    string    `json:"client_service"`
+	DisplayName      string    `json:"displayName,omitempty"`
+	App              string    `json:"app,omitempty"`
+	InAppID          string    `json:"in_app_id,omitempty"`
+	ProductID        string    `json:"product_id"`
+	ApplicationID    string    `json:"application_id"`
 }
 
 type getUsersByExternalDisplayNameBulkPayload struct {
@@ -136,87 +119,6 @@ type getUsersByExternalDisplayNameBulkPayload struct {
 type getUsersByExternalIDBulkPayload struct {
 	AuthType ExternalAuthType `json:"authType"`
 	IDs      []string         `json:"ids"`
-}
-
-type TokenGrant = url.Values
-
-func TokenGrantAuthorizationCode(code string) TokenGrant {
-	return TokenGrant{
-		"grant_type": {"authorization_code"},
-		"code":       {code},
-	}
-}
-
-func TokenGrantClientCredentials() TokenGrant {
-	return TokenGrant{
-		"grant_type": {"client_credentials"},
-	}
-}
-
-func TokenGrantContinuationToken(continuationToken string) TokenGrant {
-	return TokenGrant{
-		"grant_type":         {"continuation_token"},
-		"continuation_token": {continuationToken},
-	}
-}
-
-func TokenGrantDeviceAuth(accountId, deviceId, secret string) TokenGrant {
-	return TokenGrant{
-		"grant_type": {"device_auth"},
-		"account_id": {accountId},
-		"device_id":  {deviceId},
-		"secret":     {secret},
-	}
-}
-
-func TokenGrantDeviceCode(deviceCode string) TokenGrant {
-	return TokenGrant{
-		"grant_type":  {"device_code"},
-		"device_code": {deviceCode},
-	}
-}
-
-func TokenGrantExchangeCode(code string) TokenGrant {
-	return TokenGrant{
-		"grant_type":    {"device_code"},
-		"exchange_code": {code},
-	}
-}
-
-func TokenGrantExternalAuth(externalAuthToken string) TokenGrant {
-	return TokenGrant{
-		"grant_type":          {"external_auth"},
-		"external_auth_token": {externalAuthToken},
-	}
-}
-
-func TokenGrantOTP(otp string) TokenGrant {
-	return TokenGrant{
-		"grant_type": {"otp"},
-		"otp":        {otp},
-	}
-}
-
-func TokenGrantPassword(username, password string) TokenGrant {
-	return TokenGrant{
-		"grant_type": {"password"},
-		"username":   {username},
-		"password":   {password},
-	}
-}
-
-func TokenGrantRefreshToken(refreshToken string) TokenGrant {
-	return TokenGrant{
-		"grant_type":    {"refresh_token"},
-		"refresh_token": {refreshToken},
-	}
-}
-
-func TokenGrantAccessToken(accessToken string) TokenGrant {
-	return TokenGrant{
-		"grant_type":   {"token_to_token"},
-		"access_token": {accessToken},
-	}
 }
 
 type VerifyTokenResponsePermission struct {

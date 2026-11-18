@@ -111,7 +111,7 @@ func (c *Client) UpdateUserFilePointer(accountID string, filename string, should
 		http.MethodPost,
 		consts.FortniteMCPService,
 		fmt.Sprintf("fortnite/api/cloudstorage/user/%s/%s/updatePointer", accountID, filename),
-		rest.WithQueryParamaters(query),
+		rest.WithQueryParameters(query),
 		rest.WithJSONBody(&payload),
 	)
 	if err != nil {

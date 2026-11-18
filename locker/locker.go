@@ -47,8 +47,8 @@ func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken stri
 	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FortniteLockerService,
-		"api/locker/v4/%s/account/%s/cosmetic-data",
-		rest.WithQueryParamaters(query),
+		fmt.Sprintf("api/locker/v4/%s/account/%s/cosmetic-data", consts.DeploymentIDLiveFN, accountID),
+		rest.WithQueryParameters(query),
 	)
 	if err != nil {
 		return CosmeticData{}, err
@@ -62,6 +62,29 @@ func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken stri
 	var data CosmeticData
 	if err = rest.DecodeResponse(res, &data); err != nil {
 		return CosmeticData{}, err
+	}
+
+	return data, err
+}
+
+func (c *Client) FetchCosmeticUsage(accountID string) (CosmeticUsageResponse, error) {
+	req, err := rest.NewRequest(
+		http.MethodGet,
+		consts.FortniteLockerService,
+		fmt.Sprintf("api/locker/v4/%s/account/%s/cosmetic-usage", consts.DeploymentIDLiveFN, accountID),
+	)
+	if err != nil {
+		return CosmeticUsageResponse{}, err
+	}
+
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return CosmeticUsageResponse{}, err
+	}
+
+	var data CosmeticUsageResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
+		return CosmeticUsageResponse{}, err
 	}
 
 	return data, err
@@ -96,7 +119,7 @@ func (c *Client) QueryItems(accountID string) (LockerItems, error) {
 	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FortniteLockerService,
-		"api/locker/v4/%s/account/%s/items",
+		fmt.Sprintf("api/locker/v4/%s/account/%s/items", consts.DeploymentIDLiveFN, accountID),
 	)
 	if err != nil {
 		return LockerItems{}, err

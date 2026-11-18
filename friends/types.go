@@ -1,6 +1,9 @@
 package friends
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Friend struct {
 	AccountID string    `json:"accountId"`
@@ -12,14 +15,9 @@ type Friend struct {
 	Created   time.Time `json:"created"`
 }
 
-type FriendRequest struct {
-	AccountID string    `json:"accountId"`
-	Mutual    int       `json:"mutual"`
-	Favorite  bool      `json:"favorite"`
-	Created   time.Time `json:"created"`
-}
+type SuggestedFriend json.RawMessage
 
-type SuggestedFriend struct{}
+type Relation json.RawMessage
 
 type BlockedPlayer struct {
 	AccountID string    `json:"accountId"`
@@ -37,9 +35,9 @@ const (
 type PrivacySettingMutualPrivacy string
 
 const (
-	PrivacySettingMutualPrivacyAll      PrivacySettingAcceptInvites = "ALL"
-	PrivacySettingMutualPrivacyFriends  PrivacySettingAcceptInvites = "FRIENDS"
-	PrivacySettingMutualPrivacyNone     PrivacySettingAcceptInvites = "NONE"
+	PrivacySettingMutualPrivacyAll     PrivacySettingMutualPrivacy = "ALL"
+	PrivacySettingMutualPrivacyFriends PrivacySettingMutualPrivacy = "FRIENDS"
+	PrivacySettingMutualPrivacyNone    PrivacySettingMutualPrivacy = "NONE"
 )
 
 type FriendsPrivacySettings struct {
@@ -54,17 +52,17 @@ type FriendsLimits struct {
 }
 
 type FriendSummaryResponse struct {
-	Friends []Friend `json:"friends"`
-	Incoming []FriendRequest `json:"incoming"`
-	Outgoing []FriendRequest `json:"outgoing"`
-	Suggested []any `json:"suggested"` // possibly FriendRequest
-	Blocklist []BlockedPlayer `json:"blocklist"`
-	Settings FriendsPrivacySettings `json:"settings"`
-	LimitsReached FriendsLimits `json:"limitsReached"`
+	Friends       []Friend               `json:"friends"`
+	Incoming      []Friend               `json:"incoming"`
+	Outgoing      []Friend               `json:"outgoing"`
+	Suggested     []any                  `json:"suggested"` // possibly Friend
+	Blocklist     []BlockedPlayer        `json:"blocklist"`
+	Settings      FriendsPrivacySettings `json:"settings"`
+	LimitsReached FriendsLimits          `json:"limitsReached"`
 }
 
 type ParentalControlsPinPayload struct {
-	Pin string `json:"pin"`
+	Pin string `json:"pin,omitempty"`
 }
 
 type ExternalSource string

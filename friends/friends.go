@@ -18,7 +18,7 @@ func (c *Client) AcceptBulk(accountID string, targetIDs []string) ([]string, err
 		http.MethodPost,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/incoming/accept", accountID),
-		rest.WithQueryParamaters(query),
+		rest.WithQueryParameters(query),
 	)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,9 @@ func (c *Client) AddFriend(accountID string, targetID string, parentalControlsPi
 		http.MethodPost,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends/%s", accountID, targetID),
-		rest.WithJSONBody(&ParentalControlsPinPayload{parentalControlsPin}),
+		rest.WithJSONBody(&ParentalControlsPinPayload{
+			Pin: parentalControlsPin,
+		}),
 	)
 	if err != nil {
 		return err
@@ -175,70 +177,75 @@ func (c *Client) GetSuggested(accountID string) ([]SuggestedFriend, error) {
 	return data, err
 }
 
-func (c *Client) GetRelations(accountID string) (any, error) {
+// IDK if there is even any client that has friends:relations:{accountId} READ to get this resp
+func (c *Client) GetRelations(accountID string, friendIDs []string) (Relation, error) {
+	query := url.Values{}
+	query.Set("accounts", strings.Join(friendIDs, ","))
+
 	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/relations", accountID),
+		rest.WithQueryParameters(query),
 	)
 	if err != nil {
-		return []SuggestedFriend{}, err
+		return Relation{}, err
 	}
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return []SuggestedFriend{}, err
+		return Relation{}, err
 	}
 
-	var data []SuggestedFriend
+	var data Relation
 	if err = rest.DecodeResponse(res, &data); err != nil {
-		return []SuggestedFriend{}, err
+		return Relation{}, err
 	}
 
 	return data, err
 }
 
-func (c *Client) GetRequestsIncoming(accountID string) ([]FriendRequest, error) {
+func (c *Client) GetRequestsIncoming(accountID string) ([]Friend, error) {
 	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/incoming", accountID),
 	)
 	if err != nil {
-		return []FriendRequest{}, err
+		return []Friend{}, err
 	}
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return []FriendRequest{}, err
+		return []Friend{}, err
 	}
 
-	var data []FriendRequest
+	var data []Friend
 	if err = rest.DecodeResponse(res, &data); err != nil {
-		return []FriendRequest{}, err
+		return []Friend{}, err
 	}
 
 	return data, err
 }
 
-func (c *Client) GetRequestsOutgoing(accountID string) ([]FriendRequest, error) {
+func (c *Client) GetRequestsOutgoing(accountID string) ([]Friend, error) {
 	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/outgoing", accountID),
 	)
 	if err != nil {
-		return []FriendRequest{}, err
+		return []Friend{}, err
 	}
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return []FriendRequest{}, err
+		return []Friend{}, err
 	}
 
-	var data []FriendRequest
+	var data []Friend
 	if err = rest.DecodeResponse(res, &data); err != nil {
-		return []FriendRequest{}, err
+		return []Friend{}, err
 	}
 
 	return data, err

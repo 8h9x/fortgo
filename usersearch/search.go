@@ -18,7 +18,7 @@ func (c *Client) Search(accountID string, platform Platform, term string) (Searc
 		http.MethodGet,
 		consts.UserSearchService,
 		fmt.Sprintf("api/v1/search/%s", accountID),
-		rest.WithQueryParamaters(query),
+		rest.WithQueryParameters(query),
 	)
 	if err != nil {
 		return SearchUsersResponse{}, err

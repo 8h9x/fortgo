@@ -42,7 +42,7 @@ func (c *Client) GetUsersByIDBulk(accountIDs []string) ([]GetUserResponse, error
 		http.MethodGet,
 		consts.AccountService,
 		"account/api/public/account",
-		rest.WithQueryParamaters(query),
+		rest.WithQueryParameters(query),
 	)
 	if err != nil {
 		return []GetUserResponse{}, err
@@ -84,11 +84,18 @@ func (c *Client) GetUserByDisplayName(displayName string) (GetUserResponseExtend
 	return data, err
 }
 
-func (c *Client) GetUserByExternalDisplayName(externalAuthType ExternalAuthType, displayName string, caseSensitive bool) ([]GetUserResponse, error) {
+func (c *Client) GetUserByExternalDisplayName(externalAuthType ExternalAuthType, displayName string, caseInsensitive bool) ([]GetUserResponse, error) {
+	v := url.Values{}
+
+	if caseInsensitive {
+		v.Set("caseInsensitive", "true")
+	}
+
 	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.AccountService,
-		fmt.Sprintf("account/api/public/account/lookup/externalAuth/%s/displayName/%s?caseInsensitive=%t", externalAuthType, displayName, !caseSensitive),
+		fmt.Sprintf("account/api/public/account/lookup/externalAuth/%s/displayName/%s", externalAuthType, displayName),
+		rest.WithQueryParameters(v),
 	)
 	if err != nil {
 		return []GetUserResponse{}, err
@@ -107,7 +114,7 @@ func (c *Client) GetUserByExternalDisplayName(externalAuthType ExternalAuthType,
 	return data, err
 }
 
-func (c *Client) GetUsersByExternalDisplayNameBulk(externalAuthType ExternalAuthType, displayNames []string) (ExternalAuthGroup, error) {
+func (c *Client) GetUsersByExternalDisplayNameBulk(externalAuthType ExternalAuthType, displayNames []string) (map[string][]ExternalAuth, error) {
 	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.AccountService,
@@ -115,17 +122,17 @@ func (c *Client) GetUsersByExternalDisplayNameBulk(externalAuthType ExternalAuth
 		rest.WithJSONBody(&getUsersByExternalDisplayNameBulkPayload{externalAuthType, displayNames}),
 	)
 	if err != nil {
-		return ExternalAuthGroup{}, err
+		return nil, err
 	}
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return ExternalAuthGroup{}, err
+		return nil, err
 	}
 
-	var data ExternalAuthGroup
+	var data map[string][]ExternalAuth
 	if err = rest.DecodeResponse(res, &data); err != nil {
-		return ExternalAuthGroup{}, err
+		return nil, err
 	}
 
 	return data, err

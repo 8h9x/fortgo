@@ -49,27 +49,3 @@ func DecodeResponse[T any](resp *http.Response, out *T) error {
 
 	return nil
 }
-
-// func test() {
-// 	req, err := NewRequest(
-// 		http.MethodPost,
-// 		consts.FortniteMCPService,
-// 		fmt.Sprintf("fortnite/api/game/v2/profile/%s/client/%s?profileId=%s&rvn=-1", "accountID", "operation", "profileID"),
-// 		WithTextBody(""),
-// 		WithHeader("Content-Type", "application/json"), // TODO: fix, this is yucky
-// 	)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-//
-// 	res, err := http.DefaultClient.Do(req)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-//
-// 	var t account.Token
-// 	err = DecodeResponse(res, &t)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// }

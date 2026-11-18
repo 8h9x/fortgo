@@ -15,6 +15,9 @@ func (c *Client) GetExchangeCode() (ExchangeResponse, error) {
 		consts.EOSServiceAuth,
 		"exchange",
 	)
+	if err != nil {
+		return ExchangeResponse{}, err
+	}
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
@@ -36,6 +39,9 @@ func (c *Client) CreateDeviceCode(clientToken Token) (GetDeviceCodeResponse, err
 		"deviceAuthorization",
 		rest.WithBearerToken(clientToken.AccessToken),
 	)
+	if err != nil {
+		return GetDeviceCodeResponse{}, err
+	}
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
@@ -63,6 +69,9 @@ func (c *Client) GetToken(authClient *account.AuthClient, tokenGrant account.Tok
 		rest.WithBasicToken(authClient.Base64()),
 		rest.WithFormBody(tokenGrant),
 	)
+	if err != nil {
+		return Token{}, err
+	}
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {

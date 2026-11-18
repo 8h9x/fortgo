@@ -10,8 +10,11 @@ func (c *Client) AbandonExpedition(expeditionId string) (*http.Response, error) 
 	return c.ProfileOperation("AbandonExpedition", "campaign", fortnite.AbandonExpeditionPayload{ExpeditionID: expeditionId})
 }
 
-func (c *Client) ActivateConsumable(payload fortnite.ActivateConsumablePayload) (*http.Response, error) {
-	return c.ProfileOperation("ActivateConsumable", "campaign", payload)
+func (c *Client) ActivateConsumable(targetItemId, targetAccountId string) (*http.Response, error) {
+	return c.ProfileOperation("ActivateConsumable", "campaign", fortnite.ActivateConsumablePayload{
+		TargetItemID:    targetItemId,
+		TargetAccountID: targetAccountId,
+	})
 }
 
 func (c *Client) AddToCollection(payload fortnite.AddToCollectionPayload) (*http.Response, error) {
@@ -22,8 +25,12 @@ func (c *Client) ApplyVote(offerID string) (*http.Response, error) {
 	return c.ProfileOperation("ApplyVote", "athena", fortnite.ApplyVotePayload{OfferID: offerID})
 }
 
-func (c *Client) AssignGadgetToLoadout(payload fortnite.AssignGadgetToLoadoutPayload) (*http.Response, error) {
-	return c.ProfileOperation("AssignGadgetToLoadout", "campaign", payload)
+func (c *Client) AssignGadgetToLoadout(gadgetId, loadoutId string, slotIndex uint8) (*http.Response, error) {
+	return c.ProfileOperation("AssignGadgetToLoadout", "campaign", fortnite.AssignGadgetToLoadoutPayload{
+		GadgetID:  gadgetId,
+		LoadoutID: loadoutId,
+		SlotIndex: slotIndex,
+	})
 }
 
 func (c *Client) AssignHeroToLoadout(payload fortnite.AssignHeroToLoadoutPayload) (*http.Response, error) {
@@ -72,7 +79,7 @@ func (c *Client) ClaimCollectionBookPageRewards(profileID string, payload fortni
 }
 
 func (c *Client) ClaimCollectionBookRewards(payload fortnite.ClaimCollectionBookRewardsPayload) (*http.Response, error) {
-	return c.ProfileOperation("ClaimCollectionBookPageRewards", "campaign", payload)
+	return c.ProfileOperation("ClaimCollectionBookRewards", "campaign", payload)
 }
 
 func (c *Client) ClaimImportFriendsReward(network fortnite.ESocialImportPanelPlatform) (*http.Response, error) {
@@ -290,8 +297,8 @@ func (c *Client) SetActiveHeroLoadout(selectedLoadout string) (*http.Response, e
 	return c.ProfileOperation("SetActiveHeroLoadout", "campaign", fortnite.SetActiveHeroLoadoutPayload{SelectedLoadout: selectedLoadout})
 }
 
-func (c *Client) SetAffiliateNameLoadout(affiliateName string) (*http.Response, error) {
-	return c.ProfileOperation("SetActiveHeroLoadout", "common_core", fortnite.SetAffiliateNamePayload{AffiliateName: affiliateName})
+func (c *Client) SetAffiliateName(affiliateName string) (*http.Response, error) {
+	return c.ProfileOperation("SetAffiliateName", "common_core", fortnite.SetAffiliateNamePayload{AffiliateName: affiliateName})
 }
 
 // Deprecated: SetCosmeticLockerBanner Modern versions of the fortnite mcp system use a separate locker api--use locker.UpdateActiveLockerLoadout()
