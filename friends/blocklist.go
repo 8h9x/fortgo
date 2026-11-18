@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) Block(accountID string, targetID string) error {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/blocklist/%s", accountID, targetID),
@@ -23,12 +23,15 @@ func (c *Client) Block(accountID string, targetID string) error {
 		return err
 	}
 
-	_, err = request.DecodeResponse[any](res)
-	return err
+	if err = rest.DecodeResponse(res, new(any)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Client) GetBlockedList(accountID string) ([]BlockedPlayer, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/blocklist", accountID),
@@ -42,16 +45,16 @@ func (c *Client) GetBlockedList(accountID string) ([]BlockedPlayer, error) {
 		return []BlockedPlayer{}, err
 	}
 
-	resp, err := request.DecodeResponse[[]BlockedPlayer](res)
-	if err != nil {
+	var data []BlockedPlayer
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return []BlockedPlayer{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 func (c *Client) Unblock(accountID string, targetID string) error {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodDelete,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/blocklist/%s", accountID, targetID),
@@ -65,6 +68,9 @@ func (c *Client) Unblock(accountID string, targetID string) error {
 		return err
 	}
 
-	_, err = request.DecodeResponse[any](res)
-	return err
+	if err = rest.DecodeResponse(res, new(any)); err != nil {
+		return err
+	}
+
+	return nil
 }

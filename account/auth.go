@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) VerifyToken(includePerms bool) (VerifyTokenResponse, error) {
@@ -16,11 +16,11 @@ func (c *Client) VerifyToken(includePerms bool) (VerifyTokenResponse, error) {
 		v.Set("includePerms", "true")
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.AccountService,
 		"account/api/oauth/verify",
-		request.WithFormBody(v),
+		rest.WithFormBody(v),
 	)
 
 	res, err := c.HTTPClient.Do(req)
@@ -28,16 +28,16 @@ func (c *Client) VerifyToken(includePerms bool) (VerifyTokenResponse, error) {
 		return VerifyTokenResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[VerifyTokenResponse](res)
-	if err != nil {
+	var data VerifyTokenResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return VerifyTokenResponse{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }
 
 func (c *Client) CreateDeviceAuth(accountId string) (DeviceAuth, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.AccountService,
 		fmt.Sprintf("account/api/public/account/%s/deviceAuth", accountId),
@@ -48,16 +48,16 @@ func (c *Client) CreateDeviceAuth(accountId string) (DeviceAuth, error) {
 		return DeviceAuth{}, err
 	}
 
-	resp, err := request.DecodeResponse[DeviceAuth](res)
-	if err != nil {
+	var data DeviceAuth
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return DeviceAuth{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }
 
 func (c *Client) GetExchangeCode() (ExchangeResponse, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.AccountService,
 		"account/api/oauth/exchange",
@@ -68,20 +68,20 @@ func (c *Client) GetExchangeCode() (ExchangeResponse, error) {
 		return ExchangeResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[ExchangeResponse](res)
-	if err != nil {
+	var data ExchangeResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return ExchangeResponse{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }
 
 func (c *Client) CreateDeviceCode(clientToken Token) (GetDeviceCodeResponse, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.AccountService,
 		"account/api/oauth/deviceAuthorization",
-		request.WithBearerToken(clientToken.AccessToken),
+		rest.WithBearerToken(clientToken.AccessToken),
 	)
 
 	res, err := c.HTTPClient.Do(req)
@@ -89,23 +89,23 @@ func (c *Client) CreateDeviceCode(clientToken Token) (GetDeviceCodeResponse, err
 		return GetDeviceCodeResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[GetDeviceCodeResponse](res)
-	if err != nil {
+	var data GetDeviceCodeResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return GetDeviceCodeResponse{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }
 
 func (c *Client) GetToken(authClient *AuthClient, tokenGrant TokenGrant, tokenType TokenType) (Token, error) {
 	tokenGrant.Set("token_type", string(tokenType))
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.AccountService,
 		"account/api/oauth/token",
-		request.WithBasicToken(authClient.Base64()),
-		request.WithFormBody(tokenGrant),
+		rest.WithBasicToken(authClient.Base64()),
+		rest.WithFormBody(tokenGrant),
 	)
 
 	res, err := c.HTTPClient.Do(req)
@@ -113,10 +113,10 @@ func (c *Client) GetToken(authClient *AuthClient, tokenGrant TokenGrant, tokenTy
 		return Token{}, err
 	}
 
-	resp, err := request.DecodeResponse[Token](res)
-	if err != nil {
+	var data Token
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return Token{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }

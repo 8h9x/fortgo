@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) GetExternalSettings(accountID string, source ExternalSource) (ExternalSourcesSettings, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/settings/externalSources/%s", accountID, source),
@@ -23,20 +23,20 @@ func (c *Client) GetExternalSettings(accountID string, source ExternalSource) (E
 		return ExternalSourcesSettings{}, err
 	}
 
-	resp, err := request.DecodeResponse[ExternalSourcesSettings](res)
-	if err != nil {
+	var data ExternalSourcesSettings
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return ExternalSourcesSettings{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 func (c *Client) SetExternalSettings(accountID string, source ExternalSource, doNotShowLinkingProposal bool) (ExternalSourcesSettings, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPut,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/settings/externalSources/%s", accountID, source),
-		request.WithJSONBody(&ExternalSourcesSettings{doNotShowLinkingProposal}),
+		rest.WithJSONBody(&ExternalSourcesSettings{doNotShowLinkingProposal}),
 	)
 	if err != nil {
 		return ExternalSourcesSettings{}, err
@@ -47,16 +47,16 @@ func (c *Client) SetExternalSettings(accountID string, source ExternalSource, do
 		return ExternalSourcesSettings{}, err
 	}
 
-	resp, err := request.DecodeResponse[ExternalSourcesSettings](res)
-	if err != nil {
+	var data ExternalSourcesSettings
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return ExternalSourcesSettings{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 func (c *Client) GetPrivacySettings(accountID string) (FriendsPrivacySettings, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/settings", accountID),
@@ -70,20 +70,20 @@ func (c *Client) GetPrivacySettings(accountID string) (FriendsPrivacySettings, e
 		return FriendsPrivacySettings{}, err
 	}
 
-	resp, err := request.DecodeResponse[FriendsPrivacySettings](res)
-	if err != nil {
+	var data FriendsPrivacySettings
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return FriendsPrivacySettings{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 func (c *Client) SetPrivacySettings(accountID string, acceptInvites PrivacySettingAcceptInvites, mutualPrivacy PrivacySettingMutualPrivacy) (FriendsPrivacySettings, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPatch,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/settings", accountID),
-		request.WithJSONBody(&FriendsPrivacySettings{acceptInvites, mutualPrivacy}),
+		rest.WithJSONBody(&FriendsPrivacySettings{acceptInvites, mutualPrivacy}),
 	)
 	if err != nil {
 		return FriendsPrivacySettings{}, err
@@ -94,10 +94,10 @@ func (c *Client) SetPrivacySettings(accountID string, acceptInvites PrivacySetti
 		return FriendsPrivacySettings{}, err
 	}
 
-	resp, err := request.DecodeResponse[FriendsPrivacySettings](res)
-	if err != nil {
+	var data FriendsPrivacySettings
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return FriendsPrivacySettings{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }

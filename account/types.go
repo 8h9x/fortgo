@@ -73,6 +73,8 @@ type ExternalAuth struct {
 	// RegionInfo              string `json:"regionInfo"`
 }
 
+type ExternalAuthGroup = map[ExternalAuthType]ExternalAuth
+
 type GetUserResponse struct {
 	ID            string                            `json:"id"`
 	DisplayName   string                            `json:"displayName"`

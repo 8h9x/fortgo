@@ -7,18 +7,18 @@ import (
 	"strings"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) Get(accountIDs ...string) (GetAvatarsResponse, error) {
 	query := url.Values{}
 	query.Set("accountIds", strings.Join(accountIDs, ","))
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.AvatarService,
 		"v1/avatar/fortnite/ids",
-		request.WithQueryParamaters(query),
+		rest.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return GetAvatarsResponse{}, err
@@ -29,12 +29,12 @@ func (c *Client) Get(accountIDs ...string) (GetAvatarsResponse, error) {
 		return GetAvatarsResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[GetAvatarsResponse](res)
-	if err != nil {
+	var data GetAvatarsResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return GetAvatarsResponse{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }
 
 func (c *Client) GetOne(accountID string) (AccountAvatarData, error) {

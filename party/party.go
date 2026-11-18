@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) Invite(buildID string, partyID string, friendID string, platform consts.Platform, senderDisplayName string, sendPing bool) error {
@@ -23,12 +23,12 @@ func (c *Client) Invite(buildID string, partyID string, friendID string, platfor
 		DisplayName:                senderDisplayName,
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.PartyService,
 		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/invites/%s", partyID, friendID),
-		request.WithQueryParamaters(query),
-		request.WithJSONBody(payload),
+		rest.WithQueryParamaters(query),
+		rest.WithJSONBody(payload),
 	)
 	if err != nil {
 		return err
@@ -39,12 +39,15 @@ func (c *Client) Invite(buildID string, partyID string, friendID string, platfor
 		return err
 	}
 
-	_, err = request.DecodeResponse[any](res)
-	return err
+	if err = rest.DecodeResponse(res, new(any)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Client) Remove(partyID string, memberID string) error {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodDelete,
 		consts.PartyService,
 		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/members/%s", partyID, memberID),
@@ -58,12 +61,15 @@ func (c *Client) Remove(partyID string, memberID string) error {
 		return err
 	}
 
-	_, err = request.DecodeResponse[any](res)
-	return err
+	if err = rest.DecodeResponse(res, new(any)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Client) Promote(partyID string, memberID string) error {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.PartyService,
 		fmt.Sprintf("party/api/v1/Fortnite/parties/%s/members/%s/promote", partyID, memberID),
@@ -77,6 +83,9 @@ func (c *Client) Promote(partyID string, memberID string) error {
 		return err
 	}
 
-	_, err = request.DecodeResponse[any](res)
-	return err
+	if err = rest.DecodeResponse(res, new(any)); err != nil {
+		return err
+	}
+
+	return nil
 }

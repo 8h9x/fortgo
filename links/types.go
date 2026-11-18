@@ -75,7 +75,7 @@ type MnemonicMetadataExtended struct {
 	Locale           string `json:"locale"`
 	UnlockConditions struct {
 		AllOf struct {
-			Conditions []interface{} `json:"conditions"`
+			Conditions []any `json:"conditions"`
 		} `json:"allOf"`
 		PartyEligibility string `json:"partyEligibility"`
 	} `json:"unlockConditions"`
@@ -90,11 +90,11 @@ type MnemonicMetadataExtended struct {
 		RatingReceivedTime time.Time `json:"rating_received_time"`
 		Boards             struct {
 			USK struct {
-				Descriptors         []interface{} `json:"descriptors"`
-				RatingOverridden    bool          `json:"rating_overridden"`
-				Rating              string        `json:"rating"`
-				InitialRating       string        `json:"initial_rating"`
-				InteractiveElements []string      `json:"interactive_elements"`
+				Descriptors         []any    `json:"descriptors"`
+				RatingOverridden    bool     `json:"rating_overridden"`
+				Rating              string   `json:"rating"`
+				InitialRating       string   `json:"initial_rating"`
+				InteractiveElements []string `json:"interactive_elements"`
 			} `json:"USK"`
 		} `json:"boards"`
 	} `json:"ratings"`

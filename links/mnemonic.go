@@ -7,7 +7,7 @@ import (
 
 	"github.com/8h9x/fortgo/account"
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](httpClient *http.Client, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (T, error) {
@@ -28,11 +28,11 @@ func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](http
 		query.Set("includeActivationHistory", "true")
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/mnemonic/%s", namespace, mnemonic),
-		request.WithQueryParamaters(query),
+		rest.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return data, err
@@ -43,12 +43,11 @@ func getMnemonicInfoRaw[T MnemonicData | MnemonicDataWithActivationHistory](http
 		return data, err
 	}
 
-	resp, err := request.DecodeResponse[T](res)
-	if err != nil {
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return data, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 // GetMnemonicInfo fetches information about provided mnemonic on the namespace given a matching mnemonicType,
@@ -69,11 +68,11 @@ func (c *Client) GetRelatedMnemonics(namespace Namespace, mnemonic string, versi
 		query.Set("v", string(rune(version)))
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/mnemonic/%s/related", namespace, mnemonic),
-		request.WithQueryParamaters(query),
+		rest.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return GetRelatedMnemonicsResponse{}, err
@@ -84,12 +83,12 @@ func (c *Client) GetRelatedMnemonics(namespace Namespace, mnemonic string, versi
 		return GetRelatedMnemonicsResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[GetRelatedMnemonicsResponse](res)
-	if err != nil {
+	var data GetRelatedMnemonicsResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return GetRelatedMnemonicsResponse{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 func (c *Client) GetMnemonicInfoBulk(namespace Namespace, mnemonics []GetMnemonicInfoBulkPayload, ignoreFailures bool) ([]MnemonicData, error) {
@@ -98,12 +97,12 @@ func (c *Client) GetMnemonicInfoBulk(namespace Namespace, mnemonics []GetMnemoni
 		query.Set("ignoreFailures", "true")
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/mnemonic", namespace),
-		request.WithQueryParamaters(query),
-		request.WithJSONBody(&mnemonics),
+		rest.WithQueryParamaters(query),
+		rest.WithJSONBody(&mnemonics),
 	)
 	if err != nil {
 		return []MnemonicData{}, err
@@ -114,10 +113,10 @@ func (c *Client) GetMnemonicInfoBulk(namespace Namespace, mnemonics []GetMnemoni
 		return []MnemonicData{}, err
 	}
 
-	resp, err := request.DecodeResponse[[]MnemonicData](res)
-	if err != nil {
+	var data []MnemonicData
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return []MnemonicData{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }

@@ -9,7 +9,7 @@ type Token struct {
 	ClientID         string    `json:"client_id"`
 	ExpiresAt        time.Time `json:"expires_at"`
 	ExpiresIn        int       `json:"expires_in"`
-	RefreshExpiresAt time.Time `json:"refresh_expires_at,omitempty"`
+	RefreshExpiresAt time.Time `json:"refresh_expires_at"`
 	RefreshExpiresIn int       `json:"refresh_expires_in,omitempty"`
 	RefreshToken     string    `json:"refresh_token,omitempty"`
 	Scope            string    `json:"scope,omitempty"`

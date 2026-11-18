@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) Search(accountID string, platform Platform, term string) (SearchUsersResponse, error) {
@@ -14,11 +14,11 @@ func (c *Client) Search(accountID string, platform Platform, term string) (Searc
 	query.Set("platform", string(platform))
 	query.Set("prefix", term)
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.UserSearchService,
 		fmt.Sprintf("api/v1/search/%s", accountID),
-		request.WithQueryParamaters(query),
+		rest.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return SearchUsersResponse{}, err
@@ -29,10 +29,10 @@ func (c *Client) Search(accountID string, platform Platform, term string) (Searc
 		return SearchUsersResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[SearchUsersResponse](res)
-	if err != nil {
+	var data SearchUsersResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return SearchUsersResponse{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }

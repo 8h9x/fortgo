@@ -5,15 +5,15 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) CreateUserMnemonic(namespace string, accountID string, payload CreateUserMnemonicPayload) (MnemonicDataWithActivationHistory, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.LinksService,
 		fmt.Sprintf("links/api/%s/author/%s", namespace, accountID),
-		request.WithJSONBody(payload),
+		rest.WithJSONBody(payload),
 	)
 	if err != nil {
 		return MnemonicDataWithActivationHistory{}, err
@@ -24,10 +24,10 @@ func (c *Client) CreateUserMnemonic(namespace string, accountID string, payload 
 		return MnemonicDataWithActivationHistory{}, err
 	}
 
-	resp, err := request.DecodeResponse[MnemonicDataWithActivationHistory](res)
-	if err != nil {
+	var data MnemonicDataWithActivationHistory
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return MnemonicDataWithActivationHistory{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }

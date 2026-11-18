@@ -7,17 +7,17 @@ import (
 	"strconv"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) ChangeCompanionName(accountID string, cosmeticItemID string, companionName string) error {
 	payload := &ChangeCompanionNamePayload{cosmeticItemID, companionName}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPatch,
 		consts.FortniteLockerService,
 		fmt.Sprintf("api/locker/v4/%s/account/%s/companion-name", consts.DeploymentIDLiveFN, accountID),
-		request.WithJSONBody(payload),
+		rest.WithJSONBody(payload),
 	)
 	if err != nil {
 		return err
@@ -28,8 +28,11 @@ func (c *Client) ChangeCompanionName(accountID string, cosmeticItemID string, co
 		return err
 	}
 
-	_, err = request.DecodeResponse[any](res)
-	return err
+	if err = rest.DecodeResponse(res, new(any)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken string) (CosmeticData, error) {
@@ -41,11 +44,11 @@ func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken stri
 		query.Set("nextToken", nextToken)
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FortniteLockerService,
 		"api/locker/v4/%s/account/%s/cosmetic-data",
-		request.WithQueryParamaters(query),
+		rest.WithQueryParamaters(query),
 	)
 	if err != nil {
 		return CosmeticData{}, err
@@ -56,22 +59,22 @@ func (c *Client) FetchCosmeticData(accountID string, limit uint8, nextToken stri
 		return CosmeticData{}, err
 	}
 
-	resp, err := request.DecodeResponse[CosmeticData](res)
-	if err != nil {
+	var data CosmeticData
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return CosmeticData{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 func (c *Client) LockInImmutableItem(accountID string, templateID string, itemGUID string, variants map[string]ItemCustomization) error {
 	payload := &LockInImmutableItemPayload{variants}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.FortniteLockerService,
 		fmt.Sprintf("api/locker/v4/%s/account/%s/lock-in-immutable-item/%s:%s", consts.DeploymentIDLiveFN, accountID, templateID, itemGUID),
-		request.WithJSONBody(payload),
+		rest.WithJSONBody(payload),
 	)
 	if err != nil {
 		return err
@@ -82,12 +85,15 @@ func (c *Client) LockInImmutableItem(accountID string, templateID string, itemGU
 		return err
 	}
 
-	_, err = request.DecodeResponse[any](res)
-	return err
+	if err = rest.DecodeResponse(res, new(any)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Client) QueryItems(accountID string) (LockerItems, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.FortniteLockerService,
 		"api/locker/v4/%s/account/%s/items",
@@ -101,20 +107,20 @@ func (c *Client) QueryItems(accountID string) (LockerItems, error) {
 		return LockerItems{}, err
 	}
 
-	resp, err := request.DecodeResponse[LockerItems](res)
-	if err != nil {
+	var data LockerItems
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return LockerItems{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 func (c *Client) UpdateActiveLoadoutGroup(accountID string, payload UpdateActiveLockerLoadoutPayload) (ActiveLoadoutGroup, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPut,
 		consts.FortniteLockerService,
 		fmt.Sprintf("api/locker/v4/%s/account/%s/active-loadout-group", consts.DeploymentIDLiveFN, accountID),
-		request.WithJSONBody(payload),
+		rest.WithJSONBody(payload),
 	)
 	if err != nil {
 		return ActiveLoadoutGroup{}, err
@@ -125,10 +131,10 @@ func (c *Client) UpdateActiveLoadoutGroup(accountID string, payload UpdateActive
 		return ActiveLoadoutGroup{}, err
 	}
 
-	resp, err := request.DecodeResponse[ActiveLoadoutGroup](res)
-	if err != nil {
+	var data ActiveLoadoutGroup
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return ActiveLoadoutGroup{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }

@@ -1,11 +1,15 @@
 # Fortgo
 
+Fortgo is in active pre-release development and constant breaking changes between commit versions are to be expected.
+
 A library for making requests to Epic Games APIs--primarily targeting fortnite related endpoints.
 
 Installation: `go get github.com/8h9x/fortgo`
 
-Simple client creation example: 
+Simple client creation example:
+
 #### `/examples/authorization_code/main.go`
+
 ```go
 package main
 

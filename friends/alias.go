@@ -5,15 +5,15 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) EditAlias(accountID string, friendID string, alias string) error {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPut,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends/%s/alias", accountID, friendID),
-		request.WithTextBody(alias),
+		rest.WithTextBody(alias),
 	)
 	if err != nil {
 		return err
@@ -24,12 +24,15 @@ func (c *Client) EditAlias(accountID string, friendID string, alias string) erro
 		return err
 	}
 
-	_, err = request.DecodeResponse[any](res)
-	return err
+	if err = rest.DecodeResponse(res, new(any)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Client) RemoveAlias(accountID string, friendID string) error {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodDelete,
 		consts.FriendsService,
 		fmt.Sprintf("friends/api/v1/%s/friends/%s/alias", accountID, friendID),
@@ -43,6 +46,9 @@ func (c *Client) RemoveAlias(accountID string, friendID string) error {
 		return err
 	}
 
-	_, err = request.DecodeResponse[any](res)
-	return err
+	if err = rest.DecodeResponse(res, new(any)); err != nil {
+		return err
+	}
+
+	return nil
 }

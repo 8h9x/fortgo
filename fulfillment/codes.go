@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) RedeemCodeForAccount(accountID string, code string) (RedeemCodeResponse, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.FulfillmentService,
 		fmt.Sprintf("fulfillment/api/public/accounts/%s/codes/%s", accountID, code),
@@ -23,16 +23,16 @@ func (c *Client) RedeemCodeForAccount(accountID string, code string) (RedeemCode
 		return RedeemCodeResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[RedeemCodeResponse](res)
-	if err != nil {
+	var data RedeemCodeResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return RedeemCodeResponse{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 func (c *Client) RedeemCodeForIdentity(identityID string, code string) (RedeemCodeResponse, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.FulfillmentService,
 		fmt.Sprintf("fulfillment/api/public/identities/%s/codes/%s", identityID, code),
@@ -46,10 +46,10 @@ func (c *Client) RedeemCodeForIdentity(identityID string, code string) (RedeemCo
 		return RedeemCodeResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[RedeemCodeResponse](res)
-	if err != nil {
+	var data RedeemCodeResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return RedeemCodeResponse{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }

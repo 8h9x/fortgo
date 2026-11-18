@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) RegisterKeyED25519(key ed25519.PublicKey) (RegisterPublicKeyResponse, error) {
@@ -29,11 +29,11 @@ func (c *Client) registerKey(algorithm, publicKey string) (RegisterPublicKeyResp
 		PublicKey: publicKey,
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.PublicKeyService,
 		"publickey/v2/publickey",
-		request.WithJSONBody(payload),
+		rest.WithJSONBody(payload),
 	)
 	if err != nil {
 		return RegisterPublicKeyResponse{}, err
@@ -44,10 +44,10 @@ func (c *Client) registerKey(algorithm, publicKey string) (RegisterPublicKeyResp
 		return RegisterPublicKeyResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[RegisterPublicKeyResponse](res)
-	if err != nil {
+	var data RegisterPublicKeyResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return RegisterPublicKeyResponse{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }

@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) GetPublicKey(thumbprint string) (GetPublicKeyResponse, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.AccountService,
 		fmt.Sprintf("account/api/publickeys/%s", thumbprint),
@@ -23,10 +23,10 @@ func (c *Client) GetPublicKey(thumbprint string) (GetPublicKeyResponse, error) {
 		return GetPublicKeyResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[GetPublicKeyResponse](res)
-	if err != nil {
+	var data GetPublicKeyResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return GetPublicKeyResponse{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }

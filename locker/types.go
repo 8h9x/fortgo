@@ -64,14 +64,14 @@ type LoadoutPreset struct {
 }
 
 type ActiveLoadoutGroup struct {
-	DeploymentID string                              `json:"deploymentId"`
-	AccountID    string                              `json:"accountId"`
-	AthenaItemId string                              `json:"athenaItemId"`
-	CreationTime time.Time                           `json:"creationTime"`
-	UpdatedTime  time.Time                           `json:"updatedTime"`
-	Loadouts     map[CosmeticLoadoutSchema]Loadout   `json:"loadouts"`
-	ShuffleType  ShuffleType                         `json:"shuffleType"`
-	Namespace    string                              `json:"namespace"`
+	DeploymentID string                            `json:"deploymentId"`
+	AccountID    string                            `json:"accountId"`
+	AthenaItemId string                            `json:"athenaItemId"`
+	CreationTime time.Time                         `json:"creationTime"`
+	UpdatedTime  time.Time                         `json:"updatedTime"`
+	Loadouts     map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
+	ShuffleType  ShuffleType                       `json:"shuffleType"`
+	Namespace    string                            `json:"namespace"`
 }
 
 type LoadoutGroupPreset struct {
@@ -93,11 +93,11 @@ type LockerItems struct {
 }
 
 type UpdateActiveLockerLoadoutPayload struct {
-	Loadouts             map[CosmeticLoadoutSchema]Loadout   `json:"loadouts"`
-	ShuffleType          ShuffleType                         `json:"shuffleType"`
-	EquippedPresetItemID string                              `json:"equippedPresetItemId"`
-	AthenaItemID         string                              `json:"athenaItemId"`
-	CreationTime         time.Time                           `json:"creationTime"`
+	Loadouts             map[CosmeticLoadoutSchema]Loadout `json:"loadouts"`
+	ShuffleType          ShuffleType                       `json:"shuffleType"`
+	EquippedPresetItemID string                            `json:"equippedPresetItemId"`
+	AthenaItemID         string                            `json:"athenaItemId"`
+	CreationTime         time.Time                         `json:"creationTime"`
 }
 
 type ChangeCompanionNamePayload struct {
@@ -110,24 +110,24 @@ type LockInImmutableItemPayload struct {
 }
 
 type CosmeticItemVariant struct {
-	VariantTag string `json:"variantTag"`
+	VariantTag     string `json:"variantTag"`
 	AdditionalData string `json:"additionalData,omitempty"`
 }
 
 type CosmeticItem struct {
-	TemplateID     string    						`json:"templateId"`
-	CosmeticItemID string    						`json:"cosmeticItemId"`
-	AthenaItemID   string   						`json:"athenaItemId"`
-	UpdatedTime    time.Time 						`json:"updatedTime"`
-	ActiveVariants map[string]CosmeticItemVariant	`json:"activeVariants"`
-	OwnedVariants  map[string][]CosmeticItemVariant	`json:"ownedVariants,omitempty"`
-	CreationTime   time.Time						`json:"creationTime,omitempty"`
-	LockedIn       bool      						`json:"lockedIn,omitempty"`
+	TemplateID     string                           `json:"templateId"`
+	CosmeticItemID string                           `json:"cosmeticItemId"`
+	AthenaItemID   string                           `json:"athenaItemId"`
+	UpdatedTime    time.Time                        `json:"updatedTime"`
+	ActiveVariants map[string]CosmeticItemVariant   `json:"activeVariants"`
+	OwnedVariants  map[string][]CosmeticItemVariant `json:"ownedVariants,omitempty"`
+	CreationTime   time.Time                        `json:"creationTime"`
+	LockedIn       bool                             `json:"lockedIn,omitempty"`
 }
 
 type CosmeticData struct {
-	CosmeticItems            []CosmeticItem	`json:"cosmeticItems"`
-	CosmeticItemAccessTokens []string		`json:"cosmeticItemAccessTokens"`
-	RequestTime              time.Time		`json:"requestTime"`
-	NextToken                string			`json:"nextToken"`
+	CosmeticItems            []CosmeticItem `json:"cosmeticItems"`
+	CosmeticItemAccessTokens []string       `json:"cosmeticItemAccessTokens"`
+	RequestTime              time.Time      `json:"requestTime"`
+	NextToken                string         `json:"nextToken"`
 }

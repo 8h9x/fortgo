@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) CreateConversation(title string, conversationType string, members []string, createIfExists bool) (Conversation, error) {
@@ -15,12 +15,12 @@ func (c *Client) CreateConversation(title string, conversationType string, membe
 		query.Add("createIfExists", "true")
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.EOSService,
 		"chat/v1/public/_/conversations",
-		request.WithQueryParamaters(query),
-		request.WithJSONBody(&CreateConversationPayload{
+		rest.WithQueryParamaters(query),
+		rest.WithJSONBody(&CreateConversationPayload{
 			Title:   title,
 			Type:    conversationType,
 			Members: members,
@@ -35,16 +35,16 @@ func (c *Client) CreateConversation(title string, conversationType string, membe
 		return Conversation{}, err
 	}
 
-	resp, err := request.DecodeResponse[Conversation](res)
-	if err != nil {
+	var data Conversation
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return Conversation{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }
 
 func (c *Client) GetConversationSummary(accountID string) (ConversationSummary, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.EOSService,
 		fmt.Sprintf("chat/v1/public/_/users/%s/summary", accountID),
@@ -58,10 +58,10 @@ func (c *Client) GetConversationSummary(accountID string) (ConversationSummary, 
 		return ConversationSummary{}, err
 	}
 
-	resp, err := request.DecodeResponse[ConversationSummary](res)
-	if err != nil {
+	var data ConversationSummary
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return ConversationSummary{}, err
 	}
 
-	return resp.Data, nil
+	return data, err
 }

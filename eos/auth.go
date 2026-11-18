@@ -6,11 +6,11 @@ import (
 
 	"github.com/8h9x/fortgo/account"
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) GetExchangeCode() (ExchangeResponse, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodGet,
 		consts.EOSServiceAuth,
 		"exchange",
@@ -21,20 +21,20 @@ func (c *Client) GetExchangeCode() (ExchangeResponse, error) {
 		return ExchangeResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[ExchangeResponse](res)
-	if err != nil {
+	var data ExchangeResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return ExchangeResponse{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }
 
 func (c *Client) CreateDeviceCode(clientToken Token) (GetDeviceCodeResponse, error) {
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.EOSServiceAuth,
 		"deviceAuthorization",
-		request.WithBearerToken(clientToken.AccessToken),
+		rest.WithBearerToken(clientToken.AccessToken),
 	)
 
 	res, err := c.HTTPClient.Do(req)
@@ -42,12 +42,12 @@ func (c *Client) CreateDeviceCode(clientToken Token) (GetDeviceCodeResponse, err
 		return GetDeviceCodeResponse{}, err
 	}
 
-	resp, err := request.DecodeResponse[GetDeviceCodeResponse](res)
-	if err != nil {
+	var data GetDeviceCodeResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return GetDeviceCodeResponse{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }
 
 func (c *Client) GetToken(authClient *account.AuthClient, tokenGrant account.TokenGrant, tokenType account.TokenType, scope ...string) (Token, error) {
@@ -56,12 +56,12 @@ func (c *Client) GetToken(authClient *account.AuthClient, tokenGrant account.Tok
 		tokenGrant.Set("scope", strings.Join(scope, " "))
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.EOSServiceAuth,
 		"token",
-		request.WithBasicToken(authClient.Base64()),
-		request.WithFormBody(tokenGrant),
+		rest.WithBasicToken(authClient.Base64()),
+		rest.WithFormBody(tokenGrant),
 	)
 
 	res, err := c.HTTPClient.Do(req)
@@ -69,12 +69,12 @@ func (c *Client) GetToken(authClient *account.AuthClient, tokenGrant account.Tok
 		return Token{}, err
 	}
 
-	resp, err := request.DecodeResponse[Token](res)
-	if err != nil {
+	var data Token
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return Token{}, err
 	}
 
-	return resp.Data, err
+	return data, err
 }
 
 //func (c Client) DeviceCodeLogin(clientId string, clientSecret string, deviceCode string) (credentials UserCredentials, err error) {

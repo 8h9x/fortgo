@@ -1,7 +1,7 @@
 package fortgo
 
 //import (
-//	"github.com/8h9x/fortgo/request"
+//	"github.com/8h9x/fortgo/rest"
 //	"net/http"
 //)
 
@@ -10,7 +10,7 @@ package fortgo
 //		header.Set(key, value[0])
 //	}
 //
-//	req, err := request.New(method, serviceURL, endpoint, request.WithHeaders(header), )
+//	req, err := rest.NewRequest(method, serviceURL, endpoint, rest.WithHeaders(header), )
 //
 //	return request.Request(c.HTTPClient, method, url, header, body)
 //}

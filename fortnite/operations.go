@@ -358,9 +358,9 @@ type SetHeroCosmeticVariantsPayload struct {
 }
 
 type SetHeroCosmeticVariantsPayloadVariants struct {
-	Channel string        `json:"channel"`
-	Active  string        `json:"active"`
-	Owned   []interface{} `json:"owned"` // TODO: proper type
+	Channel string `json:"channel"`
+	Active  string `json:"active"`
+	Owned   []any  `json:"owned"` // TODO: proper type
 }
 
 type SetHomebaseBannerPayload struct {

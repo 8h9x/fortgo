@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/8h9x/fortgo/consts"
-	"github.com/8h9x/fortgo/request"
+	"github.com/8h9x/fortgo/rest"
 )
 
 func (c *Client) GetAnticheatProvider(accountID string, exchangeCode string, epicApp string, testMode bool, cloudGamingProvider CloudGamingProvider) (AnticheatProviderResponse, error) {
@@ -28,25 +28,25 @@ func (c *Client) GetAnticheatProvider(accountID string, exchangeCode string, epi
 		payload.Salmon = true
 	}
 
-	req, err := request.New(
+	req, err := rest.NewRequest(
 		http.MethodPost,
 		consts.CalderaService,
 		"caldera/api/v1/launcher/racp",
-		request.WithJSONBody(payload),
+		rest.WithJSONBody(payload),
 	)
 	if err != nil {
 		return AnticheatProviderResponse{}, err
 	}
 
-	resp, err := c.HTTPClient.Do(req)
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return AnticheatProviderResponse{}, err
 	}
 
-	res, err := request.DecodeResponse[AnticheatProviderResponse](resp)
-	if err != nil {
+	var data AnticheatProviderResponse
+	if err = rest.DecodeResponse(res, &data); err != nil {
 		return AnticheatProviderResponse{}, err
 	}
 
-	return res.Data, nil
+	return data, err
 }

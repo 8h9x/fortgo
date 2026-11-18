@@ -113,7 +113,7 @@ type CampaignProfileStats_ struct {
 			} `json:"claimData"`
 		} `json:"mission_alert_redemption_record"`
 		ClientSettings struct {
-			PinnedQuestInstances []interface{} `json:"pinnedQuestInstances"`
+			PinnedQuestInstances []any `json:"pinnedQuestInstances"`
 		} `json:"client_settings"`
 		ResearchLevels struct {
 			Fortitude  int `json:"fortitude"`
@@ -121,9 +121,9 @@ type CampaignProfileStats_ struct {
 			Resistance int `json:"resistance"`
 			Technology int `json:"technology"`
 		} `json:"research_levels"`
-		Level               int           `json:"level"`
-		SelectedHeroLoadout string        `json:"selected_hero_loadout"`
-		Loadouts            []interface{} `json:"loadouts"`
+		Level               int    `json:"level"`
+		SelectedHeroLoadout string `json:"selected_hero_loadout"`
+		Loadouts            []any  `json:"loadouts"`
 		CollectionBook      struct {
 			MaxBookXPLevelAchieved int `json:"maxBookXpLevelAchieved"`
 		} `json:"collection_book"`
@@ -156,8 +156,8 @@ type CampaignProfileStats_ struct {
 			TemplateID string  `json:"templateId"`
 			CF         float64 `json:"cf"`
 		} `json:"event_currency"`
-		MatchesPlayed int           `json:"matches_played"`
-		ModeLoadouts  []interface{} `json:"mode_loadouts"`
+		MatchesPlayed int   `json:"matches_played"`
+		ModeLoadouts  []any `json:"mode_loadouts"`
 		DailyRewards  struct {
 			NextDefaultReward   int    `json:"nextDefaultReward"`
 			TotalDaysLoggedIn   int    `json:"totalDaysLoggedIn"`
@@ -193,11 +193,11 @@ type CommonCoreProfileStats_ struct {
 			RefundCredits             int    `json:"refundCredits"`
 			TokenRefreshReferenceTime string `json:"tokenRefreshReferenceTime"`
 			Purchases                 []struct {
-				PurchaseID         string        `json:"purchaseId"`
-				OfferID            string        `json:"offerId"`
-				PurchaseDate       string        `json:"purchaseDate"`
-				FreeRefundEligible bool          `json:"freeRefundEligible"`
-				Fulfillments       []interface{} `json:"fulfillments"`
+				PurchaseID         string `json:"purchaseId"`
+				OfferID            string `json:"offerId"`
+				PurchaseDate       string `json:"purchaseDate"`
+				FreeRefundEligible bool   `json:"freeRefundEligible"`
+				Fulfillments       []any  `json:"fulfillments"`
 				LootResult         []struct {
 					ItemType    string `json:"itemType"`
 					ItemGUID    string `json:"itemGuid"`
@@ -229,7 +229,7 @@ type CommonCoreProfileStats_ struct {
 		} `json:"daily_purchases"`
 		InAppPurchases struct {
 			Receipts          []string       `json:"receipts"`
-			IgnoredReceipts   []interface{}  `json:"ignoredReceipts"`
+			IgnoredReceipts   []any          `json:"ignoredReceipts"`
 			FulfillmentCounts map[string]int `json:"fulfillmentCounts"`
 			RefreshTimers     map[string]struct {
 				NextEntitlementRefresh string `json:"nextEntitlementRefresh"`
