@@ -137,8 +137,8 @@ type MnemonicDataWithActivationHistory struct {
 }
 
 type GetRelatedMnemonicsResponse struct {
-	ParentLinks []MnemonicData `json:"parentLinks"`
-	Links       []MnemonicData `json:"links"`
+	ParentLinks []MnemonicData          `json:"parentLinks"`
+	Links       map[string]MnemonicData `json:"links"`
 }
 
 type CreateUserMnemonicPayload struct {

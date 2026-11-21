@@ -8,5 +8,5 @@ type Mnemonic struct {
 }
 
 func (m *Mnemonic) GetRelated() (links.GetRelatedMnemonicsResponse, error) {
-	return m.client.LinkService.GetRelatedMnemonics("fn", m.Mnemonic, m.Version)
+	return m.client.LinkService.GetRelatedMnemonics(links.NamespaceFortnite, m.Mnemonic, m.Version)
 }

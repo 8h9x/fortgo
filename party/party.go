@@ -9,7 +9,7 @@ import (
 	"github.com/8h9x/fortgo/rest"
 )
 
-func (c *Client) Invite(buildID string, partyID string, friendID string, platform consts.Platform, senderDisplayName string, sendPing bool) error {
+func (c *Client) Invite(buildID, partyID, friendID string, platform consts.Platform, senderDisplayName string, sendPing bool) error {
 	query := url.Values{}
 	if sendPing {
 		query.Set("sendPing", "true")

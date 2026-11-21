@@ -59,7 +59,7 @@ func (c *Client) GetMnemonicInfo(namespace Namespace, mnemonic string, mnemonicT
 
 // GetMnemonicInfoWithActivationHistory fetches information with activation history and extended metadata about provided mnemonic on the namespace given a matching mnemonicType,
 // set version to '-1' in order to fetch latest
-func (c *Client) GetMnemonicInfoWithActivationHistory(httpClient *http.Client, credentials account.Token, namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicDataWithActivationHistory, error) {
+func (c *Client) GetMnemonicInfoWithActivationHistory(namespace Namespace, mnemonic string, mnemonicType MnemonicType, version int) (MnemonicDataWithActivationHistory, error) {
 	return getMnemonicInfoRaw[MnemonicDataWithActivationHistory](c.HTTPClient, namespace, mnemonic, mnemonicType, version)
 }
 
