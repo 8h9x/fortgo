@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/8h9x/fortgo/account"
 	"github.com/8h9x/fortgo/consts"
 	"github.com/8h9x/fortgo/rest"
 )
